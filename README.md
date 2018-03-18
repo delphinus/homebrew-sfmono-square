@@ -1,4 +1,4 @@
-# SFMono Square - patched font: SFMono + Migu1m + nerd-fonts
+# SFMono Square - patched font: SFMono + Migu 1M + Nerd Fonts
 
 <img width="762" alt="2018-03-18 21 25 13" src="https://user-images.githubusercontent.com/1239245/37565852-45597362-2af4-11e8-8518-9497a25c47f0.png">
 
@@ -8,7 +8,7 @@
 
 **SF Mono** is a font from Apple, that is clear, easy to read, and suitable for programming.  **SFMono Square** is based on **SF Mono**, and added glyphs for Japanese & patched for [Nerd Fonts][].
 
-[nerd-fonts]: https://github.com/ryanoasis/nerd-fonts
+[Nerd Fonts]: https://github.com/ryanoasis/nerd-fonts
 
 ### font source
 
