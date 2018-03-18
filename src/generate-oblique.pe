@@ -1,0 +1,49 @@
+#!/usr/local/bin/fontforge -script
+
+filename_list = ["migu-1m-regular.ttf", "migu-1m-bold.ttf"]
+filename_family = "migu-1m"
+fontfamily = "Migu 1M"
+fontstyle_list = ["Regular", "Bold"]
+filename_font_style_list = ["regular", "bold"]
+
+i = 0
+while (i < SizeOf(filename_list))
+
+    input_style = fontstyle_list[i]
+    if (input_style == "Regular")
+        output_style = "oblique"
+        style        = "Oblique"
+    else
+        output_style = filename_font_style_list[i] + "-oblique"
+        style        = input_style + " Oblique"
+    endif
+
+    Open(filename_list[i])
+
+    Reencode("unicode")
+
+    SetFontNames(filename_family + "-" + output_style, \
+            fontfamily, \
+            fontfamily + " " + style, \
+            style)
+    SetTTFName(0x409, 2, style)
+    SetTTFName(0x409, 3, "FontForge 2.0 : " + $fullname + " : " + Strftime("%d-%m-%Y", 0))
+
+    SelectWorthOutputting()
+
+    Transform(100, 0, 20, 100, 0, 0)
+
+    RoundToInt()
+    RemoveOverlap()
+    RoundToInt()
+
+    Print("Generate " + filename_family + "-" + output_style + ".ttf")
+    Generate(filename_family + "-" + output_style + ".ttf", "", 0x84)
+    Close()
+
+    i += 1
+endloop
+
+Quit()
+
+# vim:se ft=fontforge_script.gotexttmpl:

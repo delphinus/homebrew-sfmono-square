@@ -1,0 +1,145 @@
+#!/usr/local/bin/fontforge -script
+
+# Print message
+Print("Generate SFMono-mod")
+
+# Set parameters
+hankaku_list  = ["SFMonoSquare-Regular.otf", "SFMonoSquare-Bold.otf", "SFMonoSquare-RegularItalic.otf", "SFMonoSquare-BoldItalic.otf"]
+zenkaku_list       = ["modified-migu-1m-regular.ttf", "modified-migu-1m-bold.ttf", "modified-migu-1m-oblique.ttf", "modified-migu-1m-bold-oblique.ttf"]
+fontfamily        = "SFMono"
+fontfamilysuffix  = "Square"
+fontstyle_list    = ["Regular", "Bold", "Italic", "Bold Italic"]
+filename_fontstyle_list    = ["Regular", "Bold", "RegularItalic", "BoldItalic"]
+fontweight_list   = [400, 700, 400, 700]
+panose_weight_list = [5, 8, 5, 8]
+panose_letterform_list = [2, 2, 9, 9]
+copyright         = ""
+vendor_id = "APPL"
+version           = "v0.1.0"
+square = ""
+
+# Begin loop of regular and bold
+i = 0
+while (i < SizeOf(hankaku_list))
+    # Open new file
+    New()
+
+    # Set encoding to Unicode-bmp
+    Reencode("unicode")
+
+    # Set configuration
+    if (fontfamilysuffix != "")
+        SetFontNames(fontfamily + fontfamilysuffix + "-" + filename_fontstyle_list[i], \
+                     fontfamily + " " + fontfamilysuffix, \
+                     fontfamily + " " + fontfamilysuffix + " " + fontstyle_list[i], \
+                     fontstyle_list[i], \
+                     copyright, version)
+    else
+        SetFontNames(fontfamily + "-" + filename_fontstyle_list[i], \
+                     fontfamily, \
+                     fontfamily + " " + fontstyle_list[i], \
+                     fontstyle_list[i], \
+                     copyright, version)
+    endif
+    SetTTFName(0x409, 2, fontstyle_list[i])
+    SetTTFName(0x409, 3, "FontForge 2.0 : " + $fullname + " : " + Strftime("%d-%m-%Y", 0))
+    ScaleToEm(1638, 410)
+    SetOS2Value("Weight",               fontweight_list[i]) # Book or Bold
+    SetOS2Value("Width",                5) # Medium
+    SetOS2Value("FSType",               0)
+    SetOS2Value("VendorID",             vendor_id)
+    SetOS2Value("IBMFamily",            2057) # SS Typewriter Gothic
+    SetOS2Value("WinAscentIsOffset",    0)
+    SetOS2Value("WinDescentIsOffset",   0)
+    SetOS2Value("TypoAscentIsOffset",   0)
+    SetOS2Value("TypoDescentIsOffset",  0)
+    SetOS2Value("HHeadAscentIsOffset",  0)
+    SetOS2Value("HHeadDescentIsOffset", 0)
+    SetOS2Value("WinAscent",            1638)
+    SetOS2Value("WinDescent",           410)
+    SetOS2Value("TypoAscent",           1638)
+    SetOS2Value("TypoDescent",          -410)
+    SetOS2Value("TypoLineGap",          0)
+    SetOS2Value("HHeadAscent",          1638)
+    SetOS2Value("HHeadDescent",         -410)
+    SetOS2Value("HHeadLineGap",         0)
+    SetPanose([2, 11, panose_weight_list[i], 9, 2, 2, 3, panose_letterform_list[i], 2, 7])
+
+    # Merge Inconsolata with Migu 1M
+    Print("Merge " + hankaku_list[i]:t \
+          + " with " + zenkaku_list[i]:t)
+    MergeFonts(hankaku_list[i])
+    MergeFonts(zenkaku_list[i])
+
+    # Edit zenkaku space (from ballot box and heavy greek cross)
+    if ("0u" != "0u3000")
+        Print("Edit zenkaku space")
+        if ("" == "")
+            Select(0u2610); Copy(); Select(0u3000); Paste()
+            Select(0u271a); Copy(); Select(0u3000); PasteInto()
+            OverlapIntersect()
+        else
+            Select(0u); Copy(); Select(0u3000); Paste()
+        endif
+    endif
+
+    Print("Copy Hankaku glyphs to Zenkaku's ones")
+    j = 0u0000
+    while (j <= 0u005e)
+        j += 1
+        Select(j + 0u0021); Copy(); Select(j + 0uff01); Paste()
+        Move(512, 0); SetWidth(2048)
+    endloop
+
+    Print("Set Hankaku width for some glyphs")
+    if (square == "true")
+        Select(0u25a0); Scale(65); SetWidth(1024)
+        Select(0u25a1); Scale(65); SetWidth(1024)
+        Select(0u25cb); Scale(65); SetWidth(1024)
+        Select(0u25cc); Scale(65); SetWidth(1024)
+        Select(0u25ce); Scale(65); SetWidth(1024)
+        Select(0u25cf); Scale(65); SetWidth(1024)
+    else
+        Select(0u25a0); Move(-512, 0); Scale(65); SetWidth(1024)
+        Select(0u25a1); Move(-512, 0); Scale(65); SetWidth(1024)
+        Select(0u25cb); Move(-512, 0); Scale(65); SetWidth(1024)
+        Select(0u25cc); Move(-512, 0); Scale(65); SetWidth(1024)
+        Select(0u25ce); Move(-512, 0); Scale(65); SetWidth(1024)
+        Select(0u25cf); Move(-512, 0); Scale(65); SetWidth(1024)
+    endif
+
+    # Move Zenkaku parenthesis glyphs
+    Select(0uff08); Move( 512, 0); SetWidth(2048)
+    Select(0uff09); Move(-512, 0); SetWidth(2048)
+    Select(0uff3b); Move( 512, 0); SetWidth(2048)
+    Select(0uff3d); Move(-512, 0); SetWidth(2048)
+    Select(0uff5b); Move( 512, 0); SetWidth(2048)
+    Select(0uff5d); Move(-512, 0); SetWidth(2048)
+    Select(0uff5f); Move(-512, 0); SetWidth(2048)
+    Select(0uff60); Move(-512, 0); SetWidth(2048)
+
+    # Proccess before saving
+    Print("Process before saving (it may take a few minutes)")
+    Select(".notdef")
+    DetachAndRemoveGlyphs()
+    SelectWorthOutputting()
+    RoundToInt(); RemoveOverlap(); RoundToInt()
+    AutoHint()
+    AutoInstr()
+
+    # Save SFMono-mod
+    if (fontfamilysuffix != "")
+        Print("Save " + fontfamily + fontfamilysuffix + "-" + filename_fontstyle_list[i] + ".otf")
+        Generate(fontfamily + fontfamilysuffix + "-" + filename_fontstyle_list[i] + ".otf", "", 0x84)
+    else
+        Print("Save " + fontfamily + "-" + filename_fontstyle_list[i] + ".otf")
+        Generate(fontfamily + "-" + filename_fontstyle_list[i] + ".otf", "", 0x84)
+    endif
+    Close()
+
+    i += 1
+endloop
+
+Quit()
+
+# vim:se ft=fontforge_script.gotexttmpl:
