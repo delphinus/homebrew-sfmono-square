@@ -36,6 +36,16 @@ class SfmonoSquare < Formula
     sha256 "861ac982e00d07c7043505b5b1e45612927724ee90fdc29e9aee833257ec0cd4"
   end
 
+  resource "font-zip" do
+    url "https://github.com/delphinus/homebrew-sfmono-square/raw/master/src/font.zip"
+    sha256 "17e346c35c8d39d984870c9db18ca1fc2f12fe32dabf11b7389791bbb4de2e47"
+  end
+
+  resource "changelog-md" do
+    url "https://github.com/delphinus/nerd-fonts-simple/raw/master/changelog.md"
+    sha256 "37d8824943c35f21e3f0653d9c57601372741fff3ac81cd047ab3d446c5710ac"
+  end
+
   def install
     # ENV.deparallelize  # if your formula fails when building in parallel
     resource("migu1mfonts").stage { buildpath.install Dir["*"] }
@@ -44,6 +54,8 @@ class SfmonoSquare < Formula
     resource("modify-migu1m").stage { buildpath.install Dir["*"] }
     resource("modify-sfmono").stage { buildpath.install Dir["*"] }
     resource("font-patcher").stage { buildpath.install Dir["*"] }
+    resource("font-zip").stage { (buildpath/"src/glyphs").install Dir["*"] }
+    resource("changelog-md").stage { buildpath.install Dir["*"] }
 
     system "fontforge", "-script", buildpath/"generate-oblique.pe"
     system "fontforge", "-script", buildpath/"modify-migu1m.pe"
