@@ -6,7 +6,7 @@
 
 ## What's this?
 
-**SF Mono** is clear, easy to read, and suitable programming fonts from Apple.  **SFMono Square** is based on **SF Mono**, and added glyphs for Japanese & patched for [Nerd Fonts][].
+**SF Mono** is a font from Apple, that is clear, easy to read, and suitable for programming.  **SFMono Square** is based on **SF Mono**, and added glyphs for Japanese & patched for [Nerd Fonts][].
 
 [nerd-fonts]: https://github.com/ryanoasis/nerd-fonts
 
