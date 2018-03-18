@@ -55,7 +55,7 @@ class SfmonoSquare < Formula
       "SFMonoSquare-RegularItalic.otf",
       "SFMonoSquare-BoldItalic.otf",
     ].each do |ttf|
-      system "fontforge", "-lang=py", "-script", buildpath/"font-patcher", "-c", "q", "-out", "build", "--square", ttf
+      system "fontforge", "-lang=py", "-script", buildpath/"font-patcher", "-c", "-q", "-out", "build", "--square", buildpath/ttf
     end
     (share/"fonts").install Dir["build/*ttf"]
   end
