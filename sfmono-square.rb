@@ -69,7 +69,7 @@ class SfmonoSquare < Formula
     ].each do |ttf|
       system "fontforge", "-lang=py", "-script", buildpath/"font-patcher", "-c", "-q", "-out", "build", "--square", buildpath/ttf
     end
-    (share/"fonts").install Dir["build/*ttf"]
+    (share/"fonts").install Dir["build/*.otf"]
   end
 
   test do
