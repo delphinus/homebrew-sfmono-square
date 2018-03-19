@@ -1,15 +1,12 @@
 #!/usr/local/bin/fontforge -script
 
-Print("Generate modified Migu 1M")
+Print("Generate modified SF Mono")
 
-# Set parameters
 input_list  = ["SFMono-Regular.otf", "SFMono-Bold.otf", "SFMono-RegularItalic.otf", "SFMono-BoldItalic.otf"]
 output_list  = ["SFMonoSquare-Regular.otf", "SFMonoSquare-Bold.otf", "SFMonoSquare-RegularItalic.otf", "SFMonoSquare-BoldItalic.otf"]
 
-# Begin loop of regular and bold
 i = 0
 while (i < SizeOf(input_list))
-    # Open SFMono
     Print("Open " + input_list[i])
     Open(input_list[i])
     SelectWorthOutputting()
@@ -23,12 +20,10 @@ while (i < SizeOf(input_list))
 
     RoundToInt(); RemoveOverlap(); RoundToInt()
 
-    # Clear instructions
     Print("Clear instructions")
     SelectWorthOutputting()
     ClearInstrs()
 
-    # Save modified SFMono
     Print("Save " + output_list[i])
     Save(output_list[i])
     Close()
@@ -38,4 +33,4 @@ endloop
 
 Quit()
 
-# vim:se ft=fontforge_script.gotexttmpl:
+# vim:se ft=fontforge_script:

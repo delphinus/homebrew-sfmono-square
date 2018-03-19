@@ -46,4 +46,4 @@ endloop
 
 Quit()
 
-# vim:se ft=fontforge_script.gotexttmpl:
+# vim:se ft=fontforge_script:
