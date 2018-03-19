@@ -1,7 +1,7 @@
 #!/usr/local/bin/fontforge -script
 
 # Print message
-Print("Generate SFMono-mod")
+Print("Generate SFMono Square")
 
 # Set parameters
 hankaku_list  = ["SFMonoSquare-Regular.otf", "SFMonoSquare-Bold.otf", "SFMonoSquare-RegularItalic.otf", "SFMonoSquare-BoldItalic.otf"]
@@ -16,7 +16,6 @@ panose_letterform_list = [2, 2, 9, 9]
 copyright         = ""
 vendor_id = "APPL"
 version           = "v0.1.0"
-square = ""
 
 # Begin loop of regular and bold
 i = 0
@@ -28,19 +27,11 @@ while (i < SizeOf(hankaku_list))
     Reencode("unicode")
 
     # Set configuration
-    if (fontfamilysuffix != "")
-        SetFontNames(fontfamily + fontfamilysuffix + "-" + filename_fontstyle_list[i], \
-                     fontfamily + " " + fontfamilysuffix, \
-                     fontfamily + " " + fontfamilysuffix + " " + fontstyle_list[i], \
-                     fontstyle_list[i], \
-                     copyright, version)
-    else
-        SetFontNames(fontfamily + "-" + filename_fontstyle_list[i], \
-                     fontfamily, \
-                     fontfamily + " " + fontstyle_list[i], \
-                     fontstyle_list[i], \
-                     copyright, version)
-    endif
+    SetFontNames(fontfamily + fontfamilysuffix + "-" + filename_fontstyle_list[i], \
+                 fontfamily + " " + fontfamilysuffix, \
+                 fontfamily + " " + fontfamilysuffix + " " + fontstyle_list[i], \
+                 fontstyle_list[i], \
+                 copyright, version)
     SetTTFName(0x409, 2, fontstyle_list[i])
     SetTTFName(0x409, 3, "FontForge 2.0 : " + $fullname + " : " + Strftime("%d-%m-%Y", 0))
     ScaleToEm(1638, 410)
@@ -92,21 +83,12 @@ while (i < SizeOf(hankaku_list))
     endloop
 
     Print("Set Hankaku width for some glyphs")
-    if (square == "true")
-        Select(0u25a0); Scale(65); SetWidth(1024)
-        Select(0u25a1); Scale(65); SetWidth(1024)
-        Select(0u25cb); Scale(65); SetWidth(1024)
-        Select(0u25cc); Scale(65); SetWidth(1024)
-        Select(0u25ce); Scale(65); SetWidth(1024)
-        Select(0u25cf); Scale(65); SetWidth(1024)
-    else
-        Select(0u25a0); Move(-512, 0); Scale(65); SetWidth(1024)
-        Select(0u25a1); Move(-512, 0); Scale(65); SetWidth(1024)
-        Select(0u25cb); Move(-512, 0); Scale(65); SetWidth(1024)
-        Select(0u25cc); Move(-512, 0); Scale(65); SetWidth(1024)
-        Select(0u25ce); Move(-512, 0); Scale(65); SetWidth(1024)
-        Select(0u25cf); Move(-512, 0); Scale(65); SetWidth(1024)
-    endif
+    Select(0u25a0); Scale(65); SetWidth(1024)
+    Select(0u25a1); Scale(65); SetWidth(1024)
+    Select(0u25cb); Scale(65); SetWidth(1024)
+    Select(0u25cc); Scale(65); SetWidth(1024)
+    Select(0u25ce); Scale(65); SetWidth(1024)
+    Select(0u25cf); Scale(65); SetWidth(1024)
 
     # Move Zenkaku parenthesis glyphs
     Select(0uff08); Move( 512, 0); SetWidth(2048)
@@ -128,13 +110,8 @@ while (i < SizeOf(hankaku_list))
     AutoInstr()
 
     # Save SFMono-mod
-    if (fontfamilysuffix != "")
-        Print("Save " + fontfamily + fontfamilysuffix + "-" + filename_fontstyle_list[i] + ".otf")
-        Generate(fontfamily + fontfamilysuffix + "-" + filename_fontstyle_list[i] + ".otf", "", 0x84)
-    else
-        Print("Save " + fontfamily + "-" + filename_fontstyle_list[i] + ".otf")
-        Generate(fontfamily + "-" + filename_fontstyle_list[i] + ".otf", "", 0x84)
-    endif
+    Print("Save " + fontfamily + fontfamilysuffix + "-" + filename_fontstyle_list[i] + ".otf")
+    Generate(fontfamily + fontfamilysuffix + "-" + filename_fontstyle_list[i] + ".otf", "", 0x84)
     Close()
 
     i += 1

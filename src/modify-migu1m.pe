@@ -2,35 +2,24 @@
 
 Print("Generate modified Migu 1M")
 
-# Set parameters
 input_list  = ["migu-1m-regular.ttf", "migu-1m-bold.ttf", "migu-1m-oblique.ttf", "migu-1m-bold-oblique.ttf"]
 output_list  = ["modified-migu-1m-regular.ttf", "modified-migu-1m-bold.ttf", "modified-migu-1m-oblique.ttf", "modified-migu-1m-bold-oblique.ttf"]
-square = "true"
 
-# Begin loop of regular and bold
 i = 0
 while (i < SizeOf(input_list))
-    # Open Migu 1M
     Print("Open " + input_list[i])
     Open(input_list[i])
     SelectWorthOutputting()
     UnlinkReference()
     ScaleToEm(1638, 410)
 
-    if (square == "true")
-        # Move to fit new scale proportion
-        Print("Move to fit new scale proportion (it may take a few minutes)")
-        SelectWorthOutputting()
-        Move(0, -146.72)
-        Print("Scale down to fit alphabets")
-        Scale(82)
-        SetWidth(2048)
-    else
-        # Scale down all glyphs
-        Print("Move all glyphs to center (it may take a few minutes)")
-        SelectWorthOutputting()
-        Move(-146.72, 0); SetWidth(-146.72, 1)
-    endif
+    # Move to fit new scale proportion
+    Print("Move to fit new scale proportion (it may take a few minutes)")
+    SelectWorthOutputting()
+    Move(0, -146.72)
+    Print("Scale down to fit alphabets")
+    Scale(82)
+    SetWidth(2048)
 
     # Set Hankaku width to Hankaku Kana
     Print("Set Hankaku width to Hankaku Kana")
@@ -38,20 +27,15 @@ while (i < SizeOf(input_list))
     while (j <= 0uff9f)
         j += 1
         Select(j)
-        if (square != "true")
-          Move(-0, 0)
-        endif
         SetWidth(1024)
     endloop
 
     RoundToInt(); RemoveOverlap(); RoundToInt()
 
-    # Clear instructions
     Print("Clear instructions")
     SelectWorthOutputting()
     ClearInstrs()
 
-    # Save modified Migu 1M
     Print("Save " + output_list[i])
     Save(output_list[i])
     Close()
@@ -61,4 +45,4 @@ endloop
 
 Quit()
 
-# vim:se ft=fontforge_script.gotexttmpl:
+# vim:se ft=fontforge_script:
