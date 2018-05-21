@@ -19,6 +19,7 @@ while (i < SizeOf(input_list))
     SetWidth(1024)
 
     # copy lacked glyphs from regular fonts to italic ones
+    regular_font = ""
     if (input_list[i] == "SFMono-RegularItalic.otf")
         regular_font = "SFMono-Regular.otf"
     elseif (input_list[i] == "SFMono-BoldItalic.otf")
