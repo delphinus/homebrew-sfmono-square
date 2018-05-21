@@ -29,7 +29,7 @@ class SfmonoSquare < Formula
 
   resource "modify-sfmono" do
     url "https://github.com/delphinus/homebrew-sfmono-square/raw/master/src/modify-sfmono.pe"
-    sha256 "abbfec39a03a9a7fa6fe56e6086f7c04dea6eb698eb3c1cc82f08c77541a2fec"
+    sha256 "227609a9e2383dbfba6c4b2649aac8c00a18f59f5d72fa7b5bb7ac2999b9a82c"
   end
 
   resource "font-patcher" do
