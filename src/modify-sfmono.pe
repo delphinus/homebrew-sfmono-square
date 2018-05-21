@@ -18,6 +18,16 @@ while (i < SizeOf(input_list))
     Scale(80.8847, 0, 0)
     SetWidth(1024)
 
+    # copy lacked glyphs from regular fonts to italic ones
+    if (input_list[i] == "SFMono-RegularItalic.otf")
+        regular_font = "SFMono-Regular.otf"
+    elseif (input_list[i] == "SFMono-BoldItalic.otf")
+        regular_font = "SFMono-Bold.otf"
+    endif
+    if (regular_font != "")
+        MergeFonts(regular_font)
+    endif
+
     RoundToInt(); RemoveOverlap(); RoundToInt()
 
     Print("Clear instructions")
