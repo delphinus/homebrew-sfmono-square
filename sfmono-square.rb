@@ -19,7 +19,7 @@ class SfmonoSquare < Formula
 
   resource "generate-sfmono-mod" do
     url "https://github.com/delphinus/homebrew-sfmono-square/raw/master/src/generate-sfmono-mod.pe"
-    sha256 "b2fa06022a16205746d9350a1e2ad18c1b1bfd099729da7fad093674a3fa6968"
+    sha256 "2fc0e99c83723b0476b0186a478a481520019f64a92d112ddf570a08e3c2c8cd"
   end
 
   resource "modify-migu1m" do
