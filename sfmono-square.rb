@@ -14,17 +14,17 @@ class SfmonoSquare < Formula
 
   resource "generate-oblique" do
     url "https://github.com/delphinus/homebrew-sfmono-square/raw/master/src/generate-oblique.pe"
-    sha256 "d8e1a54bfab7633f35630939aeae242bf16b3f11a747f451d4e02843141a19cb"
+    sha256 "be3874426b512955bbfb0f822f3cfc1f37e7ba610680776838ba3791512fd28c"
   end
 
   resource "generate-sfmono-mod" do
     url "https://github.com/delphinus/homebrew-sfmono-square/raw/master/src/generate-sfmono-mod.pe"
-    sha256 "b2fa06022a16205746d9350a1e2ad18c1b1bfd099729da7fad093674a3fa6968"
+    sha256 "1f0e4fdb34bc072401b34b777145216d27ca3aa82b7c30ea9f15894229b2d17a"
   end
 
   resource "modify-migu1m" do
     url "https://github.com/delphinus/homebrew-sfmono-square/raw/master/src/modify-migu1m.pe"
-    sha256 "157b48ed38dd4ad10622fe2e48a843b1c5ff2698f07d71c497ae584334bfbb59"
+    sha256 "0bd1a6eb88b4a3e9a9ef1125ce025c773e4fff2cfb4baddff310ac58e562a475"
   end
 
   resource "modify-sfmono" do
