@@ -13,32 +13,32 @@ class SfmonoSquare < Formula
   end
 
   resource "generate-oblique" do
-    url "https://github.com/delphinus/homebrew-sfmono-square/raw/master/src/generate-oblique.pe"
+    url "https://raw.githubusercontent.com/delphinus/homebrew-sfmono-square/v#{version}/src/generate-oblique.pe"
     sha256 "be3874426b512955bbfb0f822f3cfc1f37e7ba610680776838ba3791512fd28c"
   end
 
   resource "generate-sfmono-mod" do
-    url "https://github.com/delphinus/homebrew-sfmono-square/raw/master/src/generate-sfmono-mod.pe"
+    url "https://raw.githubusercontent.com/delphinus/homebrew-sfmono-square/v#{version}/src/generate-sfmono-mod.pe"
     sha256 "1f0e4fdb34bc072401b34b777145216d27ca3aa82b7c30ea9f15894229b2d17a"
   end
 
   resource "modify-migu1m" do
-    url "https://github.com/delphinus/homebrew-sfmono-square/raw/master/src/modify-migu1m.pe"
+    url "https://raw.githubusercontent.com/delphinus/homebrew-sfmono-square/v#{version}/src/modify-migu1m.pe"
     sha256 "0bd1a6eb88b4a3e9a9ef1125ce025c773e4fff2cfb4baddff310ac58e562a475"
   end
 
   resource "modify-sfmono" do
-    url "https://github.com/delphinus/homebrew-sfmono-square/raw/master/src/modify-sfmono.pe"
+    url "https://raw.githubusercontent.com/delphinus/homebrew-sfmono-square/v#{version}/src/modify-sfmono.pe"
     sha256 "227609a9e2383dbfba6c4b2649aac8c00a18f59f5d72fa7b5bb7ac2999b9a82c"
   end
 
   resource "font-patcher" do
-    url "https://github.com/delphinus/homebrew-sfmono-square/raw/master/src/font-patcher"
+    url "https://raw.githubusercontent.com/delphinus/homebrew-sfmono-square/v#{version}/src/font-patcher"
     sha256 "861ac982e00d07c7043505b5b1e45612927724ee90fdc29e9aee833257ec0cd4"
   end
 
   resource "font-zip" do
-    url "https://github.com/delphinus/homebrew-sfmono-square/raw/master/src/font.zip"
+    url "https://raw.githubusercontent.com/delphinus/homebrew-sfmono-square/v#{version}/src/font.zip"
     sha256 "17e346c35c8d39d984870c9db18ca1fc2f12fe32dabf11b7389791bbb4de2e47"
   end
 
