@@ -28,7 +28,7 @@ except ImportError:
     sys.stderr.write(projectName + ": FontForge module could not be loaded. Try installing fontforge python bindings [e.g. on Linux Debian or Ubuntu: `sudo apt-get install fontforge python-fontforge`]\n")
     sys.exit(1)
 
-version = '0.1.2018060718'
+version = 'v0.1.2018060719'
 
 # argparse stuff
 
