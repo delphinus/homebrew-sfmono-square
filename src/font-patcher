@@ -178,16 +178,12 @@ reservedFontNameReplacements = {
     'Terminus': 'Terminess'
 }
 
-projectInfo = "Patched with '" + projectName + " Patcher' (https://github.com/ryanoasis/nerd-fonts)"
-
 sourceFont.appendSFNTName('English (US)', 'Preferred Family', sourceFont.familyname)
 sourceFont.appendSFNTName('English (US)', 'Compatible Full', sourceFont.fullname)
-sourceFont.comment = projectInfo
+sourceFont.comment = 'Patched with sfmono-square project (https://github.com/delphinus/homebrew-sfmono-square)'
 
-# todo version not being set for all font types (e.g. ttf)
-#print "Version was " + sourceFont.version
-sourceFont.version += ";" + projectName + " " + version
-#print "Version now is " + sourceFont.version
+sourceFont.version = subprocess.check_output(
+    ['git', 'describe', '--abbrev=0', '--tags']).rstrip()
 
 # Prevent glyph encoding position conflicts between glyph sets
 
