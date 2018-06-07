@@ -2,8 +2,7 @@
 # coding=utf8
 # version: 1.0.0
 
-version = "1.0.0"
-projectName = "Nerd Fonts"
+projectName = 'SFMono Square'
 projectNameAbbreviation = "NF"
 projectNameSingular = projectName[:-1]
 
@@ -30,6 +29,9 @@ try:
 except ImportError:
     sys.stderr.write(projectName + ": FontForge module could not be loaded. Try installing fontforge python bindings [e.g. on Linux Debian or Ubuntu: `sudo apt-get install fontforge python-fontforge`]\n")
     sys.exit(1)
+
+version = subprocess.check_output(
+    ['git', 'describe', '--abbrev=0', '--tags']).rstrip()
 
 # argparse stuff
 
@@ -182,8 +184,7 @@ sourceFont.appendSFNTName('English (US)', 'Preferred Family', sourceFont.familyn
 sourceFont.appendSFNTName('English (US)', 'Compatible Full', sourceFont.fullname)
 sourceFont.comment = 'Patched with sfmono-square project (https://github.com/delphinus/homebrew-sfmono-square)'
 
-sourceFont.version = subprocess.check_output(
-    ['git', 'describe', '--abbrev=0', '--tags']).rstrip()
+sourceFont.version = version
 
 # Prevent glyph encoding position conflicts between glyph sets
 
