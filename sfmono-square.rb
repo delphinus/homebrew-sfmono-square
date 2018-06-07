@@ -17,15 +17,9 @@ class SfmonoSquare < Formula
     sha256 "d4c38664dd57bc5927abe8f4fbea8f06a8ece3fea49ea02354d4e03ac6d15006"
   end
 
-  resource "changelog-md" do
-    url "https://github.com/delphinus/nerd-fonts-simple/raw/master/changelog.md"
-    sha256 "37d8824943c35f21e3f0653d9c57601372741fff3ac81cd047ab3d446c5710ac"
-  end
-
   def install
     resource("sfmono").stage { buildpath.install Dir["*"] }
     resource("migu1mfonts").stage { buildpath.install Dir["*"] }
-    resource("changelog-md").stage { buildpath.install Dir["*"] }
 
     system "fontforge", "-script", buildpath/"src/generate-oblique.pe"
     system "fontforge", "-script", buildpath/"src/modify-migu1m.pe"

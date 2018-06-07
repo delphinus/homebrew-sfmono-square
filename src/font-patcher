@@ -63,7 +63,6 @@ parser.add_argument('-ext', '--extension', type=str, nargs='?', dest='extension'
 parser.add_argument('-out', '--outputdir', type=str, nargs='?', dest='outputdir', help='The directory to output the patched font file to', default=".")
 args = parser.parse_args()
 
-changelog = open("changelog.md", "r")
 minimumVersion = 20141231
 actualVersion = int(fontforge.version())
 # un-comment following line for testing invalid version error handling
@@ -184,7 +183,6 @@ projectInfo = "Patched with '" + projectName + " Patcher' (https://github.com/ry
 sourceFont.appendSFNTName('English (US)', 'Preferred Family', sourceFont.familyname)
 sourceFont.appendSFNTName('English (US)', 'Compatible Full', sourceFont.fullname)
 sourceFont.comment = projectInfo
-sourceFont.fontlog = projectInfo + "\n\n" + changelog.read()
 
 # todo version not being set for all font types (e.g. ttf)
 #print "Version was " + sourceFont.version
