@@ -17,6 +17,7 @@ for my $line (split /\n/, $old) {
         $line =~ s,[^/]+"$,v$version.tar.gz",;
         my ($url) = $line =~ /url "(.*)"/;
         $hash = cmd_out('curl', '-L', $url, '|', 'shasum', '-a256');
+        $hash =~ s/\s.*//s;
     }
     elsif ($line =~ /^  sha256/) { $line =~ s/".*"/"$hash"/ }
     elsif ($line =~ /^  version/) { $line =~ s/".*"/"$version"/ }
