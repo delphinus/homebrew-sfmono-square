@@ -34,7 +34,7 @@ cmd('git', 'push', '--tags');
     open my $out, '>', $patcher or die;
     my $hash;
     for my $line (split /\n/, $old) {
-        if ($line =~ /^version =/) { $line =~ s/'.*'/'$version'/ }
+        if ($line =~ /^version =/) { $line =~ s/'.*'/'v$version'/ }
         $out->say($line);
     }
     close $out;
