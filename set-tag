@@ -25,6 +25,7 @@ for my $line (split /\n/, $old) {
 close $out;
 cmd('git', 'add', '*');
 cmd('git', 'commit', '-m', "Bump version up to v$version");
+cmd('git', 'push', 'origin', 'master');
 
 sub cmd {
     local $, = ' ';
