@@ -28,8 +28,7 @@ except ImportError:
     sys.stderr.write(projectName + ": FontForge module could not be loaded. Try installing fontforge python bindings [e.g. on Linux Debian or Ubuntu: `sudo apt-get install fontforge python-fontforge`]\n")
     sys.exit(1)
 
-version = subprocess.check_output(
-    ['git', 'describe', '--abbrev=0', '--tags']).rstrip()
+version = 'v0.1.2018060717'
 
 # argparse stuff
 
