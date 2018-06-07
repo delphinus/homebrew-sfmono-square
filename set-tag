@@ -1,0 +1,26 @@
+#!/usr/bin/env perl
+use 5.12.0;
+use warnings;
+
+die unless defined $ARGV[0];
+my $version = "0.1.$ARGV[0]";
+my $formula = 'sfmono-square.rb';
+open my $in, '<', $formula or die;
+my $old = do { local $/; <$in> };
+close $in;
+open my $out, '>', $formula or die;
+for my $line (split /\n/, $old) {
+    $line =~ s,[^/]+"$,v$version.tar.gz", if $line =~ /^  url/;
+    $line =~ s/".*"/"$version"/ if $line =~ /^  version/;
+    $out->say($line);
+}
+close $out;
+cmd('git', 'add', '*');
+cmd('git', 'commit', '-m', "Bump version up to v$version");
+cmd('git', 'tag', "v$version");
+
+sub cmd {
+    local $, = ' ';
+    say @_;
+    system @_;
+}
