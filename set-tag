@@ -21,7 +21,7 @@ update_file($formula, sub {
     if (/^  url/) {
         s,[^/]+"$,v$version.tar.gz",;
         my ($url) = /url "(.*)"/;
-        $hash = cmd_out('curl', '-L', $url, '|', 'shasum', 'a256');
+        $hash = cmd_out('curl', '-L', $url, '|', 'shasum', '-a256');
         $hash =~ s/\s.*//s;
     }
     elsif (/^  sha256/) { s/".*"/"$hash"/ }
