@@ -83,12 +83,12 @@ while (i < SizeOf(hankaku_list))
     endloop
 
     Print("Set Hankaku width for some glyphs")
-    Select(0u25a0); Scale(65); SetWidth(1024)
-    Select(0u25a1); Scale(65); SetWidth(1024)
-    Select(0u25cb); Scale(65); SetWidth(1024)
-    Select(0u25cc); Scale(65); SetWidth(1024)
-    Select(0u25ce); Scale(65); SetWidth(1024)
-    Select(0u25cf); Scale(65); SetWidth(1024)
+    Select(0u25a0); Scale(65); Move(-512, 0); SetWidth(1024)
+    Select(0u25a1); Scale(65); Move(-512, 0); SetWidth(1024)
+    Select(0u25cb); Scale(65); Move(-512, 0); SetWidth(1024)
+    Select(0u25cc); Scale(65); Move(-512, 0); SetWidth(1024)
+    Select(0u25ce); Scale(65); Move(-512, 0); SetWidth(1024)
+    Select(0u25cf); Scale(65); Move(-512, 0); SetWidth(1024)
 
     # Move Zenkaku parenthesis glyphs
     Select(0uff08); Move( 512, 0); SetWidth(2048)
