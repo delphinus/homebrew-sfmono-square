@@ -113,6 +113,7 @@ PATCH_SET = [
     { 'Enabled': True, 'Name': "Octicons",                'Filename': "octicons.ttf",                     'Exact': False, 'SymStart': 0x2665, 'SymEnd': 0x2665, 'SrcStart': None,   'SrcEnd': None,   'ScaleGlyph': OCTI_SCALE_LIST},  # Heart
     { 'Enabled': True, 'Name': "Octicons",                'Filename': "octicons.ttf",                     'Exact': False, 'SymStart': 0X26A1, 'SymEnd': 0X26A1, 'SrcStart': None,   'SrcEnd': None,   'ScaleGlyph': OCTI_SCALE_LIST},  # Zap
     { 'Enabled': True, 'Name': "Octicons",                'Filename': "octicons.ttf",                     'Exact': False, 'SymStart': 0xF27C, 'SymEnd': 0xF27C, 'SrcStart': 0xF4A9, 'SrcEnd': 0xF4A9, 'ScaleGlyph': OCTI_SCALE_LIST},  # Desktop
+    { 'Enabled': True, 'Name': "Material",                'Filename': "materialdesignicons-webfont.ttf",  'Exact': False, 'SymStart': 0xF001, 'SymEnd': 0xF847, 'SrcStart': 0xF500, 'SrcEnd': 0xFD46, 'ScaleGlyph': None},
     { 'Enabled': True, 'Name': "Weather Icons",           'Filename': "weathericons-regular-webfont.ttf", 'Exact': False, 'SymStart': 0xF000, 'SymEnd': 0xF0EB, 'SrcStart': 0xE300, 'SrcEnd': 0xE3EB, 'ScaleGlyph': None},
 ]
 

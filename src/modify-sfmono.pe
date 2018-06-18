@@ -29,6 +29,15 @@ while (i < SizeOf(input_list))
         MergeFonts(regular_font)
     endif
 
+    # move glyphs to use these codepoints for Material fonts
+    Select(0xf6d5); Copy(); Select(0xe800); Paste()
+    Select(0xf6d6); Copy(); Select(0xe801); Paste()
+    Select(0xf6d7); Copy(); Select(0xe802); Paste()
+    Select(0xf6d8); Copy(); Select(0xe803); Paste()
+    Select(0xf8ff); Copy(); Select(0xe804); Paste()
+    Select(0xfb01); Copy(); Select(0xe805); Paste()
+    Select(0xfb02); Copy(); Select(0xe806); Paste()
+
     RoundToInt(); RemoveOverlap(); RoundToInt()
 
     Print("Clear instructions")
