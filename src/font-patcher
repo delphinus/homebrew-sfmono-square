@@ -36,7 +36,6 @@ parser = argparse.ArgumentParser(description='Nerd Fonts Font Patcher: patches a
 parser.add_argument('-v', '--version', action='version', version=projectName + ": %(prog)s ("+version+")")
 parser.add_argument('font', help='The path to the font to patch (e.g., Inconsolata.otf)')
 parser.add_argument('-q', '--quiet', '--shutup', dest='quiet', action='store_true', help='Do not generate verbose output', default=False)
-parser.add_argument('-c', '--complete', dest='complete', action='store_true', help='Add all available Glyphs', default=False)
 parser.add_argument('--square', dest='square', action='store_true', help='Use size parameters suitable for Square fonts', default=False)
 parser.add_argument('-out', '--outputdir', type=str, nargs='?', dest='outputdir', help='The directory to output the patched font file to', default=".")
 args = parser.parse_args()
@@ -51,16 +50,6 @@ if actualVersion < minimumVersion:
     print projectName + ": You seem to be using an unsupported (old) version of fontforge: " + str(actualVersion)
     print projectName + ": Please use at least version: " + str(minimumVersion)
     sys.exit(1)
-
-if args.complete:
-    args.fontawesome = True
-    args.fontawesomeextension = True
-    args.fontlinux = True
-    args.octicons = True
-    args.powersymbols = True
-    args.pomicons = True
-    args.powerline = True
-    args.powerlineextra = True
 
 sourceFont = fontforge.open(args.font)
 
