@@ -84,80 +84,6 @@ sourceFont.version = version
 
 # Supported params: overlap | careful
 
-# Powerline dividers
-SYM_ATTR_POWERLINE = {
-    'default': { 'align': 'c', 'valign': 'c', 'stretch': 'pa', 'params': '' },
-
-    # Arrow tips
-    0xe0b0: { 'align': 'l', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.02} },
-    0xe0b1: { 'align': 'l', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.02} },
-    0xe0b2: { 'align': 'r', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.02} },
-    0xe0b3: { 'align': 'r', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.02} },
-
-    # Rounded arcs
-    0xe0b4: { 'align': 'l', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.01} },
-    0xe0b5: { 'align': 'l', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.01} },
-    0xe0b6: { 'align': 'r', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.01} },
-    0xe0b7: { 'align': 'r', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.01} },
-
-    # Bottom Triangles
-    0xe0b8: { 'align': 'l', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.02} },
-    0xe0b9: { 'align': 'l', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.02} },
-    0xe0ba: { 'align': 'r', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.02} },
-    0xe0bb: { 'align': 'r', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.02} },
-
-    # Top Triangles
-    0xe0bc: { 'align': 'l', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.02} },
-    0xe0bd: { 'align': 'l', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.02} },
-    0xe0be: { 'align': 'r', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.02} },
-    0xe0bf: { 'align': 'r', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.02} },
-
-    # Flames
-    0xe0c0: { 'align': 'l', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.01} },
-    0xe0c1: { 'align': 'l', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.01} },
-    0xe0c2: { 'align': 'r', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.01} },
-    0xe0c3: { 'align': 'r', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.01} },
-
-    # Small squares
-    0xe0c4: { 'align': 'l', 'valign': 'c', 'stretch': 'xy', 'params': '' },
-    0xe0c5: { 'align': 'r', 'valign': 'c', 'stretch': 'xy', 'params': '' },
-
-    # Bigger squares
-    0xe0c6: { 'align': 'l', 'valign': 'c', 'stretch': 'xy', 'params': '' },
-    0xe0c7: { 'align': 'r', 'valign': 'c', 'stretch': 'xy', 'params': '' },
-
-    # Waveform
-    0xe0c8: { 'align': 'l', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.01} },
-
-    # Hexagons
-    0xe0cc: { 'align': 'l', 'valign': 'c', 'stretch': 'xy', 'params': '' },
-    0xe0cd: { 'align': 'l', 'valign': 'c', 'stretch': 'xy', 'params': '' },
-
-    # Legos
-    0xe0ce: { 'align': 'l', 'valign': 'c', 'stretch': 'xy', 'params': '' },
-    0xe0cf: { 'align': 'c', 'valign': 'c', 'stretch': 'xy', 'params': '' },
-    0xe0d1: { 'align': 'l', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.02} },
-
-    # Top and bottom trapezoid
-    0xe0d2: { 'align': 'l', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.02} },
-    0xe0d4: { 'align': 'r', 'valign': 'c', 'stretch': 'xy', 'params': {'overlap':0.02} },
-}
-
-SYM_ATTR_DEFAULT = {
-    # 'pa' == preserve aspect ratio
-    'default': { 'align': 'c', 'valign': 'c', 'stretch': 'pa', 'params': '' },
-}
-
-SYM_ATTR_FONTA = {
-    # 'pa' == preserve aspect ratio
-    'default': { 'align': 'c', 'valign': 'c', 'stretch': 'pa', 'params': '' },
-
-    # Don't center these arrows vertically
-    0xf0dc: { 'align': 'c', 'valign': '', 'stretch': 'pa', 'params': '' },
-    0xf0dd: { 'align': 'c', 'valign': '', 'stretch': 'pa', 'params': '' },
-    0xf0de: { 'align': 'c', 'valign': '', 'stretch': 'pa', 'params': '' },
-}
-
 # Most glyphs we want to maximize during the scale.  However, there are some
 # that need to be small or stay relative in size to each other.
 # The following list are those glyphs.  A tuple represents a range.
@@ -169,23 +95,23 @@ OCTI_SCALE_LIST  = { 'ScaleGlyph': 0xF02E, 'GlyphsToScale': [ (0xf03d, 0xf040), 
 # Symbol font ranges
 
 PATCH_SET = [
-    { 'Enabled': True,                      'Name': "Seti-UI + Custom", 'Filename': "original-source.otf",         'Exact': False,'SymStart': 0xE4FA, 'SymEnd': 0xE52B, 'SrcStart': 0xE5FA,'SrcEnd': 0xE62B,'ScaleGlyph': None,  'Attributes': SYM_ATTR_DEFAULT },
-    { 'Enabled': True,                      'Name': "Devicons", 'Filename': "devicons.ttf",                'Exact': False,'SymStart': 0xE600, 'SymEnd': 0xE6C5, 'SrcStart': 0xE700,'SrcEnd': 0xE7C5,'ScaleGlyph': DEVI_SCALE_LIST,'Attributes': SYM_ATTR_DEFAULT },
-    { 'Enabled': True,            'Name': "Powerline Symbols", 'Filename': "PowerlineSymbols.otf",        'Exact': True, 'SymStart': 0xE0A0, 'SymEnd': 0xE0A2, 'SrcStart': None,  'SrcEnd': None,  'ScaleGlyph': None,  'Attributes': SYM_ATTR_POWERLINE },
-    { 'Enabled': True,            'Name': "Powerline Symbols", 'Filename': "PowerlineSymbols.otf",        'Exact': True, 'SymStart': 0xE0B0, 'SymEnd': 0xE0B3, 'SrcStart': None,  'SrcEnd': None,  'ScaleGlyph': None,  'Attributes': SYM_ATTR_POWERLINE },
-    { 'Enabled': True,       'Name': "Powerline Extra Symbols", 'Filename': "PowerlineExtraSymbols.otf",   'Exact': True, 'SymStart': 0xE0A3, 'SymEnd': 0xE0A3, 'SrcStart': None,  'SrcEnd': None,  'ScaleGlyph': None,  'Attributes': SYM_ATTR_POWERLINE },
-    { 'Enabled': True,       'Name': "Powerline Extra Symbols", 'Filename': "PowerlineExtraSymbols.otf",   'Exact': True, 'SymStart': 0xE0B4, 'SymEnd': 0xE0C8, 'SrcStart': None,  'SrcEnd': None,  'ScaleGlyph': None,  'Attributes': SYM_ATTR_POWERLINE },
-    { 'Enabled': True,       'Name': "Powerline Extra Symobls", 'Filename': "PowerlineExtraSymbols.otf",   'Exact': True, 'SymStart': 0xE0CC, 'SymEnd': 0xE0D4, 'SrcStart': None,  'SrcEnd': None,  'ScaleGlyph': None,  'Attributes': SYM_ATTR_POWERLINE },
-    { 'Enabled': True,             'Name': "Pomicons", 'Filename': "Pomicons.otf",                'Exact': True, 'SymStart': 0xE000, 'SymEnd': 0xE00A, 'SrcStart': None,  'SrcEnd': None,  'ScaleGlyph': None,  'Attributes': SYM_ATTR_DEFAULT  },
-    { 'Enabled': True,          'Name': "Font Awesome", 'Filename': "FontAwesome.otf",             'Exact': True, 'SymStart': 0xF000, 'SymEnd': 0xF2E0, 'SrcStart': None,  'SrcEnd': None,  'ScaleGlyph': FONTA_SCALE_LIST,'Attributes': SYM_ATTR_FONTA },
-    { 'Enabled': True, 'Name': "Font Awesome Extension", 'Filename': "font-awesome-extension.ttf",  'Exact': False, 'SymStart': 0xE000, 'SymEnd': 0xE0A9, 'SrcStart': 0xE200,  'SrcEnd': 0xE2A9,  'ScaleGlyph': None, 'Attributes': SYM_ATTR_DEFAULT }, # Maximize
-    { 'Enabled': True,            'Name': "Font Linux", 'Filename': "font-linux.ttf",              'Exact': False, 'SymStart': 0xF100, 'SymEnd': 0xF115, 'SrcStart': 0xF300, 'SrcEnd': 0xF315, 'ScaleGlyph': None, 'Attributes': SYM_ATTR_DEFAULT },
-    { 'Enabled': True,         'Name': "Power Symbols", 'Filename': "Unicode_IEC_symbol_font.otf", 'Exact': True, 'SymStart': 0x23FB, 'SymEnd': 0x23FE, 'SrcStart': None,  'SrcEnd': None,  'ScaleGlyph': None,  'Attributes': SYM_ATTR_DEFAULT  }, # Power, Power On/Off, Power On, Sleep
-    { 'Enabled': True,         'Name': "Power Symbols", 'Filename': "Unicode_IEC_symbol_font.otf", 'Exact': True, 'SymStart': 0x2B58, 'SymEnd': 0x2B58, 'SrcStart': None,  'SrcEnd': None,  'ScaleGlyph': None,  'Attributes': SYM_ATTR_DEFAULT  }, # Heavy Circle (aka Power Off)
-    { 'Enabled': True,             'Name': "Octions", 'Filename': "octicons.ttf",                'Exact': False,  'SymStart': 0xF000, 'SymEnd': 0xF105, 'SrcStart': 0xF400, 'SrcEnd': 0xF505, 'ScaleGlyph': OCTI_SCALE_LIST, 'Attributes': SYM_ATTR_DEFAULT },  # Magnifying glass
-    { 'Enabled': True,             'Name': "Octicons", 'Filename': "octicons.ttf",                'Exact': False,  'SymStart': 0x2665, 'SymEnd': 0x2665, 'SrcStart': None, 'SrcEnd': None, 'ScaleGlyph': OCTI_SCALE_LIST, 'Attributes': SYM_ATTR_DEFAULT },  # Heart
-    { 'Enabled': True,             'Name': "Octicons", 'Filename': "octicons.ttf",                'Exact': False,  'SymStart': 0X26A1, 'SymEnd': 0X26A1, 'SrcStart': None, 'SrcEnd': None, 'ScaleGlyph': OCTI_SCALE_LIST, 'Attributes': SYM_ATTR_DEFAULT },  # Zap
-    { 'Enabled': True,             'Name': "Octicons", 'Filename': "octicons.ttf",                'Exact': False,  'SymStart': 0xF27C, 'SymEnd': 0xF27C, 'SrcStart': 0xF67C, 'SrcEnd': 0xF67C, 'ScaleGlyph': OCTI_SCALE_LIST, 'Attributes': SYM_ATTR_DEFAULT },  # Desktop
+    { 'Enabled': True,                      'Name': "Seti-UI + Custom", 'Filename': "original-source.otf",         'Exact': False,'SymStart': 0xE4FA, 'SymEnd': 0xE52B, 'SrcStart': 0xE5FA,'SrcEnd': 0xE62B,'ScaleGlyph': None},
+    { 'Enabled': True,                      'Name': "Devicons", 'Filename': "devicons.ttf",                'Exact': False,'SymStart': 0xE600, 'SymEnd': 0xE6C5, 'SrcStart': 0xE700,'SrcEnd': 0xE7C5,'ScaleGlyph': DEVI_SCALE_LIST},
+    { 'Enabled': True,            'Name': "Powerline Symbols", 'Filename': "PowerlineSymbols.otf",        'Exact': True, 'SymStart': 0xE0A0, 'SymEnd': 0xE0A2, 'SrcStart': None,  'SrcEnd': None,  'ScaleGlyph': None},
+    { 'Enabled': True,            'Name': "Powerline Symbols", 'Filename': "PowerlineSymbols.otf",        'Exact': True, 'SymStart': 0xE0B0, 'SymEnd': 0xE0B3, 'SrcStart': None,  'SrcEnd': None,  'ScaleGlyph': None},
+    { 'Enabled': True,       'Name': "Powerline Extra Symbols", 'Filename': "PowerlineExtraSymbols.otf",   'Exact': True, 'SymStart': 0xE0A3, 'SymEnd': 0xE0A3, 'SrcStart': None,  'SrcEnd': None,  'ScaleGlyph': None},
+    { 'Enabled': True,       'Name': "Powerline Extra Symbols", 'Filename': "PowerlineExtraSymbols.otf",   'Exact': True, 'SymStart': 0xE0B4, 'SymEnd': 0xE0C8, 'SrcStart': None,  'SrcEnd': None,  'ScaleGlyph': None},
+    { 'Enabled': True,       'Name': "Powerline Extra Symobls", 'Filename': "PowerlineExtraSymbols.otf",   'Exact': True, 'SymStart': 0xE0CC, 'SymEnd': 0xE0D4, 'SrcStart': None,  'SrcEnd': None,  'ScaleGlyph': None},
+    { 'Enabled': True,             'Name': "Pomicons", 'Filename': "Pomicons.otf",                'Exact': True, 'SymStart': 0xE000, 'SymEnd': 0xE00A, 'SrcStart': None,  'SrcEnd': None,  'ScaleGlyph': None},
+    { 'Enabled': True,          'Name': "Font Awesome", 'Filename': "FontAwesome.otf",             'Exact': True, 'SymStart': 0xF000, 'SymEnd': 0xF2E0, 'SrcStart': None,  'SrcEnd': None,  'ScaleGlyph': FONTA_SCALE_LIST}, # Maximize
+    { 'Enabled': True, 'Name': "Font Awesome Extension", 'Filename': "font-awesome-extension.ttf",  'Exact': False, 'SymStart': 0xE000, 'SymEnd': 0xE0A9, 'SrcStart': 0xE200,  'SrcEnd': 0xE2A9,  'ScaleGlyph': None},
+    { 'Enabled': True,            'Name': "Font Linux", 'Filename': "font-linux.ttf",              'Exact': False, 'SymStart': 0xF100, 'SymEnd': 0xF115, 'SrcStart': 0xF300, 'SrcEnd': 0xF315, 'ScaleGlyph': None}, # Power, Power On/Off, Power On, Sleep
+    { 'Enabled': True,         'Name': "Power Symbols", 'Filename': "Unicode_IEC_symbol_font.otf", 'Exact': True, 'SymStart': 0x23FB, 'SymEnd': 0x23FE, 'SrcStart': None,  'SrcEnd': None,  'ScaleGlyph': None}, # Heavy Circle (aka Power Off)
+    { 'Enabled': True,         'Name': "Power Symbols", 'Filename': "Unicode_IEC_symbol_font.otf", 'Exact': True, 'SymStart': 0x2B58, 'SymEnd': 0x2B58, 'SrcStart': None,  'SrcEnd': None,  'ScaleGlyph': None},
+    { 'Enabled': True,             'Name': "Octions", 'Filename': "octicons.ttf",                'Exact': False,  'SymStart': 0xF000, 'SymEnd': 0xF105, 'SrcStart': 0xF400, 'SrcEnd': 0xF505, 'ScaleGlyph': OCTI_SCALE_LIST}, # Magnifying glass
+    { 'Enabled': True,             'Name': "Octicons", 'Filename': "octicons.ttf",                'Exact': False,  'SymStart': 0x2665, 'SymEnd': 0x2665, 'SrcStart': None, 'SrcEnd': None, 'ScaleGlyph': OCTI_SCALE_LIST}, # Heart
+    { 'Enabled': True,             'Name': "Octicons", 'Filename': "octicons.ttf",                'Exact': False,  'SymStart': 0X26A1, 'SymEnd': 0X26A1, 'SrcStart': None, 'SrcEnd': None, 'ScaleGlyph': OCTI_SCALE_LIST}, # Zap
+    { 'Enabled': True,             'Name': "Octicons", 'Filename': "octicons.ttf",                'Exact': False,  'SymStart': 0xF27C, 'SymEnd': 0xF27C, 'SrcStart': 0xF67C, 'SrcEnd': 0xF67C, 'ScaleGlyph': OCTI_SCALE_LIST}, # Desktop
 ]
 
 # win_ascent and win_descent are used to set the line height for windows fonts.
@@ -274,7 +200,7 @@ def use_scale_glyph( unicode_value, glyph_list ):
                 return True
     return False
 
-def copy_glyphs(sourceFont, sourceFontStart, sourceFontEnd, symbolFont, symbolFontStart, symbolFontEnd, exactEncoding, scaleGlyph, attributes):
+def copy_glyphs(sourceFont, sourceFontStart, sourceFontEnd, symbolFont, symbolFontStart, symbolFontEnd, exactEncoding, scaleGlyph):
 
     progressText = ''
 
@@ -379,11 +305,6 @@ def copy_glyphs(sourceFont, sourceFontStart, sourceFontEnd, symbolFont, symbolFo
 
         index = max(1, index)
 
-        try:
-            sym_attr = attributes[sym_glyph.unicode]
-        except KeyError:
-            sym_attr = attributes['default']
-
         if exactEncoding:
             # use the exact same hex values for the source font as for the symbol font
             currentSourceFontGlyph = sym_glyph.encoding
@@ -462,7 +383,7 @@ for patch in PATCH_SET:
         if args.quiet == False:
             sys.stdout.write("Adding " + str(max(1, patch['SymEnd']-patch['SymStart'])) + " Glyphs from " + patch['Name'] + " Set \n")
 
-        copy_glyphs(sourceFont, SrcStart, SrcEnd, symfont, patch['SymStart'], patch['SymEnd'],  patch['Exact'], patch['ScaleGlyph'], patch['Attributes'])
+        copy_glyphs(sourceFont, SrcStart, SrcEnd, symfont, patch['SymStart'], patch['SymEnd'],  patch['Exact'], patch['ScaleGlyph'])
 
 if symfont:
     symfont.close()
