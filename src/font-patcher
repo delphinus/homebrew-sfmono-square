@@ -203,7 +203,7 @@ def use_scale_glyph( unicode_value, glyph_list ):
                 return True
     return False
 
-def copy_glyphs(sourceFont, sourceFontStart, sourceFontEnd, symbolFont, symbolFontStart, symbolFontEnd, exactEncoding, scaleGlyph):
+def copy_glyphs(sourceFont, name, sourceFontStart, sourceFontEnd, symbolFont, symbolFontStart, symbolFontEnd, exactEncoding, scaleGlyph):
 
     progressText = ''
 
@@ -235,7 +235,7 @@ def copy_glyphs(sourceFont, sourceFontStart, sourceFontEnd, symbolFont, symbolFo
     x_diff = 0
     y_diff = 0
 
-    if symbolFontStart == 0xe600: # devicons
+    if name == 'Devicons'
         if args.square:
             x_ratio = 1.05
             y_ratio = 1.05
@@ -246,7 +246,7 @@ def copy_glyphs(sourceFont, sourceFontStart, sourceFontEnd, symbolFont, symbolFo
             y_ratio = 1.3
             x_diff = -150
             y_diff = -150
-    elif symbolFontStart in [0xe0a0, 0xe0b0, 0xe0a3, 0xe0b4, 0xe0cc]: # powerline (extra)
+    elif name in ['Powerline Symbols', 'Powerline Extra Symbols']:
         # for Iosevka
         # x_ratio = 0.96
         # y_ratio = 1.10
@@ -264,16 +264,15 @@ def copy_glyphs(sourceFont, sourceFontStart, sourceFontEnd, symbolFont, symbolFo
             x_diff = 0
             y_diff = -45
 
-    elif symbolFontStart == 0xf100:  # font-linux
+    elif name == 'Font Linux':
         if args.square:
             y_diff = -120
 
-    # font-awesome-extension
-    elif symbolFontStart == 0xe000 and sourceFontStart == 0xe200:
+    elif name == 'Font Awesome Extension':
         if args.square:
             y_diff = -400
 
-    elif symbolFontStart == 0xe000 and sourceFontStart is None: # pomicons
+    elif name == 'Pomicons':
         if args.square:
             x_ratio = 1.2
             y_ratio = 1.2
@@ -285,7 +284,7 @@ def copy_glyphs(sourceFont, sourceFontStart, sourceFontEnd, symbolFont, symbolFo
             x_diff = 0
             y_diff = -200
 
-    elif symbolFontStart in [0xf000, 0x2665, 0x26a1, 0xf27c]: # octicons
+    elif name == 'Octicons':
         if args.square:
             x_ratio = 0.95
             y_ratio = 0.95
@@ -386,7 +385,7 @@ for patch in PATCH_SET:
         if args.quiet == False:
             sys.stdout.write("Adding " + str(max(1, patch['SymEnd']-patch['SymStart'])) + " Glyphs from " + patch['Name'] + " Set \n")
 
-        copy_glyphs(sourceFont, SrcStart, SrcEnd, symfont, patch['SymStart'], patch['SymEnd'],  patch['Exact'], patch['ScaleGlyph'])
+        copy_glyphs(sourceFont, patch['Name'], SrcStart, SrcEnd, symfont, patch['SymStart'], patch['SymEnd'],  patch['Exact'], patch['ScaleGlyph'])
 
 if symfont:
     symfont.close()
