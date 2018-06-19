@@ -235,7 +235,7 @@ def copy_glyphs(sourceFont, name, sourceFontStart, sourceFontEnd, symbolFont, sy
     x_diff = 0
     y_diff = 0
 
-    if name == 'Devicons'
+    if name == 'Devicons':
         if args.square:
             x_ratio = 1.05
             y_ratio = 1.05
