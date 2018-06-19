@@ -276,6 +276,12 @@ def copy_glyphs(sourceFont, name, sourceFontStart, sourceFontEnd, symbolFont, sy
             x_diff = 80
             y_diff = 35
 
+    elif name == 'Material':
+        x_ratio = 1.1
+        y_ratio = 1.1
+        x_diff = -50
+        y_diff = -250
+
     scale = psMat.scale(x_ratio, y_ratio)
     translate = psMat.translate(x_diff, y_diff)
     transform = psMat.compose(scale, translate)
