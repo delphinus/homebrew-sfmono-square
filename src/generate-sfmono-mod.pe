@@ -8,11 +8,11 @@ hankaku = $argv[1]
 zenkaku = $argv[2]
 fontstyle = $argv[3]
 filename_fontstyle = $argv[4]
+fontweight = $argv[5]
+panose_weight = $argv[6]
+panose_letterform = $argv[7]
 fontfamily        = "SFMono"
 fontfamilysuffix  = "Square"
-fontweight_list   = [400, 700, 400, 700]
-panose_weight_list = [5, 8, 5, 8]
-panose_letterform_list = [2, 2, 9, 9]
 copyright         = ""
 vendor_id = "APPL"
 version           = "v0.1.0"
@@ -32,7 +32,7 @@ SetFontNames(fontfamily + fontfamilysuffix + "-" + filename_fontstyle, \
 SetTTFName(0x409, 2, fontstyle)
 SetTTFName(0x409, 3, "FontForge 2.0 : " + $fullname + " : " + Strftime("%d-%m-%Y", 0))
 ScaleToEm(1638, 410)
-SetOS2Value("Weight",               fontweight_list[i]) # Book or Bold
+SetOS2Value("Weight",               fontweight) # Book or Bold
 SetOS2Value("Width",                5) # Medium
 SetOS2Value("FSType",               0)
 SetOS2Value("VendorID",             vendor_id)
@@ -51,7 +51,7 @@ SetOS2Value("TypoLineGap",          0)
 SetOS2Value("HHeadAscent",          1638)
 SetOS2Value("HHeadDescent",         -410)
 SetOS2Value("HHeadLineGap",         0)
-SetPanose([2, 11, panose_weight_list[i], 9, 2, 2, 3, panose_letterform_list[i], 2, 7])
+SetPanose([2, 11, panose_weight, 9, 2, 2, 3, panose_letterform, 2, 7])
 
 # Merge Inconsolata with Migu 1M
 Print("Merge " + hankaku:t + " with " + zenkaku:t)

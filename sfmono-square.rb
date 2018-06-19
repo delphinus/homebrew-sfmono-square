@@ -47,12 +47,12 @@ class SfmonoSquare < Formula
       "SFMono-BoldItalic.otf",    "SFMonoSquare-BoldItalic.otf",
     )
     system(
-      "parallel", "-N4", "fontforge", "-script", buildpath/"src/generate-sfmono-mod.pe",
+      "parallel", "-N7", "fontforge", "-script", buildpath/"src/generate-sfmono-mod.pe",
       ":::",
-      "SFMonoSquare-Regular.otf",       "modified-migu-1m-regular.ttf",      "Regular",     "Regular",
-      "SFMonoSquare-Bold.otf",          "modified-migu-1m-bold.ttf",         "Bold",        "Bold",
-      "SFMonoSquare-RegularItalic.otf", "modified-migu-1m-oblique.ttf",      "Italic",      "RegularItalic",
-      "SFMonoSquare-BoldItalic.otf",    "modified-migu-1m-bold-oblique.ttf", "Bold Italic", "BoldItalic",
+      "SFMonoSquare-Regular.otf",       "modified-migu-1m-regular.ttf",      "Regular",     "Regular",       400, 5, 2,
+      "SFMonoSquare-Bold.otf",          "modified-migu-1m-bold.ttf",         "Bold",        "Bold",          700, 8, 2,
+      "SFMonoSquare-RegularItalic.otf", "modified-migu-1m-oblique.ttf",      "Italic",      "RegularItalic", 400, 5, 9,
+      "SFMonoSquare-BoldItalic.otf",    "modified-migu-1m-bold-oblique.ttf", "Bold Italic", "BoldItalic",    700, 8, 9,
     )
     otfs = Dir[
       "SFMonoSquare-Regular.otf",
