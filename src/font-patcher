@@ -208,7 +208,13 @@ def copy_glyphs(sourceFont, name, sourceFontStart, sourceFontEnd, symbolFont, sy
     x_diff = 0
     y_diff = 0
 
-    if name == 'Devicons':
+    if name == 'Seti-UI + Custom':
+        x_ratio = 1.1
+        y_ratio = 1.1
+        x_diff = -100
+        y_diff = -450
+
+    elif name == 'Devicons':
         if args.square:
             x_ratio = 1.05
             y_ratio = 1.05
@@ -219,6 +225,7 @@ def copy_glyphs(sourceFont, name, sourceFontStart, sourceFontEnd, symbolFont, sy
             y_ratio = 1.3
             x_diff = -150
             y_diff = -150
+
     elif name in ['Powerline Symbols', 'Powerline Extra Symbols']:
         # for Iosevka
         # x_ratio = 0.96
