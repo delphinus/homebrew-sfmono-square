@@ -6,7 +6,7 @@ Print("Generate SFMono Square")
 # Set parameters
 hankaku = $argv[1]
 zenkaku = $argv[2]
-fontstyle_list = $argv[3]
+fontstyle = $argv[3]
 filename_fontstyle = $argv[4]
 fontfamily        = "SFMono"
 fontfamilysuffix  = "Square"
