@@ -46,9 +46,6 @@ parser.add_argument('-q', '--quiet', '--shutup', dest='quiet',
                     action='store_true',
                     help='Do not generate verbose output',
                     default=False)
-parser.add_argument('--square', dest='square', action='store_true',
-                    help='Use size parameters suitable for Square fonts',
-                    default=False)
 parser.add_argument('-out', '--outputdir', type=str, nargs='?',
                     dest='outputdir',
                     help='The directory to output the patched font file to',
@@ -215,16 +212,10 @@ def copy_glyphs(sourceFont, name, sourceFontStart, sourceFontEnd, symbolFont, sy
         y_diff = -450
 
     elif name == 'Devicons':
-        if args.square:
-            x_ratio = 1.05
-            y_ratio = 1.05
-            x_diff = -100
-            y_diff = -250
-        else:
-            x_ratio = 1.3
-            y_ratio = 1.3
-            x_diff = -150
-            y_diff = -150
+        x_ratio = 1.05
+        y_ratio = 1.05
+        x_diff = -100
+        y_diff = -250
 
     elif name in ['Powerline Symbols', 'Powerline Extra Symbols']:
         # for Iosevka
@@ -233,48 +224,28 @@ def copy_glyphs(sourceFont, name, sourceFontStart, sourceFontEnd, symbolFont, sy
         # x_diff = 0
         # y_diff = 20
         # for SF Mono 13pt
-        if args.square:
-            x_ratio = 0.95
-            y_ratio = 0.88
-            x_diff = 0
-            y_diff = -30
-        else:
-            x_ratio = 1.20
-            y_ratio = 1.08
-            x_diff = 0
-            y_diff = -45
+        x_ratio = 0.95
+        y_ratio = 0.88
+        x_diff = 0
+        y_diff = -30
 
     elif name == 'Font Linux':
-        if args.square:
-            y_diff = -120
+        y_diff = -120
 
     elif name == 'Font Awesome Extension':
-        if args.square:
-            y_diff = -400
+        y_diff = -400
 
     elif name == 'Pomicons':
-        if args.square:
-            x_ratio = 1.2
-            y_ratio = 1.2
-            x_diff = -200
-            y_diff = -300
-        else:
-            x_ratio = 1.3
-            y_ratio = 1.3
-            x_diff = 0
-            y_diff = -200
+        x_ratio = 1.2
+        y_ratio = 1.2
+        x_diff = -200
+        y_diff = -300
 
     elif name == 'Octicons':
-        if args.square:
-            x_ratio = 0.95
-            y_ratio = 0.95
-            x_diff = 30
-            y_diff = -100
-        else:
-            x_ratio = 1.1
-            y_ratio = 1.1
-            x_diff = 80
-            y_diff = 35
+        x_ratio = 0.95
+        y_ratio = 0.95
+        x_diff = 30
+        y_diff = -100
 
     elif name == 'Material':
         x_ratio = 1.1

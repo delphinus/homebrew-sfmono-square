@@ -63,7 +63,7 @@ class SfmonoSquare < Formula
     ].map { |f| buildpath/f }
     system(
       "parallel", "fontforge", "-lang=py", "-script",
-      buildpath/"src/font-patcher", "-q", "-out", "build", "--square",
+      buildpath/"src/font-patcher", "-q", "-out", "build",
       ":::",
       *otfs,
     )
