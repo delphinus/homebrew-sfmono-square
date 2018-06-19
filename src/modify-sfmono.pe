@@ -2,54 +2,49 @@
 
 Print("Generate modified SF Mono")
 
-input_list  = ["SFMono-Regular.otf", "SFMono-Bold.otf", "SFMono-RegularItalic.otf", "SFMono-BoldItalic.otf"]
-output_list  = ["SFMonoSquare-Regular.otf", "SFMonoSquare-Bold.otf", "SFMonoSquare-RegularItalic.otf", "SFMonoSquare-BoldItalic.otf"]
+input = $argv[1]
+output = $argv[2]
 
-i = 0
-while (i < SizeOf(input_list))
-    Print("Open " + input_list[i])
-    Open(input_list[i])
-    SelectWorthOutputting()
-    UnlinkReference()
+Print("Open " + input)
+Open(input)
+SelectWorthOutputting()
+UnlinkReference()
 
-    # Scale down all glyphs
-    Print("Scale down all glyphs")
-    SelectWorthOutputting()
-    Scale(80.8847, 0, 0)
-    SetWidth(1024)
+# Scale down all glyphs
+Print("Scale down all glyphs")
+SelectWorthOutputting()
+Scale(80.8847, 0, 0)
+SetWidth(1024)
 
-    # copy lacked glyphs from regular fonts to italic ones
-    regular_font = ""
-    if (input_list[i] == "SFMono-RegularItalic.otf")
-        regular_font = "SFMono-Regular.otf"
-    elseif (input_list[i] == "SFMono-BoldItalic.otf")
-        regular_font = "SFMono-Bold.otf"
-    endif
-    if (regular_font != "")
-        MergeFonts(regular_font)
-    endif
+# copy lacked glyphs from regular fonts to italic ones
+regular_font = ""
+if (input == "SFMono-RegularItalic.otf")
+    regular_font = "SFMono-Regular.otf"
+elseif (input == "SFMono-BoldItalic.otf")
+    regular_font = "SFMono-Bold.otf"
+endif
+if (regular_font != "")
+    MergeFonts(regular_font)
+endif
 
-    # move glyphs to use these codepoints for Material fonts
-    Select(0xf6d5); Copy(); Select(0xe800); Paste()
-    Select(0xf6d6); Copy(); Select(0xe801); Paste()
-    Select(0xf6d7); Copy(); Select(0xe802); Paste()
-    Select(0xf6d8); Copy(); Select(0xe803); Paste()
-    Select(0xf8ff); Copy(); Select(0xe804); Paste()
-    Select(0xfb01); Copy(); Select(0xe805); Paste()
-    Select(0xfb02); Copy(); Select(0xe806); Paste()
+# move glyphs to use these codepoints for Material fonts
+Select(0xf6d5); Copy(); Select(0xe800); Paste()
+Select(0xf6d6); Copy(); Select(0xe801); Paste()
+Select(0xf6d7); Copy(); Select(0xe802); Paste()
+Select(0xf6d8); Copy(); Select(0xe803); Paste()
+Select(0xf8ff); Copy(); Select(0xe804); Paste()
+Select(0xfb01); Copy(); Select(0xe805); Paste()
+Select(0xfb02); Copy(); Select(0xe806); Paste()
 
-    RoundToInt(); RemoveOverlap(); RoundToInt()
+RoundToInt(); RemoveOverlap(); RoundToInt()
 
-    Print("Clear instructions")
-    SelectWorthOutputting()
-    ClearInstrs()
+Print("Clear instructions")
+SelectWorthOutputting()
+ClearInstrs()
 
-    Print("Save " + output_list[i])
-    Save(output_list[i])
-    Close()
-
-    i += 1
-endloop
+Print("Save " + output)
+Save(output)
+Close()
 
 Quit()
 

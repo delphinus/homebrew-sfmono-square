@@ -2,46 +2,41 @@
 
 Print("Generate modified Migu 1M")
 
-input_list  = ["migu-1m-regular.ttf", "migu-1m-bold.ttf", "migu-1m-oblique.ttf", "migu-1m-bold-oblique.ttf"]
-output_list  = ["modified-migu-1m-regular.ttf", "modified-migu-1m-bold.ttf", "modified-migu-1m-oblique.ttf", "modified-migu-1m-bold-oblique.ttf"]
+input = $argv[1]
+output = $argv[2]
 
-i = 0
-while (i < SizeOf(input_list))
-    Print("Open " + input_list[i])
-    Open(input_list[i])
-    SelectWorthOutputting()
-    UnlinkReference()
-    ScaleToEm(1638, 410)
+Print("Open " + input)
+Open(input)
+SelectWorthOutputting()
+UnlinkReference()
+ScaleToEm(1638, 410)
 
-    # Move to fit new scale proportion
-    Print("Move to fit new scale proportion (it may take a few minutes)")
-    SelectWorthOutputting()
-    Move(0, -146.72)
-    Print("Scale down to fit alphabets")
-    Scale(82)
-    SetWidth(2048)
+# Move to fit new scale proportion
+Print("Move to fit new scale proportion (it may take a few minutes)")
+SelectWorthOutputting()
+Move(0, -146.72)
+Print("Scale down to fit alphabets")
+Scale(82)
+SetWidth(2048)
 
-    # Set Hankaku width to Hankaku Kana
-    Print("Set Hankaku width to Hankaku Kana")
-    j = 0uff60
-    while (j <= 0uff9f)
-        j += 1
-        Select(j)
-        SetWidth(1024)
-    endloop
-
-    RoundToInt(); RemoveOverlap(); RoundToInt()
-
-    Print("Clear instructions")
-    SelectWorthOutputting()
-    ClearInstrs()
-
-    Print("Save " + output_list[i])
-    Save(output_list[i])
-    Close()
-
-    i += 1
+# Set Hankaku width to Hankaku Kana
+Print("Set Hankaku width to Hankaku Kana")
+j = 0uff60
+while (j <= 0uff9f)
+    j += 1
+    Select(j)
+    SetWidth(1024)
 endloop
+
+RoundToInt(); RemoveOverlap(); RoundToInt()
+
+Print("Clear instructions")
+SelectWorthOutputting()
+ClearInstrs()
+
+Print("Save " + output)
+Save(output)
+Close()
 
 Quit()
 
