@@ -228,7 +228,8 @@ def main():
     zenkaku_glyphs(font)
     hankaku_glyphs(font)
     font.selection.all()
-    font.removeOverlap()
+    # TODO: remove this to avoid sementation fault
+    # font.removeOverlap()
     font.autoHint()
     font.autoInstr()
     print('Generate ' + opts['out_file'])
