@@ -45,10 +45,10 @@ class SfmonoSquare < Formula
     system(
       "parallel", "-N2", "fontforge", "-script", buildpath/"src/generate-sfmono-mod",
       ":::",
-      "modified-SFMonoSquare-Regular.otf",       "modified-migu-1m-regular.ttf",
-      "modified-SFMonoSquare-Bold.otf",          "modified-migu-1m-bold.ttf",
-      "modified-SFMonoSquare-RegularItalic.otf", "modified-migu-1m-oblique.ttf",
-      "modified-SFMonoSquare-BoldItalic.otf",    "modified-migu-1m-bold-oblique.ttf",
+      "modified-SFMono-Regular.otf",       "modified-migu-1m-regular.ttf",
+      "modified-SFMono-Bold.otf",          "modified-migu-1m-bold.ttf",
+      "modified-SFMono-RegularItalic.otf", "modified-migu-1m-oblique.ttf",
+      "modified-SFMono-BoldItalic.otf",    "modified-migu-1m-bold-oblique.ttf",
     )
     otfs = Dir[
       "SFMonoSquare-Regular.otf",
