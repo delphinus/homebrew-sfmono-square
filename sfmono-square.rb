@@ -26,34 +26,29 @@ class SfmonoSquare < Formula
 
     # generate-oblique
     system(
-      "parallel", "-N3", "fontforge", "-script", buildpath/"src/generate-oblique.pe",
+      "parallel", "fontforge", "-script", buildpath/"src/generate-oblique",
       ":::",
-      "migu-1m-regular.ttf", "Regular", "regular",
-      "migu-1m-bold.ttf",    "Bold",    "bold",
+      "migu-1m-regular.ttf", "migu-1m-bold.ttf",
     )
     system(
-      "parallel", "-N2", "fontforge", "-script", buildpath/"src/modify-migu1m.pe",
+      "parallel", "fontforge", "-script", buildpath/"src/modify-migu1m",
       ":::",
-      "migu-1m-regular.ttf",      "modified-migu-1m-regular.ttf",
-      "migu-1m-bold.ttf",         "modified-migu-1m-bold.ttf",
-      "migu-1m-oblique.ttf",      "modified-migu-1m-oblique.ttf",
-      "migu-1m-bold-oblique.ttf", "modified-migu-1m-bold-oblique.ttf",
+      "migu-1m-regular.ttf", "migu-1m-bold.ttf",
+      "migu-1m-oblique.ttf", "migu-1m-bold-oblique.ttf",
     )
     system(
-      "parallel", "-N2", "fontforge", "-script", buildpath/"src/modify-sfmono.pe",
+      "parallel", "fontforge", "-script", buildpath/"src/modify-sfmono",
       ":::",
-      "SFMono-Regular.otf",       "SFMonoSquare-Regular.otf",
-      "SFMono-Bold.otf",          "SFMonoSquare-Bold.otf",
-      "SFMono-RegularItalic.otf", "SFMonoSquare-RegularItalic.otf",
-      "SFMono-BoldItalic.otf",    "SFMonoSquare-BoldItalic.otf",
+      "SFMono-Regular.otf", "SFMono-Bold.otf",
+      "SFMono-RegularItalic.otf", "SFMono-BoldItalic.otf",
     )
     system(
-      "parallel", "-N7", "fontforge", "-script", buildpath/"src/generate-sfmono-mod.pe",
+      "parallel", "-N2", "fontforge", "-script", buildpath/"src/generate-sfmono-mod.pe",
       ":::",
-      "SFMonoSquare-Regular.otf",       "modified-migu-1m-regular.ttf",      "Regular",     "Regular",       400, 5, 2,
-      "SFMonoSquare-Bold.otf",          "modified-migu-1m-bold.ttf",         "Bold",        "Bold",          700, 8, 2,
-      "SFMonoSquare-RegularItalic.otf", "modified-migu-1m-oblique.ttf",      "Italic",      "RegularItalic", 400, 5, 9,
-      "SFMonoSquare-BoldItalic.otf",    "modified-migu-1m-bold-oblique.ttf", "Bold Italic", "BoldItalic",    700, 8, 9,
+      "modified-SFMonoSquare-Regular.otf",       "modified-migu-1m-regular.ttf",
+      "modified-SFMonoSquare-Bold.otf",          "modified-migu-1m-bold.ttf",
+      "modified-SFMonoSquare-RegularItalic.otf", "modified-migu-1m-oblique.ttf",
+      "modified-SFMonoSquare-BoldItalic.otf",    "modified-migu-1m-bold-oblique.ttf",
     )
     otfs = Dir[
       "SFMonoSquare-Regular.otf",

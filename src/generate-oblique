@@ -1,0 +1,38 @@
+#!/usr/local/opt/python@2/bin/python
+from os.path import splitext
+import sys
+
+import fontforge
+import psMat
+
+
+def read_opts():
+    if len(sys.argv) != 2:
+        return False
+    in_file = sys.argv[1]
+    name, ext = splitext(in_file)
+    in_style = name.split('-')[-1]
+    style = 'oblique' if in_style == 'regular' else 'bold-oblique'
+    out_file = 'migu-1m-{0}{1}'.format(style, ext)
+    return {
+        'in_file': in_file,
+        'out_file': out_file,
+    }
+
+
+def main():
+    opts = read_opts()
+    if not opts:
+        return 1
+    font = fontforge.open(opts['in_file'])
+    mat = psMat.skew(0.2)
+    font.selection.all()
+    font.transform(mat)
+    font.removeOverlap()
+    print('Generate ' + opts['out_file'])
+    font.generate(opts['out_file'], flags=('opentype',))
+    return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())
