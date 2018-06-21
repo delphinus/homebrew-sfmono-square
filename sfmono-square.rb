@@ -7,7 +7,6 @@ class SfmonoSquare < Formula
   head "https://github.com/delphinus/homebrew-sfmono-square.git"
 
   depends_on "fontforge" => :build
-  depends_on "parallel" => :build
   depends_on "python@2" => :build
 
   resource "sfmono" do
