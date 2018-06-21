@@ -24,44 +24,7 @@ class SfmonoSquare < Formula
     resource("sfmono").stage { buildpath.install Dir["*"] }
     resource("migu1mfonts").stage { buildpath.install Dir["*"] }
 
-    # generate-oblique
-    system(
-      "parallel", "fontforge", "-script", buildpath/"src/generate-oblique",
-      ":::",
-      "migu-1m-regular.ttf", "migu-1m-bold.ttf",
-    )
-    system(
-      "parallel", "fontforge", "-script", buildpath/"src/modify-migu1m",
-      ":::",
-      "migu-1m-regular.ttf", "migu-1m-bold.ttf",
-      "migu-1m-oblique.ttf", "migu-1m-bold-oblique.ttf",
-    )
-    system(
-      "parallel", "fontforge", "-script", buildpath/"src/modify-sfmono",
-      ":::",
-      "SFMono-Regular.otf", "SFMono-Bold.otf",
-      "SFMono-RegularItalic.otf", "SFMono-BoldItalic.otf",
-    )
-    system(
-      "parallel", "-N2", "fontforge", "-script", buildpath/"src/generate-sfmono-mod",
-      ":::",
-      "modified-SFMono-Regular.otf",       "modified-migu-1m-regular.ttf",
-      "modified-SFMono-Bold.otf",          "modified-migu-1m-bold.ttf",
-      "modified-SFMono-RegularItalic.otf", "modified-migu-1m-oblique.ttf",
-      "modified-SFMono-BoldItalic.otf",    "modified-migu-1m-bold-oblique.ttf",
-    )
-    otfs = Dir[
-      "SFMonoSquare-Regular.otf",
-      "SFMonoSquare-Bold.otf",
-      "SFMonoSquare-RegularItalic.otf",
-      "SFMonoSquare-BoldItalic.otf",
-    ].map { |f| buildpath/f }
-    system(
-      "parallel", "fontforge", "-lang=py", "-script",
-      buildpath/"src/font-patcher", "-q", "-out", "build",
-      ":::",
-      *otfs,
-    )
+    system buildpath/"bin/sfmono-square"
     (share/"fonts").install Dir["build/*.otf"]
   end
 end
