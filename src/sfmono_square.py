@@ -11,8 +11,10 @@ FAMILY_SUFFIX = 'Square'
 FULLNAME = FAMILY + ' ' + FAMILY_SUFFIX
 FILENAME = FULLNAME.replace(' ', '')
 FONTFORGE = 'FontForge 2.0'
+ITALIC = 'Italic'
 ASCENT = 1638
 DESCENT = 410
+ENCODING = 'UnicodeFull'
 SCALE_DOWN = 0.65
 UNDERLINE_POS = -250
 UNDERLINE_HEIGHT = 100
@@ -36,30 +38,26 @@ HANKAKU_GLYPHS = [
     0x25ce,  # ◎  BULLSEYE
     0x25cf,  # ●  BLACK CIRCLE
 ]
-INFO_MAP = {
+STYLE_PROPERTY = {
     'Regular': {
-        'style': 'Regular',
         'weight': 'Book',
         'os2_weight': 400,
         'panose_weight': 5,
         'panose_letterform': 2,
     },
     'Bold': {
-        'style': 'Bold',
         'weight': 'Bold',
         'os2_weight': 700,
         'panose_weight': 8,
         'panose_letterform': 2,
     },
     'RegularItalic': {
-        'style': 'Italic',
         'weight': 'Book',
         'os2_weight': 400,
         'panose_weight': 5,
         'panose_letterform': 9,
     },
     'BoldItalic': {
-        'style': 'Bold Italic',
         'weight': 'Bold',
         'os2_weight': 700,
         'panose_weight': 8,
@@ -94,42 +92,39 @@ def generate(hankaku, zenkaku, version):
 def read_opts(hankaku, zenkaku, version):
     (name, _) = splitext(hankaku)
     filename_style = name.split('-')[-1]
+    style = filename_style.replace(ITALIC, ' ' + ITALIC)
     fontname = FILENAME + '-' + filename_style
-    info = INFO_MAP[filename_style]
     return {
         'hankaku': hankaku,
         'zenkaku': zenkaku,
         'version': version,
         'filename_style': filename_style,
-        'style': info['style'],
-        'weight': info['weight'],
-        'os2_weight': info['os2_weight'],
-        'panose_weight': info['panose_weight'],
-        'panose_letterform': info['panose_letterform'],
-        'fullname': FULLNAME + ' ' + info['style'],
+        'style': style,
+        'fullname': FULLNAME + ' ' + style,
         'fontname': fontname,
         'out_file': fontname + '.otf',
     }
 
 
 def new_font(opts):
+    prop = STYLE_PROPERTY[opts['filename_style']]
     font = fontforge.font()
-    font.encoding = 'UnicodeFull'
     font.ascent = ASCENT
     font.descent = DESCENT
     font.upos = UNDERLINE_POS
     font.uwidth = UNDERLINE_HEIGHT
+    font.familyname = FULLNAME
+    font.copyright = COPYRIGHT
+    font.encoding = ENCODING
     font.fontname = opts['fontname']
     font.fullname = opts['fullname']
-    font.familyname = FULLNAME
-    font.weight = opts['weight']
-    font.copyright = COPYRIGHT
     font.version = opts['version']
     font.appendSFNTName('English (US)', 'SubFamily', opts['style'])
     font.appendSFNTName('English (US)', 'UniqueID', ' : '.join([
         FONTFORGE, opts['fullname'], opts['version'],
         datetime.today().strftime('%d-%m-%Y')]))
-    font.os2_weight = opts['os2_weight']
+    font.weight = prop['weight']
+    font.os2_weight = prop['os2_weight']
     font.os2_width = 5  # Medium (w/h = 1.000)
     font.os2_fstype = 4  # Printable Document (suitable for SF Mono)
     font.os2_vendor = 'delp'  # me
@@ -137,12 +132,12 @@ def new_font(opts):
     font.os2_panose = (
         2,  # Latin: Text and Display
         11,  # Nomal Sans
-        opts['panose_weight'],
+        prop['panose_weight'],
         9,  # Monospaced
         2,  # None
         2,  # No Variation
         3,  # Straight Arms/Wedge
-        opts['panose_letterform'],
+        prop['panose_letterform'],
         2,  # Standard/Trimmed
         7,  # Ducking/Large
     )
