@@ -12,6 +12,7 @@ FULLNAME = FAMILY + ' ' + FAMILY_SUFFIX
 FILENAME = FULLNAME.replace(' ', '')
 FONTFORGE = 'FontForge 2.0'
 ITALIC = 'Italic'
+ITALIC_ANGLE = -10
 ASCENT = 1638
 DESCENT = 410
 ENCODING = 'UnicodeFull'
@@ -111,6 +112,7 @@ def new_font(opts):
     font = fontforge.font()
     font.ascent = ASCENT
     font.descent = DESCENT
+    font.italicangle = ITALIC_ANGLE
     font.upos = UNDERLINE_POS
     font.uwidth = UNDERLINE_HEIGHT
     font.familyname = FULLNAME
