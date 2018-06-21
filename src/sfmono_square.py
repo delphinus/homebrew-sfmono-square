@@ -10,6 +10,7 @@ FAMILY = 'SF Mono'
 FAMILY_SUFFIX = 'Square'
 FULLNAME = FAMILY + ' ' + FAMILY_SUFFIX
 FILENAME = FULLNAME.replace(' ', '')
+FONTFORGE = 'FontForge 2.0'
 ASCENT = 1638
 DESCENT = 410
 SCALE_DOWN = 0.65
@@ -72,11 +73,10 @@ Japan (IPA), 2003-2011. You must accept
 "http://ipafont.ipa.go.jp/ipa_font_license_v1.html" to use this product.
 mix: Copyright(c) 2015 itouhiro
 Copyright(c) 2018 JINNOUCHI Yasushi <delphinus@remora.cx>'''
-VERSION = 'v0.1.0'
 
 
-def generate(hankaku, zenkaku):
-    opts = read_opts(hankaku, zenkaku)
+def generate(hankaku, zenkaku, version):
+    opts = read_opts(hankaku, zenkaku, version)
     font = new_font(opts)
     _merge(font, opts)
     _zenkaku_glyphs(font)
@@ -91,7 +91,7 @@ def generate(hankaku, zenkaku):
     return 0
 
 
-def read_opts(hankaku, zenkaku):
+def read_opts(hankaku, zenkaku, version):
     (name, _) = splitext(hankaku)
     filename_style = name.split('-')[-1]
     fontname = FILENAME + '-' + filename_style
@@ -99,6 +99,7 @@ def read_opts(hankaku, zenkaku):
     return {
         'hankaku': hankaku,
         'zenkaku': zenkaku,
+        'version': version,
         'filename_style': filename_style,
         'style': info['style'],
         'weight': info['weight'],
@@ -123,10 +124,11 @@ def new_font(opts):
     font.familyname = FULLNAME
     font.weight = opts['weight']
     font.copyright = COPYRIGHT
-    font.version = VERSION
-    font.appendSFNTName(0x409, 2, opts['style'])
-    font.appendSFNTName(0x409, 3, 'FontForge 2.0 : {0} : {1}'.format(
-        opts['fullname'], datetime.today().strftime('%d-%m-%Y')))
+    font.version = opts['version']
+    font.appendSFNTName('English (US)', 'SubFamily', opts['style'])
+    font.appendSFNTName('English (US)', 'UniqueID', ' : '.join([
+        FONTFORGE, opts['fullname'], opts['version'],
+        datetime.today().strftime('%d-%m-%Y')]))
     font.os2_weight = opts['os2_weight']
     font.os2_width = 5  # Medium (w/h = 1.000)
     font.os2_fstype = 4  # Printable Document (suitable for SF Mono)

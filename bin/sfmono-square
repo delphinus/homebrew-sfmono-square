@@ -37,6 +37,9 @@ SFMONO_SQUARE = [
 
 
 def main():
+    if len(sys.argv) != 2:
+        return 1
+    version = sys.argv[1]
     print('---- modifying migu-1m ----')
     if concurrent_execute(migu1m.modify, MIGU1M):
         return 1
@@ -47,7 +50,8 @@ def main():
     if concurrent_execute(sfmono.modify, SFMONO):
         return 1
     print('---- generate SF Mono Square ----')
-    if concurrent_execute(sfmono_square.generate, SFMONO_MIGU1M):
+    args = [[*a, version] for a in SFMONO_MIGU1M]
+    if concurrent_execute(sfmono_square.generate, args):
         return 1
     print('---- adding nerd-fonts glyphs ----')
     if concurrent_execute(font_patcher.patch, SFMONO_SQUARE):

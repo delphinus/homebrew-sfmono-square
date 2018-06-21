@@ -30,7 +30,7 @@ class SfmonoSquare < Formula
     resource("migu1mfonts").stage { buildpath.install Dir["*"] }
     resource("futures").stage { buildpath.install Dir["*"] }
 
-    system "python2", buildpath/"bin/sfmono-square"
+    system "python2", buildpath/"bin/sfmono-square", version
     (share/"fonts").install Dir["build/*.otf"]
   end
 end
