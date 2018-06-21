@@ -66,13 +66,13 @@ INFO_MAP = {
         'panose_letterform': 9,
     },
 }
-COPYRIGHT = '''Copyright (c) 2016 Apple Inc. All rights reserved.
-M+ TESTFLIGHT 060: Copyright(c) 2015 M+ FONTS PROJECT
-IPA Gothic Ver.003.03: Copyright(c) Information-technology Promotion Agency,
-Japan (IPA), 2003-2011. You must accept
-"http://ipafont.ipa.go.jp/ipa_font_license_v1.html" to use this product.
-mix: Copyright(c) 2015 itouhiro
-Copyright(c) 2018 JINNOUCHI Yasushi <delphinus@remora.cx>'''
+COPYRIGHT = ''' Copyright (c) 2018 JINNOUCHI Yasushi <delphinus@remora.cx>
+Copyright (c) 2006 The Inconsolata Project Authors
+Copyright (c) 2015 itouhiro
+Copyright (c) 2015 M+ FONTS PROJECT
+Copyright (c) 2003-2011 Information-technology Promotion Agency, Japan (IPA)
+SIL Open Font License Version 1.1 (http://scripts.sil.org/ofl)
+IPA Font License Agreement v1.0 (http://ipafont.ipa.go.jp/ipa_font_license_v1.html)'''  # noqa
 
 
 def generate(hankaku, zenkaku, version):
