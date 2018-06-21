@@ -65,7 +65,7 @@ STYLE_PROPERTY = {
         'panose_letterform': 9,
     },
 }
-COPYRIGHT = ''' Copyright (c) 2018 JINNOUCHI Yasushi <delphinus@remora.cx>
+COPYRIGHT = '''Copyright (c) 2018 JINNOUCHI Yasushi <delphinus@remora.cx>
 Copyright (c) 2006 The Inconsolata Project Authors
 Copyright (c) 2015 itouhiro
 Copyright (c) 2015 M+ FONTS PROJECT
