@@ -1,11 +1,12 @@
 #!/usr/local/opt/python@2/bin/python
 # -*- coding:utf-8 -*-
-from concurrent.futures import ProcessPoolExecutor, as_completed
 from os.path import dirname, abspath
 import sys
 
 sys.path.append(dirname(abspath(__file__)) + '/../src')
+sys.path.append(dirname(abspath(__file__)) + '/../futures-3.2.0')
 
+from concurrent.futures import ProcessPoolExecutor, as_completed
 import font_patcher
 import migu1m
 import sfmono
