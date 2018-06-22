@@ -4,15 +4,7 @@ use warnings;
 
 die unless defined $ARGV[0];
 my $version = "0.1.$ARGV[0]";
-my $patcher = 'src/font-patcher';
 my $formula = 'sfmono-square.rb';
-update_file($patcher, sub {
-    ($_) = @_;
-    s/'.*'/'v$version'/ if /^version =/;
-    $_;
-});
-cmd('git', 'add', $patcher);
-cmd('git', 'commit', '-m', "Bump version up to v$version in patcher");
 cmd('git', 'tag', "v$version");
 cmd('git', 'push', '--tags');
 my $hash;
