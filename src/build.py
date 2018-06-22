@@ -31,10 +31,7 @@ SFMONO_SQUARE = [
 ]
 
 
-def build():
-    if len(sys.argv) != 2:
-        return 1
-    version = sys.argv[1]
+def build(version):
     print('---- modifying migu-1m ----')
     if concurrent_execute(migu1m.modify, MIGU1M):
         return 1
