@@ -1,3 +1,3 @@
-#!/bin/sh
-TOP_DIR=$(cd $(dirname "$0")/..; pwd -P)
+#!/bin/bash
+TOP_DIR="$(cd "$(dirname "$0")/.." || exit; pwd -P)"
 PYTHONPATH=$TOP_DIR:$TOP_DIR/src:$PYTHONPATH python2 -c 'import sys; import build; sys.exit(build.build())'
