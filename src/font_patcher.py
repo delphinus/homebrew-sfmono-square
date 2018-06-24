@@ -56,8 +56,10 @@ PATCH_SET = [
      'sym_start': 0x2B58, 'sym_end': 0x2B58, 'src_start': None},
     {'name': "Octicons",
      'filename': "octicons.ttf",
-     # Magnifying glass
-     'sym_start': 0xF000, 'sym_end': 0xF105, 'src_start': 0xF400},
+     'sym_start': 0xF000, 'sym_end': 0xF0e8, 'src_start': 0xF400},
+    {'name': "Octicons",
+     'filename': "octicons.ttf",
+     'sym_start': 0xF101, 'sym_end': 0xF105, 'src_start': 0xF4e9},
     {'name': "Octicons",
      'filename': "octicons.ttf",
      'sym_start': 0x2665, 'sym_end': 0x2665, 'src_start': None},  # Heart
