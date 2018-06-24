@@ -186,7 +186,7 @@ def _copy_glyphs(font, symfont, info):
 
     symfont.selection.select(("ranges", "unicode"),
                              info['sym_start'], info['sym_end'])
-    for sym_glyph in enumerate(symfont.selection.byGlyphs):
+    for sym_glyph in list(symfont.selection.byGlyphs):
 
         src_encoding = sym_glyph.encoding
         if info['src_start']:
