@@ -112,7 +112,7 @@ def _patch(font):
         symfont.close()
 
 
-def _copy_glyphs(font, symfont, info):
+def _transform_sym(symfont, info):
 
     x_ratio = 1.0
     y_ratio = 1.0
@@ -166,24 +166,16 @@ def _copy_glyphs(font, symfont, info):
     transform = psMat.compose(scale, translate)
     symfont.transform(transform)
 
-    symfont.selection.select(("ranges", "unicode"),
-                             info['sym_start'], info['sym_end'])
-    for sym_glyph in list(symfont.selection.byGlyphs):
 
-        src_encoding = sym_glyph.encoding
+def _copy_glyphs(font, symfont, info):
+
+    for encoding in range(info['sym_start'], info['sym_end'] + 1):
+        src_encoding = encoding
         if info['src_start']:
             src_encoding += info['src_start'] - info['sym_start']
-
-        symfont.selection.select(sym_glyph.encoding)
+        symfont.selection.select(encoding)
+        _transform_sym(symfont, info)
         symfont.copy()
         font.selection.select(src_encoding)
         font.paste()
-
-        font[src_encoding].glyphname = sym_glyph.glyphname
-
-        # reset selection so iteration works propertly @todo fix? rookie
-        # misunderstanding?  This is likely needed because the selection was
-        # changed when the glyph was copy/pasted
-        symfont.selection.select(("ranges", "unicode"),
-                                 info['sym_start'], info['sym_end'])
     return
