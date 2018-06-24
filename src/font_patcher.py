@@ -12,103 +12,83 @@ import psMat
 PATCH_SET = [
     {'name': "Seti-UI + Custom",
      'filename': "original-source.otf",
-     'exact_encoding': False,
      'sym_start': 0xE4FA, 'sym_end': 0xE52E,
      'src_start': 0xE5FA, 'src_end': 0xE62E},
     {'name': "Devicons",
      'filename': "devicons.ttf",
-     'exact_encoding': False,
      'sym_start': 0xE600, 'sym_end': 0xE6C5,
      'src_start': 0xE700, 'src_end': 0xE7C5},
     {'name': "Powerline Symbols",
      'filename': "PowerlineSymbols.otf",
-     'exact_encoding': True,
      'sym_start': 0xE0A0, 'sym_end': 0xE0A2,
      'src_start': None, 'src_end': None},
     {'name': "Powerline Symbols",
      'filename': "PowerlineSymbols.otf",
-     'exact_encoding': True,
      'sym_start': 0xE0B0, 'sym_end': 0xE0B3,
      'src_start': None, 'src_end': None},
     {'name': "Powerline Extra Symbols",
      'filename': "PowerlineExtraSymbols.otf",
-     'exact_encoding': True,
      'sym_start': 0xE0A3, 'sym_end': 0xE0A3,
      'src_start': None, 'src_end': None},
     {'name': "Powerline Extra Symbols",
      'filename': "PowerlineExtraSymbols.otf",
-     'exact_encoding': True,
      'sym_start': 0xE0B4, 'sym_end': 0xE0C8,
      'src_start': None, 'src_end': None},
     {'name': "Powerline Extra Symobls",
      'filename': "PowerlineExtraSymbols.otf",
-     'exact_encoding': True,
      'sym_start': 0xE0CA, 'sym_end': 0xE0CA,
      'src_start': None, 'src_end': None},
     {'name': "Powerline Extra Symobls",
      'filename': "PowerlineExtraSymbols.otf",
-     'exact_encoding': True,
      'sym_start': 0xE0CC, 'sym_end': 0xE0D4,
      'src_start': None, 'src_end': None},
     {'name': "Pomicons",
      'filename': "Pomicons.otf",
-     'exact_encoding': True,
      'sym_start': 0xE000, 'sym_end': 0xE00A,
      'src_start': None, 'src_end': None},
     {'name': "Font Awesome",
      'filename': "FontAwesome.otf",
-     'exact_encoding': True,
      'sym_start': 0xF000, 'sym_end': 0xF2E0,  # Maximize
      'src_start': None, 'src_end': None},
     {'name': "Font Awesome Extension",
      'filename': "font-awesome-extension.ttf",
-     'exact_encoding': False,
      'sym_start': 0xE000, 'sym_end': 0xE0A9,
      'src_start': 0xE200, 'src_end': 0xE2A9},
     {'name': "Font Linux",
      'filename': "font-logos.ttf",
-     'exact_encoding': False,
      # Power, Power On/Off, Power On, Sleep
      'sym_start': 0xF100, 'sym_end': 0xF11C,
      'src_start': 0xF300, 'src_end': 0xF31C},
     {'name': "Power Symbols",
      'filename': "Unicode_IEC_symbol_font.otf",
-     'exact_encoding': True,
      'sym_start': 0x23FB, 'sym_end': 0x23FE,  # Heavy Circle (aka Power Off)
      'src_start': None, 'src_end': None},
     {'name': "Power Symbols",
      'filename': "Unicode_IEC_symbol_font.otf",
-     'exact_encoding': True,
      'sym_start': 0x2B58, 'sym_end': 0x2B58,
      'src_start': None, 'src_end': None},
     {'name': "Octicons",
      'filename': "octicons.ttf",
-     'exact_encoding': False,
      'sym_start': 0xF000, 'sym_end': 0xF105,  # Magnifying glass
      'src_start': 0xF400, 'src_end': 0xF505},
     {'name': "Octicons",
      'filename': "octicons.ttf",
-     'exact_encoding': False,
      'sym_start': 0x2665, 'sym_end': 0x2665,  # Heart
      'src_start': None, 'src_end': None},
     {'name': "Octicons",
      'filename': "octicons.ttf",
-     'exact_encoding': False,
      'sym_start': 0X26A1, 'sym_end': 0X26A1,  # Zap
      'src_start': None, 'src_end': None},
     {'name': "Octicons",
      'filename': "octicons.ttf",
-     'exact_encoding': False,
      'sym_start': 0xF27C, 'sym_end': 0xF27C,  # Desktop
      'src_start': 0xF4A9, 'src_end': 0xF4A9},
     {'name': "Material",
      'filename': "materialdesignicons-webfont.ttf",
-     'exact_encoding': False,
      'sym_start': 0xF001, 'sym_end': 0xF847,
      'src_start': 0xF500, 'src_end': 0xFD46},
     {'name': "Weather Icons",
      'filename': "weathericons-regular-webfont.ttf",
-     'exact_encoding': False,
      'sym_start': 0xF000, 'sym_end': 0xF0EB,
      'src_start': 0xE300, 'src_end': 0xE3EB},
 ]
@@ -160,23 +140,6 @@ def _patch(font):
 
 def _copy_glyphs(font, symfont, info):
 
-    if not info['exact_encoding']:
-        sourceFontList = []
-        sourceFontCounter = 0
-
-        for i in range(info['src_start'], info['src_end'] + 1):
-            sourceFontList.append(format(i, 'X'))
-
-    # Create glyphs from symbol font
-
-    # If we are going to copy all Glyphs, then assume we want to be careful
-    # and only copy those that are not already contained in the source font
-    src_start = info['src_start'] if info['src_start'] else info['sym_start']
-    src_end = info['src_end'] if info['src_end'] else info['sym_end']
-    symfont.selection.select(("ranges", "unicode"),
-                             info['sym_start'], info['sym_end'])
-    font.selection.select(("ranges", "unicode"), src_start, src_end)
-
     x_ratio = 1.0
     y_ratio = 1.0
     x_diff = 0
@@ -195,12 +158,6 @@ def _copy_glyphs(font, symfont, info):
         y_diff = -250
 
     elif info['name'] in ['Powerline Symbols', 'Powerline Extra Symbols']:
-        # for Iosevka
-        # x_ratio = 0.96
-        # y_ratio = 1.10
-        # x_diff = 0
-        # y_diff = 20
-        # for SF Mono 13pt
         x_ratio = 0.95
         y_ratio = 0.88
         x_diff = 0
@@ -235,45 +192,24 @@ def _copy_glyphs(font, symfont, info):
     transform = psMat.compose(scale, translate)
     symfont.transform(transform)
 
-    for index, sym_glyph in enumerate(symfont.selection.byGlyphs):
+    symfont.selection.select(("ranges", "unicode"),
+                             info['sym_start'], info['sym_end'])
+    for sym_glyph in enumerate(symfont.selection.byGlyphs):
 
-        index = max(1, index)
+        src_encoding = sym_glyph.encoding
+        if info['src_start']:
+            src_encoding += info['src_start'] - info['sym_start']
 
-        if info['exact_encoding']:
-            # use the exact same hex values for the source font as for the
-            # symbol font
-            currentSourceFontGlyph = sym_glyph.encoding
-            # Save as a hex string without the '0x' prefix
-            copiedToSlot = format(sym_glyph.unicode, 'X')
-        else:
-            # use source font defined hex values based on passed in start and
-            # end convince that this string really is a hex:
-            currentSourceFontGlyph = int('0x' +
-                                         sourceFontList[sourceFontCounter], 16)
-            copiedToSlot = sourceFontList[sourceFontCounter]
-            sourceFontCounter += 1
-
-        if int(copiedToSlot, 16) < 0:
-            print('Found invalid glyph slot number. Skipping.')
-            continue
-
-        # Select and copy symbol from its encoding point
-        # We need to do this select after the careful check, this way we don't
-        # reset our selection before starting the next loop
         symfont.selection.select(sym_glyph.encoding)
         symfont.copy()
-
-        # Paste it
-        font.selection.select(currentSourceFontGlyph)
+        font.selection.select(src_encoding)
         font.paste()
 
-        font[currentSourceFontGlyph].glyphname = sym_glyph.glyphname
+        font[src_encoding].glyphname = sym_glyph.glyphname
 
         # reset selection so iteration works propertly @todo fix? rookie
         # misunderstanding?  This is likely needed because the selection was
         # changed when the glyph was copy/pasted
         symfont.selection.select(("ranges", "unicode"),
                                  info['sym_start'], info['sym_end'])
-    # end for
-
     return
