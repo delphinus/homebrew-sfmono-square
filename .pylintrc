@@ -1,0 +1,2 @@
+[Master]
+init-hook="sys.path = list(); sys.path.append('.'); sys.path.append('src')"
