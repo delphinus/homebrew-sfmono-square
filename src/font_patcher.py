@@ -124,14 +124,6 @@ def _patch(font):
             # Match the symbol font size to the source font size
             symfont.em = font.em
             previous_symbol_filename = info['filename']
-        # If patch table doesn't include a source start and end, re-use the
-        # symbol font values
-        src_start = info['SrcStart']
-        src_end = info['SrcEnd']
-        if not src_start:
-            src_start = info['SymStart']
-        if not src_end:
-            src_end = info['SymEnd']
 
         _copy_glyphs(font, symfont, info)
     if symfont:
