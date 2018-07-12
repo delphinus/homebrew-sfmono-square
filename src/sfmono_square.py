@@ -163,8 +163,6 @@ def new_font(opts):
     # linegap is for gap between lines.  The `hhea_` version is for macOS.
     font.os2_typolinegap = 0
     font.hhea_linegap = 0
-    # for Windows
-    font.os2_version = 1
     return font
 
 
