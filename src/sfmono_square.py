@@ -86,7 +86,7 @@ def generate(hankaku, zenkaku, version):
     font.autoHint()
     font.autoInstr()
     print('Generate ' + opts['out_file'])
-    font.generate(opts['out_file'], flags=('opentype',))
+    font.generate(opts['out_file'], flags=('opentype', 'short-post'))
     return 0
 
 
@@ -103,7 +103,7 @@ def read_opts(hankaku, zenkaku, version):
         'style': style,
         'fullname': FULLNAME + ' ' + style,
         'fontname': fontname,
-        'out_file': fontname + '.otf',
+        'out_file': fontname + '.ttf',
     }
 
 

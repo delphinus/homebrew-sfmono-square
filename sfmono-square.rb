@@ -7,6 +7,7 @@ class SfmonoSquare < Formula
   head "https://github.com/delphinus/homebrew-sfmono-square.git"
 
   depends_on "fontforge" => :build
+  depends_on "fonttools" => :build
   depends_on "python@2" => :build
 
   resource "sfmono" do
@@ -31,6 +32,6 @@ class SfmonoSquare < Formula
     resource("futures").stage { buildpath.install Dir["*"] }
 
     system buildpath/"bin/sfmono-square", version
-    (share/"fonts").install Dir["build/*.otf"]
+    (share/"fonts").install Dir["build/*.ttf"]
   end
 end

@@ -6,6 +6,7 @@ import font_patcher
 import migu1m
 import sfmono
 import sfmono_square
+import ttx_converter
 
 
 MIGU1M = [['migu-1m-regular.ttf'], ['migu-1m-bold.ttf']]
@@ -24,10 +25,10 @@ SFMONO_MIGU1M = [
     ['modified-SFMono-BoldItalic.otf', 'modified-migu-1m-bold-oblique.ttf'],
 ]
 SFMONO_SQUARE = [
-    ['SFMonoSquare-Regular.otf', 'build'],
-    ['SFMonoSquare-Bold.otf', 'build'],
-    ['SFMonoSquare-RegularItalic.otf', 'build'],
-    ['SFMonoSquare-BoldItalic.otf', 'build'],
+    ['SFMonoSquare-Regular.ttf', 'build'],
+    ['SFMonoSquare-Bold.ttf', 'build'],
+    ['SFMonoSquare-RegularItalic.ttf', 'build'],
+    ['SFMonoSquare-BoldItalic.ttf', 'build'],
 ]
 
 
@@ -47,6 +48,9 @@ def build(version):
         return 1
     print('---- adding nerd-fonts glyphs ----')
     if concurrent_execute(font_patcher.patch, SFMONO_SQUARE):
+        return 1
+    print('--- converting ttx parameters ---')
+    if concurrent_execute(ttx_converter.convert, SFMONO_SQUARE):
         return 1
     return 0
 
