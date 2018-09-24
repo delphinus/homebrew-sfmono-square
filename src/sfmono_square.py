@@ -38,6 +38,7 @@ HANKAKU_GLYPHS = [
     0x25cc,  # ◌  DOTTED CIRCLE
     0x25ce,  # ◎  BULLSEYE
     0x25cf,  # ●  BLACK CIRCLE
+    0x25ef,  # ◯  LARGE CIRCLE
 ]
 STYLE_PROPERTY = {
     'Regular': {
