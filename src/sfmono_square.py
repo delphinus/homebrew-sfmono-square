@@ -67,7 +67,7 @@ STYLE_PROPERTY = {
     },
 }
 COPYRIGHT = '''Copyright (c) 2018 JINNOUCHI Yasushi <delphinus@remora.cx>
-Copyright (c) 2006 The Inconsolata Project Authors
+Copyright (c) 2016-2017 Apple Inc. All rights reserved.
 Copyright (c) 2015 itouhiro
 Copyright (c) 2015 M+ FONTS PROJECT
 Copyright (c) 2003-2011 Information-technology Promotion Agency, Japan (IPA)
