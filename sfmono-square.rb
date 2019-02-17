@@ -25,7 +25,14 @@ class SfmonoSquare < Formula
     resource("futures").stage { buildpath.install Dir["*"] }
 
     sfmono_dir = Pathname.new '/Applications/Utilities/Terminal.app/Contents/Resources/Fonts'
-    cp Pathname.glob(sfmono_dir/'*'), buildpath
+    [
+      'SFMono-Regular.otf',
+      'SFMono-RegularItalic.otf',
+      'SFMono-Bold.otf',
+      'SFMono-BoldItalic.otf',
+    ].each do |otf|
+      cp sfmono_dir/otf, buildpath
+    end
 
     system buildpath/"bin/sfmono-square", version
     (share/"fonts").install Dir["build/*.otf"]
