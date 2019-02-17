@@ -11,7 +11,7 @@ OLD_EM = 1000
 EM = ASCENT + DESCENT
 SCALE_DOWN = 0.82
 X_TO_CENTER = EM * (1 - SCALE_DOWN) / 2
-HANKAKU_KANA = (0xff60, 0xff9f)
+HANKAKU_KANA = (0xFF60, 0xFF9F)
 OBLIQUE_SKEW = 0.2
 
 
@@ -20,9 +20,9 @@ def modify(in_file):
     _set_new_em(font)
     _set_proportion(font)
     _zenkaku_space(font)
-    out_file = 'modified-' + in_file
-    print('Generate ' + out_file)
-    font.generate(out_file, flags=('opentype',))
+    out_file = "modified-" + in_file
+    print("Generate " + out_file)
+    font.generate(out_file, flags=("opentype",))
     return 0
 
 
@@ -30,20 +30,20 @@ def oblique(in_file):
     font = fontforge.open(in_file)
     _make_oblique(font)
     name, ext = splitext(in_file)
-    in_style = name.split('-')[-1]
-    style = 'oblique' if in_style == 'regular' else 'bold-oblique'
-    out_file = 'modified-migu-1m-{0}{1}'.format(style, ext)
-    print('Generate ' + out_file)
-    font.generate(out_file, flags=('opentype',))
+    in_style = name.split("-")[-1]
+    style = "oblique" if in_style == "regular" else "bold-oblique"
+    out_file = "modified-migu-1m-{0}{1}".format(style, ext)
+    print("Generate " + out_file)
+    font.generate(out_file, flags=("opentype",))
     return 0
 
 
 def _set_new_em(font):
-    '''
+    """
     This sets new ascent & descent and scale glyphs.  This sets new ascent &
     descent before it sets em.  When in inverse, it does not change ascent &
     descent.
-    '''
+    """
     font.selection.all()
     font.unlinkReferences()
     font.ascent = float(ASCENT) / EM * OLD_EM
@@ -69,7 +69,7 @@ def _zenkaku_space(font):
     font.copy()
     font.selection.select(0x3000)  # 　 IDEOGRAPHIC SPACE
     font.paste()
-    font.selection.select(0x271a)  # ✚  HEAVY GREEK CROSS
+    font.selection.select(0x271A)  # ✚  HEAVY GREEK CROSS
     font.copy()
     font.selection.select(0x3000)
     font.pasteInto()

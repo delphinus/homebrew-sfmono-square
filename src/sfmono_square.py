@@ -6,73 +6,73 @@ import fontforge
 from psMat import compose, scale, translate
 
 
-FAMILY = 'SF Mono'
-FAMILY_SUFFIX = 'Square'
-FULLNAME = FAMILY + ' ' + FAMILY_SUFFIX
-FILENAME = FULLNAME.replace(' ', '')
-FONTFORGE = 'FontForge 2.0'
-ITALIC = 'Italic'
+FAMILY = "SF Mono"
+FAMILY_SUFFIX = "Square"
+FULLNAME = FAMILY + " " + FAMILY_SUFFIX
+FILENAME = FULLNAME.replace(" ", "")
+FONTFORGE = "FontForge 2.0"
+ITALIC = "Italic"
 ITALIC_ANGLE = -10
 ASCENT = 1638
 DESCENT = 410
-ENCODING = 'UnicodeFull'
+ENCODING = "UnicodeFull"
 SCALE_DOWN = 0.65
 UNDERLINE_POS = -250
 UNDERLINE_HEIGHT = 100
 WIDTH = ASCENT + DESCENT
 ZENKAKU_PARENTHESIS = {
-    0xff08: 'left',
-    0xff09: 'right',
-    0xff3b: 'left',
-    0xff3d: 'right',
-    0xff5b: 'left',
-    0xff5d: 'right',
+    0xFF08: "left",
+    0xFF09: "right",
+    0xFF3B: "left",
+    0xFF3D: "right",
+    0xFF5B: "left",
+    0xFF5D: "right",
     # ff5f & ff60 are used with original glyphs in migu-1m
-    0xff5f: 'none',
-    0xff60: 'none',
+    0xFF5F: "none",
+    0xFF60: "none",
 }
 HANKAKU_GLYPHS = [
-    0x25a0,  # ■  BLACK SQUARE
-    0x25a1,  # □  WHITE SQUARE
-    0x25cb,  # ○  WHITE CIRCLE
-    0x25cc,  # ◌  DOTTED CIRCLE
-    0x25ce,  # ◎  BULLSEYE
-    0x25cf,  # ●  BLACK CIRCLE
-    0x25ef,  # ◯  LARGE CIRCLE
+    0x25A0,  # ■  BLACK SQUARE
+    0x25A1,  # □  WHITE SQUARE
+    0x25CB,  # ○  WHITE CIRCLE
+    0x25CC,  # ◌  DOTTED CIRCLE
+    0x25CE,  # ◎  BULLSEYE
+    0x25CF,  # ●  BLACK CIRCLE
+    0x25EF,  # ◯  LARGE CIRCLE
 ]
 STYLE_PROPERTY = {
-    'Regular': {
-        'weight': 'Book',
-        'os2_weight': 400,
-        'panose_weight': 5,
-        'panose_letterform': 2,
+    "Regular": {
+        "weight": "Book",
+        "os2_weight": 400,
+        "panose_weight": 5,
+        "panose_letterform": 2,
     },
-    'Bold': {
-        'weight': 'Bold',
-        'os2_weight': 700,
-        'panose_weight': 8,
-        'panose_letterform': 2,
+    "Bold": {
+        "weight": "Bold",
+        "os2_weight": 700,
+        "panose_weight": 8,
+        "panose_letterform": 2,
     },
-    'RegularItalic': {
-        'weight': 'Book',
-        'os2_weight': 400,
-        'panose_weight': 5,
-        'panose_letterform': 9,
+    "RegularItalic": {
+        "weight": "Book",
+        "os2_weight": 400,
+        "panose_weight": 5,
+        "panose_letterform": 9,
     },
-    'BoldItalic': {
-        'weight': 'Bold',
-        'os2_weight': 700,
-        'panose_weight': 8,
-        'panose_letterform': 9,
+    "BoldItalic": {
+        "weight": "Bold",
+        "os2_weight": 700,
+        "panose_weight": 8,
+        "panose_letterform": 9,
     },
 }
-COPYRIGHT = '''Copyright (c) 2018 JINNOUCHI Yasushi <delphinus@remora.cx>
+COPYRIGHT = """Copyright (c) 2018 JINNOUCHI Yasushi <delphinus@remora.cx>
 Copyright (c) 2016-2017 Apple Inc. All rights reserved.
 Copyright (c) 2015 itouhiro
 Copyright (c) 2015 M+ FONTS PROJECT
 Copyright (c) 2003-2011 Information-technology Promotion Agency, Japan (IPA)
 SIL Open Font License Version 1.1 (http://scripts.sil.org/ofl)
-IPA Font License Agreement v1.0 (http://ipafont.ipa.go.jp/ipa_font_license_v1.html)'''  # noqa
+IPA Font License Agreement v1.0 (http://ipafont.ipa.go.jp/ipa_font_license_v1.html)"""  # noqa
 
 
 def generate(hankaku, zenkaku, version):
@@ -86,30 +86,30 @@ def generate(hankaku, zenkaku, version):
     # font.removeOverlap()
     font.autoHint()
     font.autoInstr()
-    print('Generate ' + opts['out_file'])
-    font.generate(opts['out_file'], flags=('opentype',))
+    print("Generate " + opts["out_file"])
+    font.generate(opts["out_file"], flags=("opentype",))
     return 0
 
 
 def read_opts(hankaku, zenkaku, version):
     (name, _) = splitext(hankaku)
-    filename_style = name.split('-')[-1]
-    style = filename_style.replace(ITALIC, ' ' + ITALIC)
-    fontname = FILENAME + '-' + filename_style
+    filename_style = name.split("-")[-1]
+    style = filename_style.replace(ITALIC, " " + ITALIC)
+    fontname = FILENAME + "-" + filename_style
     return {
-        'hankaku': hankaku,
-        'zenkaku': zenkaku,
-        'version': version,
-        'filename_style': filename_style,
-        'style': style,
-        'fullname': FULLNAME + ' ' + style,
-        'fontname': fontname,
-        'out_file': fontname + '.otf',
+        "hankaku": hankaku,
+        "zenkaku": zenkaku,
+        "version": version,
+        "filename_style": filename_style,
+        "style": style,
+        "fullname": FULLNAME + " " + style,
+        "fontname": fontname,
+        "out_file": fontname + ".otf",
     }
 
 
 def new_font(opts):
-    prop = STYLE_PROPERTY[opts['filename_style']]
+    prop = STYLE_PROPERTY[opts["filename_style"]]
     font = fontforge.font()
     font.ascent = ASCENT
     font.descent = DESCENT
@@ -119,28 +119,37 @@ def new_font(opts):
     font.familyname = FULLNAME
     font.copyright = COPYRIGHT
     font.encoding = ENCODING
-    font.fontname = opts['fontname']
-    font.fullname = opts['fullname']
-    font.version = opts['version']
-    font.appendSFNTName('English (US)', 'SubFamily', opts['style'])
-    font.appendSFNTName('English (US)', 'UniqueID', ' : '.join([
-        FONTFORGE, opts['fullname'], opts['version'],
-        datetime.today().strftime('%d-%m-%Y')]))
-    font.weight = prop['weight']
-    font.os2_weight = prop['os2_weight']
+    font.fontname = opts["fontname"]
+    font.fullname = opts["fullname"]
+    font.version = opts["version"]
+    font.appendSFNTName("English (US)", "SubFamily", opts["style"])
+    font.appendSFNTName(
+        "English (US)",
+        "UniqueID",
+        " : ".join(
+            [
+                FONTFORGE,
+                opts["fullname"],
+                opts["version"],
+                datetime.today().strftime("%d-%m-%Y"),
+            ]
+        ),
+    )
+    font.weight = prop["weight"]
+    font.os2_weight = prop["os2_weight"]
     font.os2_width = 5  # Medium (w/h = 1.000)
     font.os2_fstype = 4  # Printable Document (suitable for SF Mono)
-    font.os2_vendor = 'delp'  # me
+    font.os2_vendor = "delp"  # me
     font.os2_family_class = 2057  # SS Typewriter Gothic
     font.os2_panose = (
         2,  # Latin: Text and Display
         11,  # Nomal Sans
-        prop['panose_weight'],
+        prop["panose_weight"],
         9,  # Monospaced
         2,  # None
         2,  # No Variation
         3,  # Straight Arms/Wedge
-        prop['panose_letterform'],
+        prop["panose_letterform"],
         2,  # Standard/Trimmed
         7,  # Ducking/Large
     )
@@ -168,13 +177,13 @@ def new_font(opts):
 
 
 def _merge(font, opts):
-    font.mergeFonts(opts['hankaku'])
-    font.mergeFonts(opts['zenkaku'])
+    font.mergeFonts(opts["hankaku"])
+    font.mergeFonts(opts["zenkaku"])
 
 
 def _zenkaku_glyphs(font):
     hankaku_start = 0x21
-    zenkaku_start = 0xff01
+    zenkaku_start = 0xFF01
     glyphs_num = 95
     trans = translate(WIDTH / 4, 0)
     font.selection.none()
@@ -185,13 +194,14 @@ def _zenkaku_glyphs(font):
         font.paste()
     font.selection.none()
     # select copied glyphs + 2 (0xff5f & 0xff60)
-    font.selection.select(('ranges', 'unicode'),
-                          zenkaku_start, zenkaku_start + glyphs_num + 1)
+    font.selection.select(
+        ("ranges", "unicode"), zenkaku_start, zenkaku_start + glyphs_num + 1
+    )
     for glyph in list(font.selection.byGlyphs):
         paren = ZENKAKU_PARENTHESIS.get(glyph.encoding)
         if not paren:
             glyph.transform(trans)
-        elif paren == 'left':
+        elif paren == "left":
             glyph.transform(compose(trans, trans))
         glyph.width = WIDTH
 
@@ -209,7 +219,7 @@ def _hankaku_glyphs(font):
     mat = compose(compose(origin, scl), trans)
     font.selection.none()
     for i in HANKAKU_GLYPHS:
-        font.selection.select(('more', 'unicode'), i)
+        font.selection.select(("more", "unicode"), i)
     for glyph in font.selection.byGlyphs:
         glyph.transform(mat)
         glyph.width = WIDTH / 2
