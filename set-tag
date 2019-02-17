@@ -3,7 +3,7 @@ use v5.14;
 use warnings;
 
 die unless defined $ARGV[0];
-my $version = "0.1.$ARGV[0]";
+my $version = $ARGV[0];
 my $formula = 'sfmono-square.rb';
 cmd('git', 'tag', "v$version");
 cmd('git', 'push', '--tags');
