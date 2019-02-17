@@ -23,10 +23,10 @@ SFMONO_MIGU1M = [
     ["modified-SFMono-BoldItalic.otf", "modified-migu-1m-bold-oblique.ttf"],
 ]
 SFMONO_SQUARE = [
-    ["SFMonoSquare-Regular.otf", "build"],
-    ["SFMonoSquare-Bold.otf", "build"],
-    ["SFMonoSquare-RegularItalic.otf", "build"],
-    ["SFMonoSquare-BoldItalic.otf", "build"],
+    ["SFMonoSquare-Regular.ttf", "build"],
+    ["SFMonoSquare-Bold.ttf", "build"],
+    ["SFMonoSquare-RegularItalic.ttf", "build"],
+    ["SFMonoSquare-BoldItalic.ttf", "build"],
 ]
 
 
