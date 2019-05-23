@@ -2,8 +2,6 @@
 
 <img width="598" alt="スクリーンショット 0001-05-23 21 40 50" src="https://user-images.githubusercontent.com/1239245/58253912-802c3480-7da4-11e9-9936-1f68326b9c38.png">
 
-**This is now experimental.  Use at your own risk.**
-
 ## What's this?
 
 **SF Mono** is a font from Apple, that is clear, easy to read, and suitable for programming.  **SFMono Square** is based on **SF Mono**, and added glyphs for Japanese & patched for [Nerd Fonts][].
