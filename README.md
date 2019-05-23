@@ -1,6 +1,6 @@
 # SFMono Square - patched font: SFMono + Migu 1M + Nerd Fonts
 
-<img width="762" alt="2018-03-18 21 25 13" src="https://user-images.githubusercontent.com/1239245/37565852-45597362-2af4-11e8-8518-9497a25c47f0.png">
+<img width="598" alt="スクリーンショット 0001-05-23 21 40 50" src="https://user-images.githubusercontent.com/1239245/58253912-802c3480-7da4-11e9-9936-1f68326b9c38.png">
 
 **This is now experimental.  Use at your own risk.**
 
@@ -34,10 +34,8 @@ open $(brew --cellar sfmono-square)/1.0.0/share/fonts
 
 ## Screen Shots
 
-<img width="746" alt="2018-03-18 21 25 09" src="https://user-images.githubusercontent.com/1239245/37565855-4deaeace-2af4-11e8-9eb7-eec9682ebb04.png">
+<img width="746" alt="スクリーンショット 0001-05-23 21 47 37" src="https://user-images.githubusercontent.com/1239245/58253927-8e7a5080-7da4-11e9-9d6b-0520cea1438c.png">
 
-<img width="746" alt="2018-03-18 21 33 03" src="https://user-images.githubusercontent.com/1239245/37565856-5a7a7a34-2af4-11e8-885c-d69a3c1937e3.png">
+<img width="746" alt="スクリーンショット 0001-05-23 21 42 22" src="https://user-images.githubusercontent.com/1239245/58253934-92a66e00-7da4-11e9-983d-1f90f9d8a846.png">
 
-<img width="746" alt="2018-03-18 21 34 38" src="https://user-images.githubusercontent.com/1239245/37565859-5dd70530-2af4-11e8-9aa6-c0b64c6fab24.png">
-
-<img width="746" alt="2018-03-18 21 34 00" src="https://user-images.githubusercontent.com/1239245/37565861-608ca578-2af4-11e8-82f6-e1a5d911ab24.png">
+<img width="746" alt="スクリーンショット 0001-05-23 21 43 33" src="https://user-images.githubusercontent.com/1239245/58253939-95a15e80-7da4-11e9-92d9-5e9693cfbccb.png">
