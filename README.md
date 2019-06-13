@@ -26,7 +26,7 @@ Install with [Homebrew][].
 brew tap delphinus/sfmono-square
 brew install sfmono-square
 
-open $(brew --cellar sfmono-square)/1.0.0/share/fonts
+open "$(brew --prefix sfmono-square)/share/fonts"
 # open fonts with Finder
 ```
 
