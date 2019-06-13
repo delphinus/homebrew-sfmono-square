@@ -29,6 +29,9 @@ class SfmonoSquare < Formula
       cp sfmono_dir / otf, buildpath
     end
 
+    # Set path for fontforge library to use it in Python
+    ENV['PYTHONPATH'] = Formulary.factory('fontforge').opt_lib / 'python3.7/site-packages'
+
     system buildpath / 'bin/sfmono-square', version
     (share / 'fonts').install Dir['build/*.otf']
   end
