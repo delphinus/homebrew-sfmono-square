@@ -30,6 +30,31 @@ open "$(brew --prefix sfmono-square)/share/fonts"
 # open fonts with Finder
 ```
 
+## Troubleshooting
+
+### Install failure due to fontforge
+
+```
+==> Installing delphinus/sfmono-square/sfmono-square
+Error: An exception occurred within a child process:
+  RuntimeError: /usr/local/opt/fontforge not present or broken
+Please reinstall fontforge. Sorry :(
+```
+
+The fontforge formula does not link their binaries in default. If you see this, try again after linking it.
+
+```sh
+brew link fontforge
+# again
+brew install sfmono-square
+```
+
+### VSCode shows “space” glyphs (U+0020) as double width.
+
+See [#7][]
+
+[#7]: https://github.com/delphinus/homebrew-sfmono-square/issues/7
+
 ## Screen Shots
 
 <img width="746" alt="スクリーンショット 0001-05-23 21 47 37" src="https://user-images.githubusercontent.com/1239245/58253927-8e7a5080-7da4-11e9-9d6b-0520cea1438c.png">
