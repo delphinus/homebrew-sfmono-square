@@ -17,10 +17,10 @@ SFMONO = [
     ["SFMono-BoldItalic.otf"],
 ]
 SFMONO_MIGU1M = [
-    ["modified-SFMono-Regular.otf", "modified-migu-1m-regular.ttf"],
-    ["modified-SFMono-Bold.otf", "modified-migu-1m-bold.ttf"],
-    ["modified-SFMono-RegularItalic.otf", "modified-migu-1m-oblique.ttf"],
-    ["modified-SFMono-BoldItalic.otf", "modified-migu-1m-bold-oblique.ttf"],
+    ["SFMono-1x2-Regular.otf", "modified-migu-1m-regular.ttf"],
+    ["SFMono-1x2-Bold.otf", "modified-migu-1m-bold.ttf"],
+    ["SFMono-1x2-RegularItalic.otf", "modified-migu-1m-oblique.ttf"],
+    ["SFMono-1x2-BoldItalic.otf", "modified-migu-1m-bold-oblique.ttf"],
 ]
 SFMONO_SQUARE = [
     ["SFMonoSquare-Regular.otf", "build"],
