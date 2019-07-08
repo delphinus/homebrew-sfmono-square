@@ -34,5 +34,7 @@ class SfmonoSquare < Formula
 
     system buildpath / "bin/sfmono-square", version
     (share / "fonts").install Dir["build/*.otf"]
+    (share / "fonts/src").install Dir["*.otf"]
+    (share / "fonts/src").install Dir["*.ttf"]
   end
 end
