@@ -8,7 +8,7 @@ from psMat import compose, scale, translate
 
 FAMILY = "SF Mono"
 FAMILY_SUFFIX = "Square"
-FULLNAME = FAMILY + " " + FAMILY_SUFFIX
+FULLNAME = f"{FAMILY} {FAMILY_SUFFIX}"
 FILENAME = FULLNAME.replace(" ", "")
 FONTFORGE = "FontForge 2.0"
 ITALIC = "Italic"
@@ -86,7 +86,7 @@ def generate(hankaku, zenkaku, version):
     # font.removeOverlap()
     font.autoHint()
     font.autoInstr()
-    print("Generate " + opts["out_file"])
+    print(f"Generate {opts['out_file']}")
     font.generate(opts["out_file"], flags=("opentype",))
     return 0
 
@@ -102,9 +102,9 @@ def read_opts(hankaku, zenkaku, version):
         "version": version,
         "filename_style": filename_style,
         "style": style,
-        "fullname": FULLNAME + " " + style,
+        "fullname": f"{FULLNAME} {style}",
         "fontname": fontname,
-        "out_file": fontname + ".otf",
+        "out_file": f"{fontname}.otf",
     }
 
 

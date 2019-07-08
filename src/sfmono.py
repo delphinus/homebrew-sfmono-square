@@ -18,14 +18,14 @@ def modify(in_file):
     regular_font = ""
     if ITALIC in style:
         index = style.find(ITALIC)
-        regular_font = "{0}-{1}{2}".format(family, style[:index], ext)
+        regular_font = f"{family}-{style[:index]}{ext}"
     font = fontforge.open(in_file)
     if regular_font:
         font.mergeFonts(regular_font)
     _set_proportion(font)
     font.removeOverlap()
-    out_file = "modified-" + in_file
-    print("Generate " + out_file)
+    out_file = f"modified-{in_file}"
+    print(f"Generate {out_file}")
     font.generate(out_file, flags=("opentype",))
     return 0
 

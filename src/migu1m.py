@@ -20,8 +20,8 @@ def modify(in_file):
     _set_new_em(font)
     _set_proportion(font)
     _zenkaku_space(font)
-    out_file = "modified-" + in_file
-    print("Generate " + out_file)
+    out_file = f"modified-{in_file}"
+    print(f"Generate {out_file}")
     font.generate(out_file, flags=("opentype",))
     return 0
 
@@ -32,8 +32,8 @@ def oblique(in_file):
     name, ext = splitext(in_file)
     in_style = name.split("-")[-1]
     style = "oblique" if in_style == "regular" else "bold-oblique"
-    out_file = "modified-migu-1m-{0}{1}".format(style, ext)
-    print("Generate " + out_file)
+    out_file = f"modified-migu-1m-{style}{ext}"
+    print(f"Generate {out_file}")
     font.generate(out_file, flags=("opentype",))
     return 0
 

@@ -178,7 +178,7 @@ def patch(in_file, out_dir):
         if exception.errno != errno.EEXIST:
             raise
     out_file = os.path.join(out_dir, in_file)
-    print("Generated " + out_file)
+    print(f"Generated {out_file}")
     font.generate(out_file)
     return 0
 
@@ -195,7 +195,7 @@ def _patch(font):
             if symfont:
                 symfont.close()
                 symfont = None
-            symfont = fontforge.open("src/glyphs/" + info["filename"])
+            symfont = fontforge.open(f"src/glyphs/{info['filename']}")
             # Match the symbol font size to the source font size
             symfont.em = font.em
             previous_symbol_filename = info["filename"]
