@@ -20,6 +20,9 @@ SCALE_DOWN = 0.65
 UNDERLINE_POS = -250
 UNDERLINE_HEIGHT = 100
 WIDTH = ASCENT + DESCENT
+ME = "JINNOUCHI Yasushi"
+MAIL = "me@delphinus.dev"
+YEAR = 2019
 ZENKAKU_PARENTHESIS = {
     0xFF08: "left",
     0xFF09: "right",
@@ -66,7 +69,7 @@ STYLE_PROPERTY = {
         "panose_letterform": 9,
     },
 }
-COPYRIGHT = """Copyright (c) 2018 JINNOUCHI Yasushi <delphinus@remora.cx>
+COPYRIGHT = f"""Copyright (c) {YEAR} {ME} <{MAIL}>
 Copyright (c) 2016-2017 Apple Inc. All rights reserved.
 Copyright (c) 2015 itouhiro
 Copyright (c) 2015 M+ FONTS PROJECT
