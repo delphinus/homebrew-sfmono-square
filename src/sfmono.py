@@ -8,7 +8,6 @@ import psMat
 OLD_WIDTH = 1266
 WIDTH = 1024
 ITALIC = "Italic"
-SQUARE = "Square"
 SCALE_DOWN = float(WIDTH) / OLD_WIDTH
 
 
