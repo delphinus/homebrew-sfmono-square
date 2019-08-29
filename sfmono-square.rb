@@ -19,11 +19,11 @@ class SfmonoSquare < Formula
   def install
     resource("migu1mfonts").stage { buildpath.install Dir["*"] }
 
-    sd_mono_dir_base = "/Applications/Utilities/Terminal.app/Contents/Resources/Fonts"
-    sfmono_dir = if Dir.exist?(sd_mono_dir_base)
-      Pathname.new sd_mono_dir_base
+    sfmono_dir_base = "/Applications/Utilities/Terminal.app/Contents/Resources/Fonts"
+    sfmono_dir = if Dir.exist?(sfmono_dir_base)
+      Pathname.new sfmono_dir_base
     else
-      Pathname.new "/System"+sd_mono_dir_base
+      Pathname.new "/System"+sfmono_dir_base
     end
     [
       "SFMono-Regular.otf",
