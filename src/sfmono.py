@@ -10,17 +10,18 @@ WIDTH = 1024
 ITALIC = "Italic"
 SCALE_DOWN = float(WIDTH) / OLD_WIDTH
 FAMILY = "SF Mono"
+FILE_PREFIX = "SF-Mono-"
 PS_FAMILY = "SFMono"
 FAMILY_SUFFIX = "1x2"
 
 
 def modify(in_file):
     name, ext = splitext(in_file)
-    style = name.split("-")[1]
+    style = name.replace(FILE_PREFIX, '')
     regular_font = ""
     if ITALIC in style:
         index = style.find(ITALIC)
-        regular_font = f"{PS_FAMILY}-{style[:index]}{ext}"
+        regular_font = f"{FILE_PREFIX}{style[:index]}{ext}"
     font = fontforge.open(in_file)
     if regular_font:
         font.mergeFonts(regular_font)
