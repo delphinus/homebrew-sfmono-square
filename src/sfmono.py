@@ -17,7 +17,7 @@ FAMILY_SUFFIX = "1x2"
 
 def modify(in_file):
     name, ext = splitext(in_file)
-    style = name.sub(FILE_PREFIX, '')
+    style = name.replace(FILE_PREFIX, '')
     regular_font = ""
     if ITALIC in style:
         index = style.find(ITALIC)
