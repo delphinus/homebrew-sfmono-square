@@ -10,13 +10,14 @@ WIDTH = 1024
 ITALIC = "Italic"
 SCALE_DOWN = float(WIDTH) / OLD_WIDTH
 FAMILY = "SF Mono"
+FILE_PREFIX = "SF-Mono-"
 PS_FAMILY = "SFMono"
 FAMILY_SUFFIX = "1x2"
 
 
 def modify(in_file):
     name, ext = splitext(in_file)
-    style = name.split("-")[1]
+    style = name.sub(FILE_PREFIX, '')
     regular_font = ""
     if ITALIC in style:
         index = style.find(ITALIC)
