@@ -11,10 +11,10 @@ import sfmono_square
 MIGU1M = [["migu-1m-regular.ttf"], ["migu-1m-bold.ttf"]]
 MIGU1M_MODIFIED = [["modified-migu-1m-regular.ttf"], ["modified-migu-1m-bold.ttf"]]
 SFMONO = [
-    ["SFMono-Regular.otf"],
-    ["SFMono-Bold.otf"],
-    ["SFMono-RegularItalic.otf"],
-    ["SFMono-BoldItalic.otf"],
+    ["SF-Mono-Regular.otf"],
+    ["SF-Mono-Bold.otf"],
+    ["SF-Mono-RegularItalic.otf"],
+    ["SF-Mono-BoldItalic.otf"],
 ]
 SFMONO_MIGU1M = [
     ["SFMono-1x2-Regular.otf", "modified-migu-1m-regular.ttf"],
