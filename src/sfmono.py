@@ -21,7 +21,7 @@ def modify(in_file):
     regular_font = ""
     if ITALIC in style:
         index = style.find(ITALIC)
-        regular_font = f"{PS_FAMILY}-{style[:index]}{ext}"
+        regular_font = f"{FILE_PREFIX}{style[:index]}{ext}"
     font = fontforge.open(in_file)
     if regular_font:
         font.mergeFonts(regular_font)
