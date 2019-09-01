@@ -10,7 +10,6 @@ FAMILY = "SF Mono"
 FAMILY_SUFFIX = "Square"
 FULLNAME = f"{FAMILY} {FAMILY_SUFFIX}"
 FILENAME = FULLNAME.replace(" ", "")
-FONTFORGE = "FontForge 2.0"
 ITALIC = "Italic"
 ITALIC_ANGLE = -10
 ASCENT = 1638
@@ -135,7 +134,7 @@ IPA Font License Agreement v1.0 (http://ipafont.ipa.go.jp/ipa_font_license_v1.ht
         "UniqueID",
         " : ".join(
             [
-                FONTFORGE,
+                f"FontForge {fontforge.version()}",
                 opts["fullname"],
                 opts["version"],
                 datetime.today().strftime("%d-%m-%Y"),
