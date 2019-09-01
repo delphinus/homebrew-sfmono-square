@@ -137,7 +137,7 @@ IPA Font License Agreement v1.0 (http://ipafont.ipa.go.jp/ipa_font_license_v1.ht
                 f"FontForge {fontforge.version()}",
                 opts["fullname"],
                 opts["version"],
-                datetime.today().strftime("%d-%m-%Y"),
+                datetime.today().strftime("%F"),
             ]
         ),
     )
