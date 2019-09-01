@@ -23,6 +23,7 @@ WIDTH = ASCENT + DESCENT
 ME = "JINNOUCHI Yasushi"
 MAIL = "me@delphinus.dev"
 YEAR = 2019
+SFMONO = "SF-Mono-Regular.otf"
 ZENKAKU_PARENTHESIS = {
     0xFF08: "left",
     0xFF09: "right",
@@ -69,13 +70,6 @@ STYLE_PROPERTY = {
         "panose_letterform": 9,
     },
 }
-COPYRIGHT = f"""Copyright (c) {YEAR} {ME} <{MAIL}>
-Copyright (c) 2016-2017 Apple Inc. All rights reserved.
-Copyright (c) 2015 itouhiro
-Copyright (c) 2015 M+ FONTS PROJECT
-Copyright (c) 2003-2011 Information-technology Promotion Agency, Japan (IPA)
-SIL Open Font License Version 1.1 (http://scripts.sil.org/ofl)
-IPA Font License Agreement v1.0 (http://ipafont.ipa.go.jp/ipa_font_license_v1.html)"""  # noqa
 
 
 def generate(hankaku, zenkaku, version):
@@ -113,6 +107,9 @@ def read_opts(hankaku, zenkaku, version):
 
 def new_font(opts):
     prop = STYLE_PROPERTY[opts["filename_style"]]
+    sfmono = fontforge.open(SFMONO)
+    sfmono_info = {key: value for (lang, key, value) in sfmono.sfnt_names}
+
     font = fontforge.font()
     font.ascent = ASCENT
     font.descent = DESCENT
@@ -120,7 +117,14 @@ def new_font(opts):
     font.upos = UNDERLINE_POS
     font.uwidth = UNDERLINE_HEIGHT
     font.familyname = FULLNAME
-    font.copyright = COPYRIGHT
+    font.copyright = f"""Copyright (c) {YEAR} {ME} <{MAIL}>
+{sfmono_info['Copyright']}
+{sfmono_info['UniqueID']}
+Copyright (c) 2015 itouhiro
+Copyright (c) 2015 M+ FONTS PROJECT
+Copyright (c) 2003-2011 Information-technology Promotion Agency, Japan (IPA)
+SIL Open Font License Version 1.1 (http://scripts.sil.org/ofl)
+IPA Font License Agreement v1.0 (http://ipafont.ipa.go.jp/ipa_font_license_v1.html)"""  # noqa
     font.encoding = ENCODING
     font.fontname = opts["fontname"]
     font.fullname = opts["fullname"]
