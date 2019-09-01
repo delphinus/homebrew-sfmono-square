@@ -132,7 +132,7 @@ IPA Font License Agreement v1.0 (http://ipafont.ipa.go.jp/ipa_font_license_v1.ht
     font.appendSFNTName(
         "English (US)",
         "UniqueID",
-        " : ".join(
+        "; ".join(
             [
                 f"FontForge {fontforge.version()}",
                 opts["fullname"],
