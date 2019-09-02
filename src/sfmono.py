@@ -2,7 +2,7 @@
 from os.path import splitext
 
 import fontforge
-import psMat
+from psMat import compose, scale, translate
 
 
 OLD_WIDTH = 1266
@@ -13,11 +13,9 @@ FAMILY = "SF Mono"
 FILE_PREFIX = "SF-Mono-"
 PS_FAMILY = "SFMono"
 FAMILY_SUFFIX = "1x2"
-SHADES = [
-    0x2591,  # ░  LIGHT SHADE
-    0x2592,  # ▒  MEDIUM SHADE
-    0x2593,  # ▓  MEDIUM SHADE
-]
+LIGHT_SHADE = 0x2591
+MEDIUM_SHADE = 0x2592
+DARK_SHADE = 0x2593
 
 
 def modify(in_file):
@@ -55,18 +53,53 @@ def modify(in_file):
 
 
 def _expand_shades(font):
-    trans = psMat.translate(0, 421)
-    font.selection.none()
-    for shade in SHADES:
-        font.selection.select(shade)
-        font.copy()
-        for glyph in list(font.selection.byGlyphs):
-            glyph.transform(trans)
-        font.pasteInto()
+    trans = translate(0, 421)
+
+    # LIGHT SHADE
+    font.selection.select(LIGHT_SHADE)
+    font.copy()
+    for glyph in list(font.selection.byGlyphs):
+        glyph.transform(trans)
+    font.pasteInto()
+
+    # MEDIUM SHADE
+    font.selection.select(MEDIUM_SHADE)
+    font.copy()
+    for glyph in list(font.selection.byGlyphs):
+        glyph.transform(trans)
+    font.pasteInto()
+
+    # DARK SHADE
+    font.selection.select(DARK_SHADE)
+    font.copy()
+    for glyph in list(font.selection.byGlyphs):
+        glyph.transform(trans)
+    font.pasteInto()
+
+    font.selection.select(0x2581)
+    font.copy()
+    font.selection.select(0xe000)
+    font.paste()
+
+    font.selection.select(0x2581)
+    move_to_origin = translate(0, 208)
+    shrink_to_fit = scale(1.0, 106.0 / 256)
+    move_to_bottom = translate(0, -439)
+    mat = compose(compose(move_to_origin, shrink_to_fit), move_to_bottom)
+    for glyph in list(font.selection.byGlyphs):
+        glyph.transform(mat)
+    font.copy()
+    font.selection.select(DARK_SHADE)
+    font.pasteInto()
+
+    font.selection.select(0xe000)
+    font.cut()
+    font.selection.select(0x2581)
+    font.paste()
 
 
 def _set_proportion(font):
-    mat = psMat.scale(SCALE_DOWN)
+    mat = scale(SCALE_DOWN)
     font.selection.all()
     for glyph in list(font.selection.byGlyphs):
         glyph.transform(mat)
