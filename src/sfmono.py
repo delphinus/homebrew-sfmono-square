@@ -13,6 +13,11 @@ FAMILY = "SF Mono"
 FILE_PREFIX = "SF-Mono-"
 PS_FAMILY = "SFMono"
 FAMILY_SUFFIX = "1x2"
+SHADES = [
+    0x2591,  # ░  LIGHT SHADE
+    0x2592,  # ▒  MEDIUM SHADE
+    0x2593,  # ▓  MEDIUM SHADE
+]
 
 
 def modify(in_file):
@@ -25,6 +30,7 @@ def modify(in_file):
     font = fontforge.open(in_file)
     if regular_font:
         font.mergeFonts(regular_font)
+    _expand_shades(font)
     _set_proportion(font)
     font.removeOverlap()
     font.familyname = f"{PS_FAMILY} {FAMILY_SUFFIX}"
@@ -46,6 +52,17 @@ def modify(in_file):
     print(f"Generate {out_file}")
     font.generate(out_file, flags=("opentype",))
     return 0
+
+
+def _expand_shades(font):
+    trans = psMat.translate(0, 421)
+    font.selection.none()
+    for shade in SHADES:
+        font.selection.select(shade)
+        font.copy()
+        for glyph in list(font.selection.byGlyphs):
+            glyph.transform(trans)
+        font.pasteInto()
 
 
 def _set_proportion(font):
