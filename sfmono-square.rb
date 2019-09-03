@@ -16,25 +16,17 @@ class SfmonoSquare < Formula
     sha256 "d4c38664dd57bc5927abe8f4fbea8f06a8ece3fea49ea02354d4e03ac6d15006"
   end
 
-  resource "sfmono" do
-    url "https://developer.apple.com/design/downloads/SF-Mono.dmg"
-    sha256 "55799d9c23369cf5db3dcd07a4543e39a39f93c2ccd7028d0195a20cbb2fa2ea"
-  end
-
   def install
     resource("migu1mfonts").stage { buildpath.install Dir["*"] }
 
-    resource("sfmono").stage do
-      system "/usr/bin/xar", "-xf", "SF Mono Fonts.pkg"
-      system "/bin/bash", "-c", "cat SFMonoFonts.pkg/Payload | gunzip -dc | cpio -i"
+    sfmono_dir = Pathname.new "/Applications/Utilities/Terminal.app/Contents/Resources/Fonts"
       [
-        "SF-Mono-Regular.otf",
-        "SF-Mono-RegularItalic.otf",
-        "SF-Mono-Bold.otf",
-        "SF-Mono-BoldItalic.otf"
+      "SFMono-Regular.otf",
+      "SFMono-RegularItalic.otf",
+      "SFMono-Bold.otf",
+      "SFMono-BoldItalic.otf"
       ].each do |otf|
-        buildpath.install "Library/Fonts/" + otf
-      end
+      cp sfmono_dir / otf, buildpath
     end
 
     # Set path for fontforge library to use it in Python
