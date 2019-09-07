@@ -32,6 +32,9 @@ class SfmonoSquare < Formula
     # Set path for fontforge library to use it in Python
     ENV["PYTHONPATH"] = Formulary.factory("fontforge").opt_lib / "python3.7/site-packages"
 
+    # Uncomment and change this value to enlarge glyphs from Migu1M.
+    # See https://github.com/delphinus/homebrew-sfmono-square/issues/9
+    # ENV["MIGU1M_SCALE"] = "82"
     system buildpath / "bin/sfmono-square", version
     (share / "fonts").install Dir["build/*.otf"]
     (share / "fonts/src").install Dir["*.otf"]
