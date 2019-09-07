@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+from os import getenv
 from os.path import splitext
 
 import fontforge
@@ -9,10 +10,14 @@ ASCENT = 1638
 DESCENT = 410
 OLD_EM = 1000
 EM = ASCENT + DESCENT
-SCALE_DOWN = 0.82
-X_TO_CENTER = EM * (1 - SCALE_DOWN) / 2
 HANKAKU_KANA = (0xFF60, 0xFF9F)
 OBLIQUE_SKEW = 0.2
+
+try:
+    SCALE = float(getenv("MIGU1M_SCALE", 0.82))
+except ValueError:
+    SCALE = 0.82
+X_TO_CENTER = EM * (1 - SCALE) / 2
 
 
 def modify(in_file):
@@ -52,7 +57,7 @@ def _set_new_em(font):
 
 
 def _set_proportion(font):
-    scale = psMat.scale(SCALE_DOWN)
+    scale = psMat.scale(SCALE)
     font.selection.all()
     for glyph in list(font.selection.byGlyphs):
         is_hankaku_kana = glyph.encoding in range(*HANKAKU_KANA)
