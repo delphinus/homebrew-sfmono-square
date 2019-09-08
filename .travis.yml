@@ -1,0 +1,15 @@
+---
+language: ruby
+os: osx
+
+before_cache:
+  - brew cleanup
+
+cache:
+  directories:
+    - $HOME/Library/Caches/Homebrew
+    - /usr/local/Homebrew
+
+script:
+  - brew tap delphinus/sfmono-square
+  - brew install sfmono-square
