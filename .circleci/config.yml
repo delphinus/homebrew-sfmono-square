@@ -1,0 +1,22 @@
+---
+version: 2.1
+
+orbs:
+  slack: circleci/slack@3.3.0
+
+jobs:
+  build-master:
+    macos:
+      xcode: 10.2.0
+    steps:
+      - run: brew tap delphinus/sfmono-sqaure
+      - run: brew install sfmono-square
+      - slack/status:
+          fail_only: true
+          mentions: delphinus
+
+workflows:
+  version: 2
+  build-master:
+    jobs:
+      - build-master
