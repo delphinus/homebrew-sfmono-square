@@ -44,6 +44,10 @@ When you want to change this value, you can do this by `brew edit` and follow [c
 brew edit sfmono-square
 ```
 
+See screenshots for examples [here][].
+
+[here]: https://github.com/delphinus/homebrew-sfmono-square/issues/9#issuecomment-515827269
+
 ## Troubleshooting
 
 ### Install failure due to fontforge
