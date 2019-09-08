@@ -30,6 +30,20 @@ open "$(brew --prefix sfmono-square)/share/fonts"
 # open fonts with Finder
 ```
 
+## Customize
+
+### Change the ratio the size for zenkaku / hankaku
+
+In default, this formula reduces the size of glyphs in Migu 1M (zenkaku font) and matches with SF Mono (hankaku font). The ratio is **82%**.
+
+When you want to change this value, you can do this by `brew edit` and follow [comments][] in the formula.
+
+[comments]: https://github.com/delphinus/homebrew-sfmono-square/blob/b99df9b00fa3c3c0637eba049f4619b363f69ed3/sfmono-square.rb#L43-L45
+
+```sh
+brew edit sfmono-square
+```
+
 ## Troubleshooting
 
 ### Install failure due to fontforge
