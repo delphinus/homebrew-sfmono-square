@@ -11,8 +11,7 @@ cache:
     - /usr/local/Homebrew
 
 script:
-  - brew tap delphinus/sfmono-square
-  - brew install sfmono-square
+  - bin/travis-build.sh
 
 notifications:
   slack:
