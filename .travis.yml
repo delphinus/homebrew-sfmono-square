@@ -13,3 +13,8 @@ cache:
 script:
   - brew tap delphinus/sfmono-square
   - brew install sfmono-square
+
+notifications:
+  slack:
+    rooms:
+      secure: qnOCekMUP9XujvgoAFrIzDZyHN/jbxaLWKN4phjGbWvECzwGNE0cFLD3oHTH/YbTRhe1247J4mRg/5Ye/I1UWWyvqt3VzIDokd3U0qwA0vNoM6B68YJt0BLHl99Kgm8LGUBQ6/QgFtwb7ANEBKaSknVxE1gv0NeiQEeTMobRTF6VaCdEnvU0uTirAODkF/CWaKE8UTGrwqJJXLcKK1WKf8gwHOS5duFFQa8j8BrYfk739eGfW3oO29elHVlpdLJqFrAThKLQlaJYXRAPtgLdrdYYldMUuT3W2gwPW5G7XTKr74+OD57JASvLVrkkyocs8P6kAdto7ol9Ypg3NUUXIH/MSyQ5XOi9lArEktbQwHK9v8obF1JsFCne3sOEVOLrokczXPZw37o0qz16PqbcQw09tQicwnwVStGcJRegyAZlUFxk3CRvAbPE/Hqoy66mCMp8GxZLNtMliR/KMjJWSAHrAFTl+ehGV1XhLMxi6Qx8/jNFxSza+G+qLmFhhHBiM0qnP+zJ/j2Bkzf5SvNBd1txSqYtm9jgAi0UH4qfcyDtFvc9+BhddmCg9oRhpNZ5GmHrBOPcoXOY8J52B5XQpeK+5/KzZ3E6JG/dyTPWXqiDJJVyrQiUTIRJgoXmgnYLxtCRizFazqkCB4e3Xhz5PQrLzwvA+pXyhsMtYtQ1heY=
