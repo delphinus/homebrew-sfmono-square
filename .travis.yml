@@ -12,6 +12,7 @@ cache:
 
 script:
   - bin/travis-build.sh
+  - bin/show-font-version.py
 
 notifications:
   slack:
