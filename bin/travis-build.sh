@@ -1,6 +1,6 @@
 #!/bin/bash -eux
-if [[ $TRAVIS_BRANCH = master ]]; then
-  : build on master
+if [[ $TRAVIS_EVENT_TYPE = cron ]]; then
+  : build on the latest tag
   brew tap delphinus/sfmono-square
   brew install sfmono-square
 else
