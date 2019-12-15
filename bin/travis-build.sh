@@ -1,4 +1,5 @@
 #!/bin/bash -eux
+brew update
 if [[ $TRAVIS_EVENT_TYPE = cron ]]; then
   : build on the latest tag
   brew tap delphinus/sfmono-square
