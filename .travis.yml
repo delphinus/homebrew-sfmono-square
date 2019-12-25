@@ -16,6 +16,8 @@ script:
 
 notifications:
   slack:
+    on_success: change
+    on_failure: always
     rooms:
       secure: "qnOCekMUP9XujvgoAFrIzDZyHN/jbxaLWKN4phjGbWvECzwGNE0cFLD3oHTH/YbT\
                Rhe1247J4mRg/5Ye/I1UWWyvqt3VzIDokd3U0qwA0vNoM6B68YJt0BLHl99Kgm8L\
