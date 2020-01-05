@@ -1,4 +1,6 @@
 #!/bin/bash -eux
+# show macOS version
+sw_vers
 brew update
 if [[ $TRAVIS_EVENT_TYPE = cron ]]; then
   : build on the latest tag
