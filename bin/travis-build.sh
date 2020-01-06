@@ -1,5 +1,10 @@
 #!/bin/bash -eux
+# show macOS version
+sw_vers
 brew update
+if ! brew info python@2 | grep -q 'Not installed'; then
+  brew unlink python@2
+fi
 if [[ $TRAVIS_EVENT_TYPE = cron ]]; then
   : build on the latest tag
   brew tap delphinus/sfmono-square
