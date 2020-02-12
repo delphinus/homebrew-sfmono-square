@@ -2,7 +2,7 @@
 # show macOS version
 sw_vers
 brew update
-if ! brew info python@2 | grep -q 'Not installed'; then
+if ls -d /usr/local/Frameworks/Python.framework/Headers > /dev/null 2>&1; then
   brew unlink python@2
 fi
 if [[ $TRAVIS_EVENT_TYPE = cron ]]; then
