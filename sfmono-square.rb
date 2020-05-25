@@ -9,7 +9,7 @@ class SfmonoSquare < Formula
   head "https://github.com/delphinus/homebrew-sfmono-square.git"
 
   depends_on "fontforge" => :build
-  depends_on "python" => :build
+  depends_on "python@3.8" => :build
 
   resource "migu1mfonts" do
     url "https://osdn.jp/frs/redir.php?m=gigenet&f=%2Fmix-mplus-ipa%2F63545%2Fmigu-1m-20150712.zip"
@@ -37,13 +37,23 @@ class SfmonoSquare < Formula
       end
     end
 
-    # Set path for fontforge library to use it in Python
-    ENV["PYTHONPATH"] = Formulary.factory("fontforge").opt_lib / "python3.7/site-packages"
-
     # Uncomment and change this value to enlarge glyphs from Migu1M.
     # See https://github.com/delphinus/homebrew-sfmono-square/issues/9
     # ENV["MIGU1M_SCALE"] = "82"
-    system buildpath / "bin/sfmono-square", version
+
+    # Set path for fontforge library to use it in Python
+    fontforge_lib = Formulary.factory("fontforge").lib / "python3.8/site-packages"
+    # Supply the full path for Python3.8 executable to use with fontforge
+    python38 = Formulary.factory("python@3.8").bin / "python3"
+
+    system python38, "-c", <<~PYTHON
+      import sys
+      sys.path.append('#{buildpath / "src"}')
+      sys.path.append('#{fontforge_lib}')
+      import build
+      sys.exit(build.build('#{version}'))
+    PYTHON
+
     (share / "fonts").install Dir["build/*.otf"]
     (share / "fonts/src").install Dir["*.otf"]
     (share / "fonts/src").install Dir["*.ttf"]

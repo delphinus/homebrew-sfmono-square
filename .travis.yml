@@ -3,6 +3,9 @@ language: ruby
 
 jobs:
   include:
+    # 10.15 Catalina
+    - os: osx
+      osx_image: xcode11.4
     # 10.14 Mojave
     - os: osx
       osx_image: xcode11.3

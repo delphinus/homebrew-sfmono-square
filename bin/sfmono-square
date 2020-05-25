@@ -1,4 +1,4 @@
 #!/bin/bash
 TOP_DIR="$(cd "$(dirname "$0")/.." || exit; pwd -P)"
 VERSION="$1"
-PYTHONPATH=$TOP_DIR:$TOP_DIR/src:$PYTHONPATH python3 -c "import sys; import build; sys.exit(build.build('$VERSION'))"
+PYTHONPATH=$TOP_DIR:$TOP_DIR/src:$PYTHONPATH "$(/usr/local/bin/brew --prefix python@3.8)"/bin/python3 -c "import sys; import build; sys.exit(build.build('$VERSION'))"

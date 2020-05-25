@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/local/opt/python@3.8/bin/python3
 import sys
 
-sys.path.append("/usr/local/opt/fontforge/lib/python3.7/site-packages")
+sys.path.append("/usr/local/opt/fontforge/lib/python3.8/site-packages")
 
 import fontforge
 
