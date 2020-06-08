@@ -11,7 +11,7 @@ main() {
   formula=sfmono-square.rb
   url=$(grep '^  url' $formula)
   url=${url#*\"}
-  url="${url%/*}v$ver.tar.gz"
+  url="${url%/*}/v$ver.tar.gz"
   sha=$(curl -L "$url" | shasum -a256)
   sha=${sha%% *}
   URL=$url perl -i -ple '$_ = qq{  url "$ENV{URL}"} if /^  url/' $formula
