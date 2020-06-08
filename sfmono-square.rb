@@ -12,8 +12,13 @@ class SfmonoSquare < Formula
   depends_on "python@3.8" => :build
 
   resource "migu1mfonts" do
-    url "https://osdn.jp/frs/redir.php?m=gigenet&f=%2Fmix-mplus-ipa%2F63545%2Fmigu-1m-20150712.zip"
-    sha256 "d4c38664dd57bc5927abe8f4fbea8f06a8ece3fea49ea02354d4e03ac6d15006"
+    output, = system_command curl_executable,
+                             args: ["--version"],
+                             print_stderr: true
+    curl_name_and_version = output.sub(/^.*?lib(?=curl)/, "").sub(/\s+.*/m, "")
+    url "https://osdn.net/projects/mix-mplus-ipa/downloads/72511/migu-1m-20200307.zip",
+        user_agent: curl_name_and_version
+    sha256 "a4770fca22410668d2747d7898ed4d7ef5d92330162ee428a6efd5cf247d9504"
   end
 
   resource "sfmono" do
