@@ -14,8 +14,9 @@ main() {
   url="${url%/*}v$ver.tar.gz"
   sha=$(curl -L "$url" | shasum -a256)
   sha=${sha%% *}
-  SHA=$sha perl -i -pe '$_ = qq{  sha256 "$ENV{SHA}"} if /^  sha256/' $formula
-  VER=$ver perl -i -pe '$_ = qq{  version "$ENV{VER}"} if /^  version/' $formula
+  URL=$url perl -i -ple '$_ = qq{  url "$ENV{URL}"} if /^  url/' $formula
+  SHA=$sha perl -i -ple '$_ = qq{  sha256 "$ENV{SHA}"} if /^  sha256/' $formula
+  VER=$ver perl -i -ple '$_ = qq{  version "$ENV{VER}"} if /^  version/' $formula
   git add $formula
   git commit -m 'Update formula to use new version'
 }
