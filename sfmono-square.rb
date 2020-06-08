@@ -3,9 +3,9 @@
 class SfmonoSquare < Formula
   desc "Square-sized SF Mono + Japanese fonts + nerd-fonts"
   homepage "https://github.com/delphinus/homebrew-sfmono-square"
-  url "https://github.com/delphinus/homebrew-sfmono-square/v1.2.6.tar.gz"
-  sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
-  version "1.2.6"
+  url "https://github.com/delphinus/homebrew-sfmono-square/archive/archive/v1.2.7.tar.gz"
+  sha256 "d5558cd419c8d46bdc958064cb97f963d1ea793866414c025906ec15033512ed"
+  version "1.2.7"
   head "https://github.com/delphinus/homebrew-sfmono-square.git"
 
   depends_on "fontforge" => :build
@@ -53,7 +53,7 @@ class SfmonoSquare < Formula
 
     system python38, "-c", <<~PYTHON
       import sys
-      sys.path.append('#{buildpath / "src"}')
+      sys.path.append('#{buildpath / 'src'}')
       sys.path.append('#{fontforge_lib}')
       import build
       sys.exit(build.build('#{version}'))
