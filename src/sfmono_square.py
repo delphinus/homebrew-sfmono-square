@@ -21,8 +21,9 @@ UNDERLINE_HEIGHT = 100
 WIDTH = ASCENT + DESCENT
 ME = "JINNOUCHI Yasushi"
 MAIL = "me@delphinus.dev"
-YEAR = 2019
+YEAR = 2020
 SFMONO = "SF-Mono-Regular.otf"
+MIGU1M = "migu-1m-regular.ttf"
 ZENKAKU_PARENTHESIS = {
     0xFF08: "left",
     0xFF09: "right",
@@ -103,7 +104,9 @@ def read_opts(hankaku, zenkaku, version):
 def new_font(opts):
     prop = STYLE_PROPERTY[opts["filename_style"]]
     sfmono = fontforge.open(SFMONO)
+    migu1m = fontforge.open(MIGU1M)
     sfmono_info = {key: value for (lang, key, value) in sfmono.sfnt_names}
+    migu1m_info = {key: value for (lang, key, value) in migu1m.sfnt_names}
 
     font = fontforge.font()
     font.ascent = ASCENT
@@ -115,11 +118,8 @@ def new_font(opts):
     font.copyright = f"""Copyright (c) {YEAR} {ME} <{MAIL}>
 {sfmono_info['Copyright']}
 {sfmono_info['UniqueID']}
-Copyright (c) 2015 itouhiro
-Copyright (c) 2015 M+ FONTS PROJECT
-Copyright (c) 2003-2011 Information-technology Promotion Agency, Japan (IPA)
-SIL Open Font License Version 1.1 (http://scripts.sil.org/ofl)
-IPA Font License Agreement v1.0 (http://ipafont.ipa.go.jp/ipa_font_license_v1.html)"""  # noqa
+{migu1m_info['Copyright']}
+{migu1m_info['UniqueID']}"""  # noqa
     font.encoding = ENCODING
     font.fontname = opts["fontname"]
     font.fullname = opts["fullname"]
