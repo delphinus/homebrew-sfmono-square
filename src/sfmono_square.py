@@ -21,7 +21,7 @@ UNDERLINE_HEIGHT = 100
 WIDTH = ASCENT + DESCENT
 ME = "JINNOUCHI Yasushi"
 MAIL = "me@delphinus.dev"
-YEAR = 2019
+YEAR = 2020
 SFMONO = "SF-Mono-Regular.otf"
 ZENKAKU_PARENTHESIS = {
     0xFF08: "left",
