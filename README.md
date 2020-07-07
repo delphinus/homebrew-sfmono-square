@@ -8,6 +8,12 @@
 
 [Nerd Fonts]: https://github.com/ryanoasis/nerd-fonts
 
+Thoughts and detail description here:
+
+* [SF Mono を使って最高のプログラミング用フォントを作った話 - Qiita][qiita] (in Japanese)
+
+[qiita]: https://qiita.com/delphinus/items/f472eb04ff91daf44274
+
 ### font source
 
 * SF Mono: Apple
