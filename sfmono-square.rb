@@ -5,7 +5,7 @@ class SfmonoSquare < Formula
   homepage "https://github.com/delphinus/homebrew-sfmono-square"
   url "https://github.com/delphinus/homebrew-sfmono-square/archive/v1.2.11.tar.gz"
   sha256 "fd6765a9000d887ba38b467bbc80c6fe811dbc7ae32912d2701313dccf0458a3"
-  version "1.2.11"
+  version "1.2.12-pre-01"
   head "https://github.com/delphinus/homebrew-sfmono-square.git"
 
   depends_on "fontforge" => :build
