@@ -5,7 +5,7 @@ class SfmonoSquare < Formula
   homepage "https://github.com/delphinus/homebrew-sfmono-square"
   url "https://github.com/delphinus/homebrew-sfmono-square/archive/v1.2.12-pre-01.tar.gz"
   sha256 "8a178e6e7caaa74903ae10a893fd52e31b94026bfce2db3a544bee0ef6ae33f2"
-  version "1.2.12-pre-01"
+  version "1.2.12-pre-02"
   head "https://github.com/delphinus/homebrew-sfmono-square.git"
 
   depends_on "fontforge" => :build
@@ -24,6 +24,7 @@ class SfmonoSquare < Formula
   resource "sfmono" do
     url "https://developer.apple.com/design/downloads/SF-Mono.dmg"
     sha256 "61a7d750badddcb9c4af0161aa750dbed42789d34de2facf1781bb48a008e1bd"
+    version "20200812"
   end
 
   def install
