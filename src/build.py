@@ -31,6 +31,12 @@ SFMONO_SQUARE = [
 
 
 def build(version):
+    """
+    Builds a pepu1 version
+
+    Args:
+        version: (str): write your description
+    """
     print("---- modifying migu-1m ----")
     if concurrent_execute(migu1m.modify, MIGU1M):
         return 1
@@ -51,6 +57,12 @@ def build(version):
 
 
 def concurrent_execute(func, args):
+    """
+    Execute a function in parallel.
+
+    Args:
+        func: (callable): write your description
+    """
     executor = ProcessPoolExecutor()
     futures = [executor.submit(func, *a) for a in args]
     return 1 if any([r.result() for r in as_completed(futures)]) else 0

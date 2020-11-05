@@ -21,6 +21,12 @@ PRIVATE = 0xE000  # 
 
 
 def modify(in_file):
+    """
+    Modifies the font file.
+
+    Args:
+        in_file: (str): write your description
+    """
     name, ext = splitext(in_file)
     style = name.replace(FILE_PREFIX, "")
     regular_font = ""
@@ -57,6 +63,13 @@ def modify(in_file):
 
 
 def _expand_shades(font, code):
+    """
+    Expand a font code.
+
+    Args:
+        font: (todo): write your description
+        code: (str): write your description
+    """
     # `421` means the size of a set of pattern in shades.
     mat = translate(0, 421)
 
@@ -68,6 +81,12 @@ def _expand_shades(font, code):
 
 
 def _add_bar_to_shade_bottom(font):
+    """
+    Add a bar to the font.
+
+    Args:
+        font: (todo): write your description
+    """
     font.selection.select(LOWER_BLOCK)
     font.copy()
     font.selection.select(PRIVATE)
@@ -91,6 +110,12 @@ def _add_bar_to_shade_bottom(font):
 
 
 def _set_proportion(font):
+    """
+    Set the font.
+
+    Args:
+        font: (str): write your description
+    """
     mat = scale(SCALE_DOWN)
     font.selection.all()
     for glyph in list(font.selection.byGlyphs):
