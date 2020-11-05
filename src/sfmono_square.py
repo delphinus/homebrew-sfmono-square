@@ -69,6 +69,14 @@ STYLE_PROPERTY = {
 
 
 def generate(hankaku, zenkaku, version):
+    """
+    Generate a new font for a font.
+
+    Args:
+        hankaku: (str): write your description
+        zenkaku: (str): write your description
+        version: (str): write your description
+    """
     opts = read_opts(hankaku, zenkaku, version)
     font = new_font(opts)
     _merge(font, opts)
@@ -85,6 +93,14 @@ def generate(hankaku, zenkaku, version):
 
 
 def read_opts(hankaku, zenkaku, version):
+    """
+    Read the options from the given hank file
+
+    Args:
+        hankaku: (str): write your description
+        zenkaku: (str): write your description
+        version: (todo): write your description
+    """
     (name, _) = splitext(hankaku)
     filename_style = name.split("-")[-1]
     style = filename_style.replace(ITALIC, " " + ITALIC)
@@ -102,6 +118,12 @@ def read_opts(hankaku, zenkaku, version):
 
 
 def new_font(opts):
+    """
+    Create a new font object.
+
+    Args:
+        opts: (todo): write your description
+    """
     prop = STYLE_PROPERTY[opts["filename_style"]]
     sfmono = fontforge.open(SFMONO)
     migu1m = fontforge.open(MIGU1M)
@@ -179,11 +201,24 @@ def new_font(opts):
 
 
 def _merge(font, opts):
+    """
+    Merge the font into the given options.
+
+    Args:
+        font: (todo): write your description
+        opts: (str): write your description
+    """
     font.mergeFonts(opts["hankaku"])
     font.mergeFonts(opts["zenkaku"])
 
 
 def _zenkaku_glyphs(font):
+    """
+    Translate glyphs to a font.
+
+    Args:
+        font: (todo): write your description
+    """
     hankaku_start = 0x21
     zenkaku_start = 0xFF01
     glyphs_num = 95
@@ -209,6 +244,12 @@ def _zenkaku_glyphs(font):
 
 
 def _hankaku_glyphs(font):
+    """
+    Translate a list of the font.
+
+    Args:
+        font: (str): write your description
+    """
     origin = translate(-DESCENT, 0)
     # scale will scale glyphs with the origin (0, DESCENT)
     scl = scale(SCALE_DOWN)

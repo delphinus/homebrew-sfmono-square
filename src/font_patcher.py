@@ -170,6 +170,13 @@ PATCH_SET = [
 
 
 def patch(in_file, out_dir):
+    """
+    Generate the given in_file.
+
+    Args:
+        in_file: (str): write your description
+        out_dir: (str): write your description
+    """
     font = fontforge.open(in_file)
     _patch(font)
     try:
@@ -184,6 +191,12 @@ def patch(in_file, out_dir):
 
 
 def _patch(font):
+    """
+    Patch the font with the previous font.
+
+    Args:
+        font: (todo): write your description
+    """
     # Prevent opening and closing the fontforge font. Makes things faster when
     # patching multiple ranges using the same symbol font.
     previous_symbol_filename = ""
@@ -206,6 +219,13 @@ def _patch(font):
 
 
 def _transform_sym(symfont, info):
+    """
+    Translate the labware to the image
+
+    Args:
+        symfont: (array): write your description
+        info: (todo): write your description
+    """
 
     x_ratio = 1.0
     y_ratio = 1.0
@@ -261,6 +281,14 @@ def _transform_sym(symfont, info):
 
 
 def _copy_glyphs(font, symfont, info):
+    """
+    Copy glyphs font from the font.
+
+    Args:
+        font: (todo): write your description
+        symfont: (array): write your description
+        info: (todo): write your description
+    """
 
     for encoding in range(info["sym_start"], info["sym_end"] + 1):
         src_encoding = encoding

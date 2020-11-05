@@ -21,6 +21,12 @@ X_TO_CENTER = EM * (1 - SCALE) / 2
 
 
 def modify(in_file):
+    """
+    Modifies the given font file ini file.
+
+    Args:
+        in_file: (str): write your description
+    """
     font = fontforge.open(in_file)
     _set_new_em(font)
     _set_proportion(font)
@@ -32,6 +38,12 @@ def modify(in_file):
 
 
 def oblique(in_file):
+    """
+    Generate a list of the given file.
+
+    Args:
+        in_file: (str): write your description
+    """
     font = fontforge.open(in_file)
     _make_oblique(font)
     name, ext = splitext(in_file)
@@ -57,6 +69,12 @@ def _set_new_em(font):
 
 
 def _set_proportion(font):
+    """
+    Set the font scale.
+
+    Args:
+        font: (str): write your description
+    """
     scale = psMat.scale(SCALE)
     font.selection.all()
     for glyph in list(font.selection.byGlyphs):
@@ -69,6 +87,12 @@ def _set_proportion(font):
 
 
 def _zenkaku_space(font):
+    """
+    Copy font to font.
+
+    Args:
+        font: (todo): write your description
+    """
     font.selection.none()
     font.selection.select(0x2610)  # ☐  BALLOT BOX
     font.copy()
@@ -82,6 +106,12 @@ def _zenkaku_space(font):
 
 
 def _make_oblique(font):
+    """
+    Make font
+
+    Args:
+        font: (todo): write your description
+    """
     mat = psMat.skew(OBLIQUE_SKEW)
     font.selection.all()
     font.transform(mat)
