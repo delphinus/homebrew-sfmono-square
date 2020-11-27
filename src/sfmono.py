@@ -93,6 +93,12 @@ def _add_bar_to_shade_bottom(font):
 def _set_proportion(font):
     mat = scale(SCALE_DOWN)
     font.selection.all()
+    scaled = set()
     for glyph in list(font.selection.byGlyphs):
-        glyph.transform(mat)
+        # some glyphs will be selected multiple times.
+        if glyph.unicode in scaled:
+            print(f"this is already scaled: {glyph.unicode:#x}")
+        else:
+            glyph.transform(mat)
+            scaled.add(glyph.unicode)
         glyph.width = WIDTH
