@@ -94,5 +94,7 @@ def _set_proportion(font):
     mat = scale(SCALE_DOWN)
     font.selection.all()
     for glyph in list(font.selection.byGlyphs):
-        glyph.transform(mat)
+        # 0x20 '-' will be a strange shape with this.
+        if glyph.unicode != 0x20:
+            glyph.transform(mat)
         glyph.width = WIDTH
