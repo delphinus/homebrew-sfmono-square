@@ -93,10 +93,12 @@ def _add_bar_to_shade_bottom(font):
 def _set_proportion(font):
     mat = scale(SCALE_DOWN)
     font.selection.all()
+    scaled = {}
     for glyph in list(font.selection.byGlyphs):
-        # 0x20 '-' will be a strange shape with this.
-        if glyph.glyphname == "hyphen":
-            print(f"this is hyphen: {glyph.unicode}")
+        # 0x2d '-' will be a strange shape with this.
+        if scaled.get(glyph.unicode):
+            print(f"this is already scaled: {glyph.unicode}")
         else:
             glyph.transform(mat)
+            scaled[glyph.unicode] = True
         glyph.width = WIDTH
