@@ -95,6 +95,8 @@ def _set_proportion(font):
     font.selection.all()
     for glyph in list(font.selection.byGlyphs):
         # 0x20 '-' will be a strange shape with this.
+        print(glyph.unicode)
         if glyph.unicode != 0x20:
+            print("this is hyphen")
             glyph.transform(mat)
         glyph.width = WIDTH
