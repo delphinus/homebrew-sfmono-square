@@ -9,7 +9,7 @@ class SfmonoSquare < Formula
   head "https://github.com/delphinus/homebrew-sfmono-square.git"
 
   depends_on "fontforge" => :build
-  depends_on "python@3.9" => :build
+  depends_on "python" => :build
 
   resource "migu1mfonts" do
     output, = system_command curl_executable,
@@ -49,9 +49,7 @@ class SfmonoSquare < Formula
     # Set path for fontforge library to use it in Python
     fontforge_lib = Formulary.factory("fontforge").lib / "python3.9/site-packages"
 
-    python39 = Formulary.factory("python@3.9").bin / "python3"
-
-    system python39, "-c", <<~PYTHON
+    system "python3", "-c", <<~PYTHON
       import sys
       sys.path.append('#{buildpath / 'src'}')
       sys.path.append('#{fontforge_lib}')
