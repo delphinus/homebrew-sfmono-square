@@ -1,5 +1,7 @@
 # -*- coding:utf-8 -*-
+from pathlib import Path
 from os.path import splitext
+from json import load
 
 import fontforge
 from psMat import compose, scale, translate
@@ -18,6 +20,9 @@ MEDIUM_SHADE = 0x2592  # ▒
 DARK_SHADE = 0x2593  # ▓
 LOWER_BLOCK = 0x2581  # ▁
 PRIVATE = 0xE000  # 
+BLACK_CIRCLE = 0x25cf  # ●
+BRAILLE_JSON = Path(__file__).parent / 'braille.json'
+BRAILLE_DIAMETER = 256 / 1024
 
 
 def modify(in_file):
@@ -34,6 +39,7 @@ def modify(in_file):
         _expand_shades(font, code)
     _add_bar_to_shade_bottom(font)
     _set_proportion(font)
+    _add_braille(font)
     font.removeOverlap()
     font.familyname = f"{PS_FAMILY} {FAMILY_SUFFIX}"
     font.fullname = f"{PS_FAMILY} {FAMILY_SUFFIX} {style}"
@@ -89,6 +95,45 @@ def _add_bar_to_shade_bottom(font):
     font.selection.select(LOWER_BLOCK)
     font.paste()
 
+DESCENT = 410
+BRAILLE_POINTS = [
+    (256, 1792 - DESCENT), (256, 1280 - DESCENT),
+    (256, 768 - DESCENT), (256, 256 - DESCENT),
+    (768, 1792 - DESCENT), (768, 1280 - DESCENT),
+    (768, 768 - DESCENT), (768, 256 - DESCENT),
+]
+
+def _add_braille(font):
+    font.selection.select(BLACK_CIRCLE)
+    font.copy()
+    font.selection.select(PRIVATE)
+    font.paste()
+
+    font.selection.select(PRIVATE)
+    move_to_origin = translate(-512, -582.4)
+    make_small = scale(BRAILLE_DIAMETER)
+    for glyph in list(font.selection.byGlyphs):
+        glyph.transform(compose(move_to_origin, make_small))
+
+    with BRAILLE_JSON.open() as f:
+        braille = load(f)
+
+    for b in braille:
+        for p in b['points']:
+            point = BRAILLE_POINTS[p]
+            font.selection.select(PRIVATE)
+            for glyph in list(font.selection.byGlyphs):
+                glyph.transform(translate(point[0], point[1]))
+            font.copy()
+            font.selection.select(int(b['code'], 16))
+            font.pasteInto()
+            for glyph in list(font.selection.byGlyphs):
+                glyph.width = WIDTH
+            font.selection.select(PRIVATE)
+            for glyph in list(font.selection.byGlyphs):
+                glyph.transform(translate(-point[0], -point[1]))
+    font.selection.select(PRIVATE)
+    font.cut()
 
 def _set_proportion(font):
     mat = scale(SCALE_DOWN)
