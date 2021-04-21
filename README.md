@@ -81,6 +81,10 @@ See [#7][]
 
 ## Screen Shots
 
+<img width="746" alt="スクリーンショット 0003-04-21 9 20 16" src="https://user-images.githubusercontent.com/1239245/115479188-d8b32780-a282-11eb-9571-4fdc811ddd7c.png">
+
+<img width="746" alt="スクリーンショット 0003-04-21 9 50 04" src="https://user-images.githubusercontent.com/1239245/115481194-0601d480-a287-11eb-8b03-c45f76d2371a.png">
+
 <img width="746" alt="スクリーンショット 0001-05-23 21 47 37" src="https://user-images.githubusercontent.com/1239245/58253927-8e7a5080-7da4-11e9-9d6b-0520cea1438c.png">
 
 <img width="746" alt="スクリーンショット 0001-05-23 21 42 22" src="https://user-images.githubusercontent.com/1239245/58253934-92a66e00-7da4-11e9-983d-1f90f9d8a846.png">
