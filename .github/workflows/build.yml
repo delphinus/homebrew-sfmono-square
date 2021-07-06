@@ -1,0 +1,13 @@
+---
+name: Build check
+on:
+  push:
+  schedule:
+    - cron: '25 * * * *'
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: Homebrew/actions/setup-homebrew@master
+      - uses: actions/checkout@v2
+      - run: bin/github-build.sh
