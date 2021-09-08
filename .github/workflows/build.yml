@@ -6,7 +6,7 @@ on:
     - cron: '25 * * * *'
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-11
     steps:
       - uses: Homebrew/actions/setup-homebrew@master
       - uses: actions/checkout@v2
