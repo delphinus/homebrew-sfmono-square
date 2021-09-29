@@ -23,7 +23,7 @@ class SfmonoSquare < Formula
 
   resource "sfmono" do
     url "https://developer.apple.com/design/downloads/SF-Mono.dmg"
-    sha256 "ec0518e310797d2f9cb924c18e3e7b661359f4fb653d1ad4315758ebcdb5ff11"
+    sha256 "76c415e9aee0524087cc6a042113db6b38f1a19f2e286f807aa29756461370a9"
   end
 
   def install
