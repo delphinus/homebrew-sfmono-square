@@ -241,8 +241,8 @@ def _make_white_glyphs(font):
     move = translate(25, 25)
     for glyph in list(font.selection.byGlyphs):
         glyph.transform(compose(shrink, move))
-    font.selection.select(0x25BC)
-    font.copy()
-    font.selection.select(0x25BD)
-    font.pasteInto()
-    font.intersect()
+    #font.selection.select(0x25BC)
+    #font.copy()
+    #font.selection.select(0x25BD)
+    #font.pasteInto()
+    #font.intersect()
