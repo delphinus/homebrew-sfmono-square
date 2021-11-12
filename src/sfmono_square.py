@@ -75,6 +75,7 @@ def generate(hankaku, zenkaku, version):
     _merge(font, opts)
     _zenkaku_glyphs(font)
     _hankaku_glyphs(font)
+    _make_white_glyphs(font)
     font.selection.all()
     # TODO: remove this to avoid sementation fault
     # font.removeOverlap()
@@ -226,3 +227,22 @@ def _hankaku_glyphs(font):
     for glyph in font.selection.byGlyphs:
         glyph.transform(mat)
         glyph.width = WIDTH / 2
+
+
+def _make_white_glyphs(font):
+    font.selection.none()
+    font.selection.select(0x25BD)
+    font.cut()
+    font.selection.select(0x25BC)
+    font.copy()
+    font.selection.select(0x25BD)
+    font.paste()
+    shrink = scale(0.95, 0.95)
+    move = translate(25, 25)
+    for glyph in list(font.selection.byGlyphs):
+        glyph.transform(compose(shrink, move))
+    font.selection.select(0x25BC)
+    font.copy()
+    font.selection.select(0x25BD)
+    font.pasteInto()
+    font.intersect()
