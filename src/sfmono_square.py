@@ -231,8 +231,10 @@ def _hankaku_glyphs(font):
 
 def _make_white_glyphs(font):
     font.selection.none()
+    font.selection.select(0x25BC)
+    font.copy()
     font.selection.select(0x25BD)
-    font.cut()
+    font.paste()
     font.selection.select(0x25BC)
     font.copy()
     font.selection.select(0xE000)
@@ -241,14 +243,10 @@ def _make_white_glyphs(font):
     move = translate(20, 20)
     for glyph in list(font.selection.byGlyphs):
         glyph.transform(compose(shrink, move))
-    font.selection.select(0x25BC)
-    font.copy()
-    font.selection.select(0x25BD)
-    font.paste()
     font.selection.select(0xE000)
     font.copy()
     font.selection.select(0x25BD)
     font.pasteInto()
-    font.removeOverlap()
+    #font.removeOverlap()
     font.selection.select(0xE000)
     font.cut()
