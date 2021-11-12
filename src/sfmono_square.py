@@ -247,6 +247,6 @@ def _make_white_glyphs(font):
     font.copy()
     font.selection.select(0x25BD)
     font.pasteInto()
-    #font.removeOverlap()
+    font.removeOverlap()
     font.selection.select(0xE000)
     font.cut()
