@@ -8,7 +8,8 @@ if [[ $GITHUB_REF = master ]]; then
 else
   : build on "$GITHUB_REF"
   brew tap delphinus/sfmono-square
-  brew install --only-dependencies sfmono-square
+  # TODO: avoid errors for this
+  brew install --only-dependencies sfmono-square || true
   FORMULA=sfmono-square.rb
   HASH=$(git describe --tags HEAD | tr -d '\n')
   export HASH
