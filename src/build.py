@@ -1,15 +1,19 @@
 # -*- coding:utf-8 -*-
-import sys
-
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import font_patcher
-import migu1m
+import mplus
 import sfmono
 import sfmono_square
 
 
-MIGU1M = [["migu-1m-regular.ttf"], ["migu-1m-bold.ttf"]]
-MIGU1M_MODIFIED = [["modified-migu-1m-regular.ttf"], ["modified-migu-1m-bold.ttf"]]
+MPLUS_IPEX = [
+    ["Mplus1-Regular.otf", "ipaexg.ttf"],
+    ["Mplus1-Bold.otf", "ipaexg.ttf"],
+]
+MPLUS_MODIFIED = [
+    ["modified-Mplus1-Regular.otf"],
+    ["modified-Mplus1-Bold.otf"],
+]
 SFMONO = [
     ["SF-Mono-Regular.otf"],
     ["SF-Mono-Bold.otf"],
@@ -17,10 +21,10 @@ SFMONO = [
     ["SF-Mono-BoldItalic.otf"],
 ]
 SFMONO_MIGU1M = [
-    ["SFMono-1x2-Regular.otf", "modified-migu-1m-regular.ttf"],
-    ["SFMono-1x2-Bold.otf", "modified-migu-1m-bold.ttf"],
-    ["SFMono-1x2-RegularItalic.otf", "modified-migu-1m-oblique.ttf"],
-    ["SFMono-1x2-BoldItalic.otf", "modified-migu-1m-bold-oblique.ttf"],
+    ["SFMono-1x2-Regular.otf", "modified-Mplus1-Regular.otf"],
+    ["SFMono-1x2-Bold.otf", "modified-Mplus1-Bold.otf"],
+    ["SFMono-1x2-RegularItalic.otf", "modified-Mplus1-Oblique.otf"],
+    ["SFMono-1x2-BoldItalic.otf", "modified-Mplus1-Bold-Oblique.otf"],
 ]
 SFMONO_SQUARE = [
     ["SFMonoSquare-Regular.otf", "build"],
@@ -31,11 +35,11 @@ SFMONO_SQUARE = [
 
 
 def build(version):
-    print("---- modifying migu-1m ----")
-    if concurrent_execute(migu1m.modify, MIGU1M):
+    print("---- modifying Mplus ----")
+    if concurrent_execute(mplus.modify, MPLUS_IPEX):
         return 1
-    print("---- making oblique version of migu-1m ----")
-    if concurrent_execute(migu1m.oblique, MIGU1M_MODIFIED):
+    print("---- making oblique version of Mplus ----")
+    if concurrent_execute(mplus.oblique, MPLUS_MODIFIED):
         return 1
     print("---- modifying SF Mono ----")
     if concurrent_execute(sfmono.modify, SFMONO):
