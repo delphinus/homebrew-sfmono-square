@@ -171,7 +171,7 @@ PATCH_SET = [
         "filename": "codicon.ttf",
         "sym_start": 0xEA60,
         "sym_end": 0xEBEB,
-        "src_start": None,
+        "src_start": 0xFEA60,
     },
 ]
 
