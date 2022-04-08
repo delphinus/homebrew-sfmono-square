@@ -166,6 +166,13 @@ PATCH_SET = [
         "sym_end": 0xF0EB,
         "src_start": 0xE300,
     },
+    {
+        "name": "Codicons",
+        "filename": "codicon.ttf",
+        "sym_start": 0xEA60,
+        "sym_end": 0xEBEB,
+        "src_start": 0xFEA60,
+    },
 ]
 
 
@@ -253,6 +260,12 @@ def _transform_sym(symfont, info):
         y_ratio = 1.1
         x_diff = -50
         y_diff = -250
+
+    elif info["name"] == "Codicons":
+        x_ratio = 0.85
+        y_ratio = 0.85
+        x_diff = 35
+        y_diff = -300
 
     scale = psMat.scale(x_ratio, y_ratio)
     translate = psMat.translate(x_diff, y_diff)
