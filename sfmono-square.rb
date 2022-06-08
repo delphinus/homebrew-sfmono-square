@@ -3,9 +3,9 @@
 class SfmonoSquare < Formula
   desc "Square-sized SF Mono + Japanese fonts + nerd-fonts"
   homepage "https://github.com/delphinus/homebrew-sfmono-square"
-  url "https://github.com/delphinus/homebrew-sfmono-square/archive/v1.4.1.tar.gz"
-  sha256 "507065f86aaba6f84d7a4cf70bd909ae23007106dba4896fe6a0baddbf493805"
-  version "1.4.1"
+  url "https://github.com/delphinus/homebrew-sfmono-square/archive/v1.4.2-testing-01.tar.gz"
+  sha256 "da86a314c3f2ab552cc20b81f71479110bfc90f103d3ac41860720c613705582"
+  version "1.4.2-testing-01"
   head "https://github.com/delphinus/homebrew-sfmono-square.git"
 
   depends_on "fontforge" => :build
@@ -23,7 +23,7 @@ class SfmonoSquare < Formula
 
   resource "sfmono" do
     url "https://developer.apple.com/design/downloads/SF-Mono.dmg"
-    sha256 "6571966c11f74aa64a46ef3774fc8376f822e58d1b785bf5c2c89920e75b0d94"
+    sha256 "8e78534e64b2e49f0c268b5bb08f20e61c68b608efc836dc7329a3001c1a8d8c"
   end
 
   def install
