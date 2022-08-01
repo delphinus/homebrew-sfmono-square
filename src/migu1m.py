@@ -51,8 +51,8 @@ def _set_new_em(font):
     """
     font.selection.all()
     font.unlinkReferences()
-    font.ascent = float(ASCENT) / EM * OLD_EM
-    font.descent = float(DESCENT) / EM * OLD_EM
+    font.ascent = round(float(ASCENT) / EM * OLD_EM)
+    font.descent = round(float(DESCENT) / EM * OLD_EM)
     font.em = EM
 
 
