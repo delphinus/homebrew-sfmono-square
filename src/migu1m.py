@@ -51,8 +51,8 @@ def _set_new_em(font):
     """
     font.selection.all()
     font.unlinkReferences()
-    font.ascent = float(ASCENT) / EM * OLD_EM
-    font.descent = float(DESCENT) / EM * OLD_EM
+    font.ascent = round(float(ASCENT) / EM * OLD_EM)
+    font.descent = round(float(DESCENT) / EM * OLD_EM)
     font.em = EM
 
 
@@ -65,7 +65,7 @@ def _set_proportion(font):
         trans = psMat.translate(x_to_center, 0)
         mat = psMat.compose(scale, trans)
         glyph.transform(mat)
-        glyph.width = EM / 2 if is_hankaku_kana else EM
+        glyph.width = round(EM / 2) if is_hankaku_kana else EM
 
 
 def _zenkaku_space(font):

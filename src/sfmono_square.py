@@ -225,4 +225,4 @@ def _hankaku_glyphs(font):
         font.selection.select(("more", "unicode"), i)
     for glyph in font.selection.byGlyphs:
         glyph.transform(mat)
-        glyph.width = WIDTH / 2
+        glyph.width = round(WIDTH / 2)
