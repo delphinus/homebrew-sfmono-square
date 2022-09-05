@@ -10,5 +10,4 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: Homebrew/actions/setup-homebrew@master
-      - uses: actions/checkout@v2
       - run: bin/github-build.sh
