@@ -299,9 +299,9 @@ def _transform_sym(symfont, info):
 def _copy_glyphs(font, symfont, info):
 
     selected = symfont.selection.select(
-        (str("ranges"), str("unicode")), info["sym_start"], info["sym_end"]
+        ("ranges", "unicode"), info["sym_start"], info["sym_end"]
     )
-    for i, glyph in enumerate(selected.byGlyphs):
+    for i, glyph in enumerate(list(selected.byGlyphs)):
         if info["exact"]:
             src_encoding = glyph.unicode + (
                 s - info["sym_start"] if (s := info["src_start"]) else 0
