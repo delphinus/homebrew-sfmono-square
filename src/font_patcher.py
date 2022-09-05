@@ -313,4 +313,5 @@ def _copy_glyphs(font, symfont, info):
         symfont.copy()
         font.selection.select(src_encoding)
         font.paste()
+        font.[src_encoding].glyphname = glyph.glyphname
     return
