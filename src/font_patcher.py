@@ -299,7 +299,7 @@ def _transform_sym(symfont, info):
 def _copy_glyphs(font, symfont, info):
 
     selected = symfont.selection.select(
-        ("ranges", "unicode"), info["sym_start"], info["sym_end"]
+        (str("ranges"), str("unicode")), info["sym_start"], info["sym_end"]
     )
     for i, glyph in enumerate(selected.byGlyphs):
         if info["exact"]:
