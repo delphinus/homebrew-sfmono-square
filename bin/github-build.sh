@@ -6,6 +6,7 @@ if [[ $GITHUB_REF = master ]]; then
   brew tap delphinus/sfmono-square
   brew install sfmono-square
 else
+  cd "$GITHUB_WORKSPACE"
   : build on "$GITHUB_REF"
   brew tap delphinus/sfmono-square
   # TODO: avoid errors for this
