@@ -19,5 +19,5 @@ else
   perl -i -pe 's,(?<=^  url ").*(?="$),$ENV{URL},' $FORMULA
   perl -i -pe 's,(?<=^  sha256 ").*(?="$),$ENV{SHA},' $FORMULA
   perl -i -pe 's,(?<=^  version ").*(?="$),$ENV{HASH},' $FORMULA
-  brew install -vs $FORMULA
+  brew install -v $FORMULA
 fi
