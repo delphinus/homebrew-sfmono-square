@@ -1,5 +1,5 @@
 #!/bin/bash -eux
-sw_vers  # show macOS version
+sw_vers # show macOS version
 brew update
 if [[ $GITHUB_REF = master ]]; then
   : build on the latest tag
