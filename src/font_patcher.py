@@ -128,16 +128,8 @@ PATCH_SET = [
         "name": "Octicons",
         "filename": "octicons.ttf",
         "sym_start": 0xF000,
-        "sym_end": 0xF0E8,
-        "src_start": 0xF400,
-        "exact": False,
-    },
-    {
-        "name": "Octicons",
-        "filename": "octicons.ttf",
-        "sym_start": 0xF101,
         "sym_end": 0xF105,
-        "src_start": 0xF4E9,
+        "src_start": 0xF400,
         "exact": False,
     },
     {
