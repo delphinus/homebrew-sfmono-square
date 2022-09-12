@@ -16,6 +16,7 @@ PATCH_SET = [
         "sym_start": 0xE4FA,
         "sym_end": 0xE52E,
         "src_start": 0xE5FA,
+        "exact": False,
     },
     {
         "name": "Devicons",
@@ -23,6 +24,7 @@ PATCH_SET = [
         "sym_start": 0xE600,
         "sym_end": 0xE6C5,
         "src_start": 0xE700,
+        "exact": False,
     },
     {
         "name": "Powerline Symbols",
@@ -30,6 +32,7 @@ PATCH_SET = [
         "sym_start": 0xE0A0,
         "sym_end": 0xE0A2,
         "src_start": None,
+        "exact": True,
     },
     {
         "name": "Powerline Symbols",
@@ -37,6 +40,7 @@ PATCH_SET = [
         "sym_start": 0xE0B0,
         "sym_end": 0xE0B3,
         "src_start": None,
+        "exact": True,
     },
     {
         "name": "Powerline Extra Symbols",
@@ -44,6 +48,7 @@ PATCH_SET = [
         "sym_start": 0xE0A3,
         "sym_end": 0xE0A3,
         "src_start": None,
+        "exact": True,
     },
     {
         "name": "Powerline Extra Symbols",
@@ -51,6 +56,7 @@ PATCH_SET = [
         "sym_start": 0xE0B4,
         "sym_end": 0xE0C8,
         "src_start": None,
+        "exact": True,
     },
     {
         "name": "Powerline Extra Symobls",
@@ -58,6 +64,7 @@ PATCH_SET = [
         "sym_start": 0xE0CA,
         "sym_end": 0xE0CA,
         "src_start": None,
+        "exact": True,
     },
     {
         "name": "Powerline Extra Symobls",
@@ -65,6 +72,7 @@ PATCH_SET = [
         "sym_start": 0xE0CC,
         "sym_end": 0xE0D4,
         "src_start": None,
+        "exact": True,
     },
     {
         "name": "Pomicons",
@@ -72,6 +80,7 @@ PATCH_SET = [
         "sym_start": 0xE000,
         "sym_end": 0xE00A,
         "src_start": None,
+        "exact": True,
     },
     {
         "name": "Font Awesome",
@@ -79,6 +88,7 @@ PATCH_SET = [
         "sym_start": 0xF000,
         "sym_end": 0xF2E0,
         "src_start": None,
+        "exact": True,
     },  # Maximize
     {
         "name": "Font Awesome Extension",
@@ -86,6 +96,7 @@ PATCH_SET = [
         "sym_start": 0xE000,
         "sym_end": 0xE0A9,
         "src_start": 0xE200,
+        "exact": False,
     },
     {
         "name": "Font Linux",
@@ -94,6 +105,7 @@ PATCH_SET = [
         "sym_start": 0xF100,
         "sym_end": 0xF11C,
         "src_start": 0xF300,
+        "exact": True,
     },
     {
         "name": "Power Symbols",
@@ -102,6 +114,7 @@ PATCH_SET = [
         "sym_start": 0x23FB,
         "sym_end": 0x23FE,
         "src_start": None,
+        "exact": True,
     },
     {
         "name": "Power Symbols",
@@ -109,20 +122,15 @@ PATCH_SET = [
         "sym_start": 0x2B58,
         "sym_end": 0x2B58,
         "src_start": None,
+        "exact": True,
     },
     {
         "name": "Octicons",
         "filename": "octicons.ttf",
         "sym_start": 0xF000,
-        "sym_end": 0xF0E8,
-        "src_start": 0xF400,
-    },
-    {
-        "name": "Octicons",
-        "filename": "octicons.ttf",
-        "sym_start": 0xF101,
         "sym_end": 0xF105,
-        "src_start": 0xF4E9,
+        "src_start": 0xF400,
+        "exact": False,
     },
     {
         "name": "Octicons",
@@ -130,6 +138,7 @@ PATCH_SET = [
         "sym_start": 0x2665,
         "sym_end": 0x2665,
         "src_start": None,
+        "exact": False,
     },  # Heart
     {
         "name": "Octicons",
@@ -137,6 +146,7 @@ PATCH_SET = [
         "sym_start": 0x26A1,
         "sym_end": 0x26A1,
         "src_start": None,
+        "exact": False,
     },  # Zap
     {
         "name": "Octicons",
@@ -144,20 +154,47 @@ PATCH_SET = [
         "sym_start": 0xF27C,
         "sym_end": 0xF27C,
         "src_start": 0xF4A9,
+        "exact": False,
     },  # Desktop
     {
         "name": "Material",
         "filename": "materialdesignicons-webfont.ttf",
         "sym_start": 0xF001,
-        "sym_end": 0xF800,
-        "src_start": 0xE800,
+        "sym_end": 0xF1D5,
+        "src_start": 0xF500,
+        "exact": False,
     },
     {
         "name": "Material",
         "filename": "materialdesignicons-webfont.ttf",
-        "sym_start": 0xF801,
+        "sym_start": 0xF1DA,
+        "sym_end": 0xF3FF,
+        "src_start": 0xF6D9,
+        "exact": False,
+    },
+    {
+        "name": "Material",
+        "filename": "materialdesignicons-webfont.ttf",
+        "sym_start": 0xF1D6,
+        "sym_end": 0xF1D9,
+        "src_start": 0xFF6D5,
+        "exact": False,
+    },
+    {
+        "name": "Material",
+        "filename": "materialdesignicons-webfont.ttf",
+        "sym_start": 0xF400,
+        "sym_end": 0xF400,
+        "src_start": 0xFF8FF,
+        "exact": False,
+    },
+    {
+        "name": "Material",
+        "filename": "materialdesignicons-webfont.ttf",
+        "sym_start": 0xF401,
         "sym_end": 0xF847,
-        "src_start": 0xF500,
+        "src_start": 0xE800,
+        "exact": False,
     },
     {
         "name": "Weather Icons",
@@ -165,6 +202,7 @@ PATCH_SET = [
         "sym_start": 0xF000,
         "sym_end": 0xF0EB,
         "src_start": 0xE300,
+        "exact": False,
     },
     {
         "name": "Codicons",
@@ -172,6 +210,7 @@ PATCH_SET = [
         "sym_start": 0xEA60,
         "sym_end": 0xEBEB,
         "src_start": 0xFEA60,
+        "exact": True,
     },
 ]
 
@@ -275,13 +314,20 @@ def _transform_sym(symfont, info):
 
 def _copy_glyphs(font, symfont, info):
 
-    for encoding in range(info["sym_start"], info["sym_end"] + 1):
-        src_encoding = encoding
-        if info["src_start"]:
-            src_encoding += info["src_start"] - info["sym_start"]
-        symfont.selection.select(encoding)
+    selected = symfont.selection.select(
+        ("ranges", "unicode"), info["sym_start"], info["sym_end"]
+    )
+    for i, glyph in enumerate(list(selected.byGlyphs)):
+        if info["exact"]:
+            src_encoding = glyph.unicode + (
+                s - info["sym_start"] if (s := info["src_start"]) else 0
+            )
+        else:
+            src_encoding = (info["src_start"] or info["sym_start"]) + i
+        symfont.selection.select(glyph.unicode)
         _transform_sym(symfont, info)
         symfont.copy()
         font.selection.select(src_encoding)
         font.paste()
+        font[src_encoding].glyphname = glyph.glyphname
     return
