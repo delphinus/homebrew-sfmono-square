@@ -1,7 +1,7 @@
 #!/bin/bash -eux
 sw_vers # show macOS version
 brew update
-if [[ $GITHUB_REF = master ]]; then
+if [[ $GITHUB_REF = refs/heads/master ]]; then
   : build on the latest tag
   brew tap delphinus/sfmono-square
   brew install sfmono-square
