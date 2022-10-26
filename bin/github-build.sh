@@ -13,7 +13,7 @@ else
   FORMULA=sfmono-square.rb
   HASH=$(git describe --tags HEAD | tr -d '\n')
   export HASH
-  export URL=https://github.com/delphinus/homebrew-sfmono-square/archive/$HASH.tar.gz
+  export URL=https://github.com/delphinus/homebrew-sfmono-square/tarball/$HASH
   SHA=$(curl -L "$URL" | shasum -a256 | cut -f1 -d ' ')
   export SHA
   perl -i -pe 's,(?<=^  url ").*(?="$),$ENV{URL},' $FORMULA
