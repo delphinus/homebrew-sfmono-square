@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Formula to install the font: SF Mono Square
 class SfmonoSquare < Formula
   desc "Square-sized SF Mono + Japanese fonts + nerd-fonts"
   homepage "https://github.com/delphinus/homebrew-sfmono-square"
@@ -27,21 +28,27 @@ class SfmonoSquare < Formula
   end
 
   def install
+    _stage
+    _compile
+
+    (share / "fonts").install Dir["build/*.otf"]
+    (share / "fonts/src").install Dir["*.otf"]
+    (share / "fonts/src").install Dir["*.ttf"]
+  end
+
+  def _stage
     resource("migu1mfonts").stage { buildpath.install Dir["*"] }
 
     resource("sfmono").stage do
       system "/usr/bin/xar", "-xf", "SF Mono Fonts.pkg"
       system "/bin/bash", "-c", "cat SFMonoFonts.pkg/Payload | gunzip -dc | cpio -i"
-      [
-        "SF-Mono-Regular.otf",
-        "SF-Mono-RegularItalic.otf",
-        "SF-Mono-Bold.otf",
-        "SF-Mono-BoldItalic.otf"
-      ].each do |otf|
-        buildpath.install "Library/Fonts/" + otf
+      ["SF-Mono-Regular.otf", "SF-Mono-RegularItalic.otf", "SF-Mono-Bold.otf", "SF-Mono-BoldItalic.otf"].each do |otf|
+        buildpath.install "Library/Fonts/#{otf}"
       end
     end
+  end
 
+  def _compile
     # Uncomment and change this value to enlarge glyphs from Migu1M.
     # See https://github.com/delphinus/homebrew-sfmono-square/issues/9
     # ENV["MIGU1M_SCALE"] = "82"
@@ -58,9 +65,5 @@ class SfmonoSquare < Formula
       import build
       sys.exit(build.build('#{version}'))
     PYTHON
-
-    (share / "fonts").install Dir["build/*.otf"]
-    (share / "fonts/src").install Dir["*.otf"]
-    (share / "fonts/src").install Dir["*.ttf"]
   end
 end
