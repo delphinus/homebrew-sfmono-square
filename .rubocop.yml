@@ -1,3 +1,6 @@
----
+AllCops:
+  NewCops: enable
 StringLiterals:
   EnforcedStyle: double_quotes
+Naming/FileName:
+  Enabled: false
