@@ -31,9 +31,8 @@ class SfmonoSquare < Formula
     _stage
     _compile
 
-    (share / "fonts").install Dir["build/*.otf"]
-    (share / "fonts/src").install Dir["*.otf"]
-    (share / "fonts/src").install Dir["*.ttf"]
+    (share / "fonts").install Dir["build/*.*"]
+    (share / "fonts/src").install Dir["*.*"]
   end
 
   def _stage
