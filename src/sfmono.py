@@ -24,6 +24,8 @@ BLACK_CIRCLE = 0x25CF  # ●
 BRAILLE_JSON = Path(__file__).parent / "braille.json"
 BRAILLE_DIAMETER = 256 / 1024
 SHADES_FILE = "src/glyphs/shades.sfd"
+WHITE_TRIANGLE_FILE = "src/glyphs/white_triangle.sfd"
+WHITE_TRIANGLE = 0x25BD
 
 
 def modify(in_file):
@@ -38,6 +40,7 @@ def modify(in_file):
         font.mergeFonts(regular_font)
     for code in [LIGHT_SHADE, MEDIUM_SHADE, DARK_SHADE]:
         _expand_shades(font, code)
+    _add_white_triangle(font)
     _add_bar_to_shade_bottom(font)
     _set_proportion(font)
     _add_braille(font)
@@ -68,6 +71,14 @@ def _expand_shades(font, code):
     shades.selection.select(code)
     shades.copy()
     font.selection.select(code)
+    font.paste()
+
+
+def _add_white_triangle(font):
+    wt = fontforge.open(WHITE_TRIANGLE_FILE)
+    wt.selection.select(WHITE_TRIANGLE)
+    wt.copy()
+    font.selection.select(WHITE_TRIANGLE)
     font.paste()
 
 
