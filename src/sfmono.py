@@ -23,6 +23,7 @@ PRIVATE = 0xE000  # 
 BLACK_CIRCLE = 0x25cf  # ●
 BRAILLE_JSON = Path(__file__).parent / 'braille.json'
 BRAILLE_DIAMETER = 256 / 1024
+SHADES_FILE = "src/glyphs/shades.sfd"
 
 
 def modify(in_file):
@@ -63,14 +64,11 @@ def modify(in_file):
 
 
 def _expand_shades(font, code):
-    # `421` means the size of a set of pattern in shades.
-    mat = translate(0, 421)
-
+    shades = fontforge.open(SHADES_FILE)
+    shades.selection.select(code)
+    shades.copy()
     font.selection.select(code)
-    font.copy()
-    for glyph in list(font.selection.byGlyphs):
-        glyph.transform(mat)
-    font.pasteInto()
+    font.paste()
 
 
 def _add_bar_to_shade_bottom(font):
