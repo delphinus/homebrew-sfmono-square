@@ -1,6 +1,8 @@
 #!/bin/bash -eux
-sw_vers # show macOS version
+sw_vers                              # show macOS version
+brew uninstall python@3.10 azure-cli # avoid conflicting with python@3.11
 brew update
+brew upgrade
 if [[ $GITHUB_REF = refs/heads/master ]]; then
   : build on the latest tag
   brew tap delphinus/sfmono-square
