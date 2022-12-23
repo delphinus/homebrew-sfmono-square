@@ -1,6 +1,7 @@
 #!/bin/bash -eux
 sw_vers # show macOS version
 brew update
+brew upgrade
 if [[ $GITHUB_REF = refs/heads/master ]]; then
   : build on the latest tag
   brew tap delphinus/sfmono-square
