@@ -76,10 +76,11 @@ def _expand_shades(font, code):
 
 def _add_white_triangle(font):
     wt = fontforge.open(WHITE_TRIANGLE_FILE)
-    wt.selection.select(WHITE_TRIANGLE)
-    wt.copy()
-    font.selection.select(WHITE_TRIANGLE)
-    font.paste()
+    for glyph in list(wt.selection.byGlyphs):
+        wt.selection.select(glyph.unicode)
+        wt.copy()
+        font.selection.select(glyph.unicode)
+        font.paste()
 
 
 def _add_bar_to_shade_bottom(font):
