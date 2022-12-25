@@ -1,6 +1,6 @@
 #!/bin/bash -eux
-sw_vers                              # show macOS version
-brew uninstall python@3.10 azure-cli # avoid conflicting with python@3.11
+sw_vers                          # show macOS version
+brew install python@3.11 || true # This will fail because of linking.
 if [[ $GITHUB_REF = refs/heads/master ]]; then
   : build on the latest tag
   brew tap delphinus/sfmono-square
@@ -16,8 +16,7 @@ else
   perl -i -pe 's,(?<=^  url ").*(?="$),$ENV{URL},' $FORMULA
   perl -i -pe 's,(?<=^  sha256 ").*(?="$),$ENV{SHA},' $FORMULA
   perl -i -pe 's,(?<=^  version ").*(?="$),$ENV{HASH},' $FORMULA
-  # TODO: avoid errors for this
-  brew install --only-dependencies $FORMULA || true
+  brew install --only-dependencies $FORMULA
   brew install -v $FORMULA
 fi
 
