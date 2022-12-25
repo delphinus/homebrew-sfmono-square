@@ -25,7 +25,19 @@ BRAILLE_JSON = Path(__file__).parent / "braille.json"
 BRAILLE_DIAMETER = 256 / 1024
 SHADES_FILE = "src/glyphs/shades.sfd"
 WHITE_TRIANGLE_FILE = "src/glyphs/white_triangle.sfd"
-WHITE_TRIANGLE = 0x25BD
+WHITE_TRIANGLE_GLYPHS = [
+    0x25A3,  # WHITE SQUARE CONTAINING BLACK SMALL SQUARE
+    0x25B3,  # WHITE UP-POINTING TRIANGLE
+    0x25B5,  # WHITE UP-POINTING SMALL TRIANGLE
+    0x25B5,  # WHITE RIGHT-POINTING TRIANGLE
+    0x25B7,  # WHITE RIGHT-POINTING SMALL TRIANGLE
+    0x25BD,  # WHITE DOWN-POINTING TRIANGLE
+    0x25BF,  # WHITE DOWN-POINTING SMALL TRIANGLE
+    0x25C1,  # WHITE LEFT-POINTING TRIANGLE
+    0x25C3,  # WHITE LEFT-POINTING SMALL TRIANGLE
+    0x25C9,  # FISHEYE
+    0x25CE,  # BULLSEYE
+]
 
 
 def modify(in_file):
@@ -76,10 +88,10 @@ def _expand_shades(font, code):
 
 def _add_white_triangle(font):
     wt = fontforge.open(WHITE_TRIANGLE_FILE)
-    for glyph in list(wt.selection.byGlyphs):
-        wt.selection.select(glyph.unicode)
+    for code in WHITE_TRIANGLE_GLYPHS:
+        wt.selection.select(code)
         wt.copy()
-        font.selection.select(glyph.unicode)
+        font.selection.select(code)
         font.paste()
 
 
