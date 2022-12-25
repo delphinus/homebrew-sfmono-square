@@ -1,6 +1,6 @@
 #!/bin/bash -eux
-sw_vers                          # show macOS version
-brew install python@3.11 || true # This will fail because of linking.
+sw_vers # show macOS version
+brew install --no-binaries python@3.11
 if [[ $GITHUB_REF = refs/heads/master ]]; then
   : build on the latest tag
   brew tap delphinus/sfmono-square
