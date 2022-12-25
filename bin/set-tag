@@ -19,6 +19,7 @@ main() {
   VER=$ver perl -i -ple '$_ = qq{  version "$ENV{VER}"} if /^  version/' $formula
   git add $formula
   git commit -m 'Update formula to use new version'
+  git push
 }
 
 [[ ${BASH_SOURCE[0]} = "$0" ]] && main "$@"
