@@ -10,4 +10,6 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: Homebrew/actions/setup-homebrew@master
-      - run: bin/github-build.sh
+      # Show timestamp for each line
+      # https://unix.stackexchange.com/questions/26728/prepending-a-timestamp-to-each-line-of-output-from-a-command
+      - run: bin/github-build.sh | perl -pe 'use POSIX strftime; print strftime "[%Y-%m-%d %H:%M:%S] ", localtime'
