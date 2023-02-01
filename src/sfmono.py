@@ -20,8 +20,8 @@ MEDIUM_SHADE = 0x2592  # ▒
 DARK_SHADE = 0x2593  # ▓
 LOWER_BLOCK = 0x2581  # ▁
 PRIVATE = 0xE000  # 
-BLACK_CIRCLE = 0x25cf  # ●
-BRAILLE_JSON = Path(__file__).parent / 'braille.json'
+BLACK_CIRCLE = 0x25CF  # ●
+BRAILLE_JSON = Path(__file__).parent / "braille.json"
 BRAILLE_DIAMETER = 256 / 1024
 SHADES_FILE = "src/glyphs/shades.sfd"
 
@@ -93,13 +93,19 @@ def _add_bar_to_shade_bottom(font):
     font.selection.select(LOWER_BLOCK)
     font.paste()
 
+
 DESCENT = 410
 BRAILLE_POINTS = [
-    (256, 1792 - DESCENT), (256, 1280 - DESCENT),
-    (256, 768 - DESCENT), (256, 256 - DESCENT),
-    (768, 1792 - DESCENT), (768, 1280 - DESCENT),
-    (768, 768 - DESCENT), (768, 256 - DESCENT),
+    (256, 1792 - DESCENT),
+    (256, 1280 - DESCENT),
+    (256, 768 - DESCENT),
+    (256, 256 - DESCENT),
+    (768, 1792 - DESCENT),
+    (768, 1280 - DESCENT),
+    (768, 768 - DESCENT),
+    (768, 256 - DESCENT),
 ]
+
 
 def _add_braille(font):
     font.selection.select(BLACK_CIRCLE)
@@ -117,13 +123,13 @@ def _add_braille(font):
         braille = load(f)
 
     for b in braille:
-        for p in b['points']:
+        for p in b["points"]:
             point = BRAILLE_POINTS[p]
             font.selection.select(PRIVATE)
             for glyph in list(font.selection.byGlyphs):
                 glyph.transform(translate(point[0], point[1]))
             font.copy()
-            font.selection.select(int(b['code'], 16))
+            font.selection.select(int(b["code"], 16))
             font.pasteInto()
             for glyph in list(font.selection.byGlyphs):
                 glyph.width = WIDTH
@@ -132,6 +138,7 @@ def _add_braille(font):
                 glyph.transform(translate(-point[0], -point[1]))
     font.selection.select(PRIVATE)
     font.cut()
+
 
 def _set_proportion(font):
     mat = scale(SCALE_DOWN)
