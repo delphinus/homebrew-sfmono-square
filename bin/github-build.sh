@@ -1,4 +1,7 @@
 #!/bin/bash -eux
+# Disable features because these takes much time.
+export HOMEBREW_NO_INSTALL_CLEANUP=1
+export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
 sw_vers                          # show macOS version
 brew install python@3.11 || true # This will fail because of linking.
 if [[ $GITHUB_REF = refs/heads/master ]]; then
