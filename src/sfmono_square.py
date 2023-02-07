@@ -24,6 +24,9 @@ MAIL = "me@delphinus.dev"
 YEAR = 2021
 SFMONO = "SF-Mono-Regular.otf"
 MIGU1M = "migu-1m-regular.ttf"
+OVER_WRITTENS = [
+    0x25B8,  # BLACK RIGHT-POINTING SMALL TRIANGLE
+]
 ZENKAKU_PARENTHESIS = {
     0xFF08: "left",
     0xFF09: "right",
@@ -72,6 +75,7 @@ def generate(hankaku, zenkaku, version):
     opts = read_opts(hankaku, zenkaku, version)
     font = new_font(opts)
     _merge(font, opts)
+    _copy_again(font, hankaku)
     _zenkaku_glyphs(font)
     _hankaku_glyphs(font)
     font.selection.all()
@@ -181,11 +185,16 @@ def new_font(opts):
 def _merge(font, opts):
     font.mergeFonts(opts["hankaku"])
     font.mergeFonts(opts["zenkaku"])
-    h = fontforge.open(opts["hankaku"])
-    h.selection.select(0x25B8)
-    h.copy()
-    font.selection.select(0x25B8)
-    font.paste()
+
+
+# FIX: some glyphs may be overwritten by zenkaku fonts. This func copy them again from hankaku fonts.
+def _copy_again(font, orig):
+    o = fontforge.open(orig)
+    for i in OVER_WRITTENS:
+        o.selection.select(i)
+        o.copy()
+        font.selection.select(i)
+        font.paste()
 
 
 def _zenkaku_glyphs(font):
