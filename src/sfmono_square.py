@@ -185,7 +185,7 @@ def _merge(font, opts):
     h.selection.select(0x25B8)
     h.copy()
     font.selection.select(0x25B8)
-    h.paste()
+    font.paste()
 
 
 def _zenkaku_glyphs(font):
