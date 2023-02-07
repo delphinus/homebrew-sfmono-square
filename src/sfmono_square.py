@@ -181,6 +181,11 @@ def new_font(opts):
 def _merge(font, opts):
     font.mergeFonts(opts["hankaku"])
     font.mergeFonts(opts["zenkaku"])
+    h = fontforge.open(opts["hankaku"])
+    h.selection.select(0x25B8)
+    h.copy()
+    font.selection.select(0x25B8)
+    h.paste()
 
 
 def _zenkaku_glyphs(font):
