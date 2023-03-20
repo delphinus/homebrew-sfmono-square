@@ -24,6 +24,20 @@ BLACK_CIRCLE = 0x25CF  # ●
 BRAILLE_JSON = Path(__file__).parent / "braille.json"
 BRAILLE_DIAMETER = 256 / 1024
 SHADES_FILE = "src/glyphs/shades.sfd"
+GEOMETRIC_SHAPES_FILE = "src/glyphs/geometric_shapes.sfd"
+GROMETRIC_SHAPES_GLYPHS = [
+    0x25A3,  # WHITE SQUARE CONTAINING BLACK SMALL SQUARE
+    0x25B3,  # WHITE UP-POINTING TRIANGLE
+    0x25B5,  # WHITE UP-POINTING SMALL TRIANGLE
+    0x25B7,  # WHITE RIGHT-POINTING TRIANGLE
+    0x25B9,  # WHITE RIGHT-POINTING SMALL TRIANGLE
+    0x25BD,  # WHITE DOWN-POINTING TRIANGLE
+    0x25BF,  # WHITE DOWN-POINTING SMALL TRIANGLE
+    0x25C1,  # WHITE LEFT-POINTING TRIANGLE
+    0x25C3,  # WHITE LEFT-POINTING SMALL TRIANGLE
+    0x25C9,  # FISHEYE
+    0x25CE,  # BULLSEYE
+]
 
 
 def modify(in_file):
@@ -38,6 +52,7 @@ def modify(in_file):
         font.mergeFonts(regular_font)
     for code in [LIGHT_SHADE, MEDIUM_SHADE, DARK_SHADE]:
         _expand_shades(font, code)
+    _add_white_triangle(font)
     _add_bar_to_shade_bottom(font)
     _set_proportion(font)
     _add_braille(font)
@@ -69,6 +84,15 @@ def _expand_shades(font, code):
     shades.copy()
     font.selection.select(code)
     font.paste()
+
+
+def _add_white_triangle(font):
+    wt = fontforge.open(GEOMETRIC_SHAPES_FILE)
+    for code in GROMETRIC_SHAPES_GLYPHS:
+        wt.selection.select(code)
+        wt.copy()
+        font.selection.select(code)
+        font.paste()
 
 
 def _add_bar_to_shade_bottom(font):
