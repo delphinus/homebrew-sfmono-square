@@ -93,7 +93,7 @@ $opt{to} //= 'v3';
 
 sub is_valid_version($) {
     my $v = shift;
-    defined $v && $v =~ /\Av[1-3]\z/;
+    defined $v && $v =~ /\A(?:nerd_fonts_[23]|v[123])\z/;
 }
 
 pod2usage(2) if !is_valid_version $opt{from} or !is_valid_version $opt{to};
@@ -133,4 +133,18 @@ sub convert($$$) {
             Codicons => [[0xea60 => 0xebeb]],
         },
     );
+
+    my %mapping;
+    while (my ($k, $v) = each %{$mappings{$from}}) {
+        continue if !defined $v;
+        for my $range (@$v) {
+            if (ref $range) {
+                for my $code ($range->[0] .. $range->[1]) {
+                    $mapping{$code}++;
+                }
+            } else {
+                $mapping{$range}++;
+            }
+        }
+    }
 }
