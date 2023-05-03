@@ -92,14 +92,14 @@ $opt{from} //= 'v2';
 $opt{to} //= 'v3';
 
 sub is_valid_version($) {
-    my $v = shift;
+    my ($v) = @_;
     defined $v && $v =~ /\A(?:nerd_fonts_[23]|v[123])\z/;
 }
 
 pod2usage(2) if !is_valid_version $opt{from} or !is_valid_version $opt{to};
 
-sub convert($$$) {
-    my ($char, $from, $to) = @_;
+sub code_map($) {
+    my ($name) = @_;
 
     state %mappings = (
         nerd_fonts_v2 => {
@@ -135,16 +135,22 @@ sub convert($$$) {
     );
 
     my %mapping;
-    while (my ($k, $v) = each %{$mappings{$from}}) {
+    while (my ($k, $v) = each %{$mappings{$name}}) {
         continue if !defined $v;
+        my $count = 0;
+        my %m;
         for my $range (@$v) {
             if (ref $range) {
-                for my $code ($range->[0] .. $range->[1]) {
-                    $mapping{$code}++;
-                }
+                $m{$_} = $count++ for $range->[0] .. $range->[1];
             } else {
-                $mapping{$range}++;
+                $m{$range} = $count++;
             }
         }
+        $mapping{$k} = +{%m, reverse %m};
     }
+}
+
+sub convert($$$) {
+    my ($char, $from, $to) = @_;
+
 }
