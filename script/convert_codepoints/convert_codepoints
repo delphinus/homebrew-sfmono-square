@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!/usr/bin/perl
 
 =head1 NAME
 
@@ -6,11 +6,18 @@ convert_codepoints
 
 =head1 SYNOPSIS
 
-    # convert files from v2 => v3 (default values)
+    # convert all files below the current directory
+    # from v2 => v3 (default values)
     % bin/convert_codepoints
 
     # specify versions
     % bin/convert_codepoints -f v1 -t v3
+
+    # specify a file
+    % bin/convert_codepoints -f v1 -t v3 /path/to/file
+
+    # not show diffs, but execute
+    % bin/convert_codepoints -e
 
 =head1 DESCRIPTION
 
@@ -62,9 +69,16 @@ This solves errors above. It uses the same as L</v3>.
     --from, -f [version]    This specifies a version string to convert from.
                             This accepts "v1", "v2", "v3", "nerd_fonts_v2" or
                             "nerd_fonts_v3". "nerd_fonts_XX" means the
-                            codepoints from nerd-fonts. Default: "v2"
-    --to, -t [version]      This is the one to convert to. Default: "v3"
-    --dry-run, -n           Dry-run. With this, it prints the diff only.
+                            codepoints from nerd-fonts.
+                            Default: "v2"
+    --to, -t [version]      This is the one to convert to.
+                            Default: "v3"
+    --max-files [count]     Finish if the file count is over this.
+                            Default: 10000
+    --max-size [size]       Ignore if the file is larger than this bytes.
+                            Default: 1000000 (1MB)
+    --execute, -e           Without this, it prints the diff only.
+    --help, -h              Show this document and exit.
 
 =head1 COPYRIGHT & LICENSE
 
@@ -74,45 +88,54 @@ MIT License
 
 =cut
 
-use strict;
+use v5.20;
+use feature qw(signatures state);
 use warnings;
-use feature qw(say state);
+no warnings qw(experimental::signatures);
+use Cwd qw(getcwd);
 use Data::Dumper;
 use Getopt::Long qw(:config posix_default no_ignore_case bundling auto_help);
 use List::Util qw(reduce);
+use Path::Tiny qw(path);
 use Pod::Usage qw(pod2usage);
+binmode STDOUT => ':utf8';
 
 GetOptions(
     \my %opt, qw(
         from|f=s
         to|t=s
-        dry-run|n
+        max-files
+        max-size
+        execute|e
+        help|h
     ),
 ) or pod2usage(1);
 
-$opt{from} //= 'v2';
-$opt{to} //= 'v3';
+# default values
+%opt = (
+    from => 'v2',
+    to => 'v3',
+    'max-files' => 10_000,
+    'max-size' => 1_000_000,
+    %opt,
+);
 
-sub is_valid_version($) {
-    my ($v) = @_;
+sub is_valid_version :prototype($) ($v) {
     defined $v && $v =~ /\A(?:nerd_fonts_[23]|v[123])\z/;
 }
 
-pod2usage(2) if !is_valid_version $opt{from} or !is_valid_version $opt{to};
+pod2usage(-exitval => 0, -verbose => 2) if $opt{help};
+pod2usage(2) if !is_valid_version $opt{from} || !is_valid_version $opt{to};
 
 my %map_cache;
-sub code_map($) {
-    my ($name) = @_;
-
+sub code_map :prototype($) ($name) {
     # creates a map like this below.
     # +{
     #   Material => +{ 0xf500 => 0, 0xf501 => 1, ... , reverse => +{ 0 => 0xf500, ... } },
     #   Codicons => +{ 0xea60 => 0, 0xea61 => 1, ... , reverse => +{ 0 => 0xea60, ... } },
     #   Apple => +{ 0xf6d5 => 0, 0xf6d6 = . 1, ... , reverse => +{ 0 => f6d5, ... } },
     # }
-    state $create_map = sub {
-        my ($name) = @_;
-
+    state $create_map = sub ($name) {
         my %glyphs = (
             nerd_fonts_v2 => {
                 Material => [0xf500 .. 0xfd46],
@@ -163,9 +186,7 @@ sub code_map($) {
 }
 
 
-sub search_index($$) {
-    my ($code_map, $char) = @_;
-
+sub search_index :prototype($$) ($code_map, $char) {
     my $code = ord $char;
     while (my ($k, $v) = each %$code_map) {
         if (defined $v->{$code}) {
@@ -175,28 +196,77 @@ sub search_index($$) {
     undef;
 }
 
-sub search_result($$$) {
-    my ($code_map, $name, $index) = @_;
-
+sub search_result :prototype($$$) ($code_map, $name, $index) {
     defined $code_map->{$name} ? $code_map->{$name}{reverse}{$index} : undef;
 }
 
-sub convert($$$) {
-    my ($char, $from, $to) = @_;
-
+sub convert :prototype($$$) ($char, $from, $to) {
     my $from_map = code_map $from;
     my $to_map = code_map $to;
 
     my ($name, $index) = search_index $from_map, $char;
-    defined $name ? search_result $to_map, $name, $index : undef;
+    if (defined $name) {
+        my $result = search_result $to_map, $name, $index;
+        defined $result ? chr($result) : undef;
+    } else {
+        undef;
+    }
 }
 
-sub main() {
-    my $converted = convert chr(0xf6d5), 'v3', 'v1';
-    if (defined $converted) {
-        say sprintf '%04X', $converted;
+sub process_file :prototype($;$) ($path, $) {
+    state $git_dir = path(getcwd)->child('.git');
+    return if -d $path || 0 == index $path, $git_dir;
+    if (!-T $path) {
+        say "$path:0:0:This is not a text file.";
+        return;
+    } elsif (-s $path > $opt{'max-size'}) {
+        say "$path:0:0:This is too large (> $opt{'max-size'} bytes).";
+        return;
+    }
+    if ($git_dir->exists) {
+        0 == system 'git', 'check-ignore', '-q', $path and return;
+    }
+
+    state $called++;
+    return \0 if $called > $opt{'max-files'};
+
+    my $process_line = sub :prototype() {
+        state $line++;
+        $_ = reduce {
+            state $column++;
+            my $converted = convert $b, $opt{from}, $opt{to};
+            if (defined $converted) {
+                say sprintf '%s:%d:%d:%s (U+%X) => %s (U+%X)', $path, $line, $column, $b, ord $b, $converted, ord $converted;
+                $a .= $converted;
+            } else {
+                $a .= $b;
+            }
+        } '', split //;
+    };
+
+    if ($opt{execute}) {
+        $path->edit_lines_utf8($process_line);
     } else {
-        say 'None';
+        for ($path->lines_utf8) {
+            $process_line->();
+        }
+    }
+}
+
+sub process :prototype($) ($entry) {
+    if (-f $entry) {
+        process_file path($entry);
+    } else {
+        path($entry)->visit(\&process_file, +{ recurse => 1, follow_symlinks => 1 });
+    }
+}
+
+sub main :prototype() {
+    my $entry = shift @ARGV // getcwd;
+    if (-f $entry || -d $entry) {
+        process $entry;
+    } else {
+        die "$entry is not a file or a directory";
     }
 }
 
