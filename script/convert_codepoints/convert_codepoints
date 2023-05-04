@@ -77,7 +77,9 @@ MIT License
 use strict;
 use warnings;
 use feature qw(say state);
+use Data::Dumper;
 use Getopt::Long qw(:config posix_default no_ignore_case bundling auto_help);
+use List::Util qw(reduce);
 use Pod::Usage qw(pod2usage);
 
 GetOptions(
@@ -98,81 +100,85 @@ sub is_valid_version($) {
 
 pod2usage(2) if !is_valid_version $opt{from} or !is_valid_version $opt{to};
 
-my %code_maps;
+my %map_cache;
 sub code_map($) {
     my ($name) = @_;
 
-    return $code_maps{$name} if $code_maps{$name};
+    # creates a map like this below.
+    # +{
+    #   Material => +{ 0xf500 => 0, 0xf501 => 1, ... , reverse => +{ 0 => 0xf500, ... } },
+    #   Codicons => +{ 0xea60 => 0, 0xea61 => 1, ... , reverse => +{ 0 => 0xea60, ... } },
+    #   Apple => +{ 0xf6d5 => 0, 0xf6d6 = . 1, ... , reverse => +{ 0 => f6d5, ... } },
+    # }
+    state $create_map = sub {
+        my ($name) = @_;
 
-    state %mappings = (
-        nerd_fonts_v2 => {
-            Material => [[0xf500 => 0xfd46]],
-            Apple => undef,
-            Codicons => undef,
-        },
+        my %glyphs = (
+            nerd_fonts_v2 => {
+                Material => [0xf500 .. 0xfd46],
+                Apple => undef,
+                Codicons => undef,
+            },
 
-        nerd_fonts_v3 => {
-            Material => [[0xf0001 => 0xf1af0]],
-            Apple => [[0xf6d5 => 0xf6d8], 0xf8ff],
-            Codicons => [[0xea60 => 0xebeb]],
-        },
+            nerd_fonts_v3 => {
+                Material => [0xf0001 .. 0xf1af0],
+                Apple => [0xf6d5 .. 0xf6d8, 0xf8ff],
+                Codicons => [0xea60 .. 0xebeb],
+            },
 
-        v1 => {
-            Material => [[0xf500 => 0xf8ff], [0xe800 => 0xec47]],
-            Apple => undef,
-            Codicons => undef,
-        },
+            v1 => {
+                Material => [0xf500 .. 0xf8ff, 0xe800 .. 0xec47],
+                Apple => undef,
+                Codicons => undef,
+            },
 
-        v2 => {
-            Material => [[0xf500 => 0xf6d4], [0xff6d5 => 0xff6d8], [0xf6d9 => 0xf8fe], 0xff8ff, [0xe800 => 0xec46]],
-            Apple => [[0xf6d5 => 0xf6d8], 0xf8ff],
-            Codicons => [[0xfea60 => 0xfebeb]],
-        },
+            v2 => {
+                Material => [0xf500 .. 0xf6d4, 0xff6d5 .. 0xff6d8, 0xf6d9 .. 0xf8fe, 0xff8ff, 0xe800 .. 0xec46],
+                Apple => [0xf6d5 .. 0xf6d8, 0xf8ff],
+                Codicons => [0xfea60 .. 0xfebeb],
+            },
 
-        # same as nerd_fonts_v3
-        v3 => {
-            Material => [[0xf0001 => 0xf1af0]],
-            Apple => [[0xf6d5 => 0xf6d8], 0xf8ff],
-            Codicons => [[0xea60 => 0xebeb]],
-        },
-    );
+            # same as nerd_fonts_v3
+            v3 => {
+                Material => [0xf0001 .. 0xf1af0],
+                Apple => [0xf6d5 .. 0xf6d8, 0xf8ff],
+                Codicons => [0xea60 .. 0xebeb],
+            },
+        );
 
-    my %mapping;
-    while (my ($k, $v) = each %{$mappings{$name}}) {
-        continue if !defined $v;
-        my $count = 0;
-        my %m;
-        for my $range (@$v) {
-            if (ref $range) {
-                $m{$_} = $count++ for $range->[0] .. $range->[1];
-            } else {
-                $m{$range} = $count++;
+        reduce {
+            my $codes = $glyphs{$name}{$b};
+            if (defined $codes) {
+                my $code_map = $a->{$b} = +{};
+                for (my $i = 0; $i < @$codes; $i++) {
+                    $code_map->{$codes->[$i]} = $i;
+                }
+                $code_map->{reverse} = +{reverse %$code_map};
             }
-        }
-        $mapping{$k} = +{%m, reverse => +{reverse %m}};
-    }
-    say $mapping{Material}{0xf500};
+            $a;
+        } +{}, keys %{$glyphs{$name}},
+    };
 
-    $code_maps{$name} = \%mapping;
+    $map_cache{$name} //= $create_map->($name);
 }
+
 
 sub search_index($$) {
     my ($code_map, $char) = @_;
 
     my $code = ord $char;
     while (my ($k, $v) = each %$code_map) {
-        say $k;
-        say sprintf "0x%X\n", $code;
-        if ($v->{$code}) {
+        if (defined $v->{$code}) {
             return $k, $v->{$code};
         }
     }
+    undef;
 }
 
 sub search_result($$$) {
     my ($code_map, $name, $index) = @_;
 
-    $code_map->{$name}{reverse}{$index} if $code_map->{$name};
+    defined $code_map->{$name} ? $code_map->{$name}{reverse}{$index} : undef;
 }
 
 sub convert($$$) {
@@ -182,11 +188,16 @@ sub convert($$$) {
     my $to_map = code_map $to;
 
     my ($name, $index) = search_index $from_map, $char;
-    search_result $to_map, $name, $index if $name;
+    defined $name ? search_result $to_map, $name, $index : undef;
 }
 
 sub main() {
-    say convert chr(0xf500), 'v2', 'v3';
+    my $converted = convert chr(0xf6d5), 'v3', 'v1';
+    if (defined $converted) {
+        say sprintf '%04X', $converted;
+    } else {
+        say 'None';
+    }
 }
 
 main if $0 eq __FILE__;
