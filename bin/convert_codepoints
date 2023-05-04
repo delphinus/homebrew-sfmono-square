@@ -76,11 +76,11 @@ MIT License
 
 use strict;
 use warnings;
-use feature qw(state);
+use feature qw(say state);
 use Getopt::Long qw(:config posix_default no_ignore_case bundling auto_help);
 use Pod::Usage qw(pod2usage);
 
-Getoptions(
+GetOptions(
     \my %opt, qw(
         from|f=s
         to|t=s
@@ -98,8 +98,11 @@ sub is_valid_version($) {
 
 pod2usage(2) if !is_valid_version $opt{from} or !is_valid_version $opt{to};
 
+my %code_maps;
 sub code_map($) {
     my ($name) = @_;
+
+    return $code_maps{$name} if $code_maps{$name};
 
     state %mappings = (
         nerd_fonts_v2 => {
@@ -146,11 +149,44 @@ sub code_map($) {
                 $m{$range} = $count++;
             }
         }
-        $mapping{$k} = +{%m, reverse %m};
+        $mapping{$k} = +{%m, reverse => +{reverse %m}};
     }
+    say $mapping{Material}{0xf500};
+
+    $code_maps{$name} = \%mapping;
+}
+
+sub search_index($$) {
+    my ($code_map, $char) = @_;
+
+    my $code = ord $char;
+    while (my ($k, $v) = each %$code_map) {
+        say $k;
+        say sprintf "0x%X\n", $code;
+        if ($v->{$code}) {
+            return $k, $v->{$code};
+        }
+    }
+}
+
+sub search_result($$$) {
+    my ($code_map, $name, $index) = @_;
+
+    $code_map->{$name}{reverse}{$index} if $code_map->{$name};
 }
 
 sub convert($$$) {
     my ($char, $from, $to) = @_;
 
+    my $from_map = code_map $from;
+    my $to_map = code_map $to;
+
+    my ($name, $index) = search_index $from_map, $char;
+    search_result $to_map, $name, $index if $name;
 }
+
+sub main() {
+    say convert chr(0xf500), 'v2', 'v3';
+}
+
+main if $0 eq __FILE__;
