@@ -236,7 +236,6 @@ def _patch(font):
 
 
 def _transform_sym(symfont, info):
-
     x_ratio = 1.0
     y_ratio = 1.0
     x_diff = 0
@@ -260,7 +259,7 @@ def _transform_sym(symfont, info):
         x_diff = 0
         y_diff = -30
 
-    elif info["name"] == "Font Linux":
+    elif info["name"] == "Font Logos":
         y_diff = -120
 
     elif info["name"] == "Font Awesome Extension":
@@ -297,7 +296,6 @@ def _transform_sym(symfont, info):
 
 
 def _copy_glyphs(font, symfont, info):
-
     selected = symfont.selection.select(
         ("ranges", "unicode"), info["sym_start"], info["sym_end"]
     )
