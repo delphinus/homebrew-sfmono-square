@@ -1,4 +1,207 @@
 #!/usr/bin/perl
+use v5.30;
+use feature qw(signatures state);
+use warnings;
+no warnings qw(experimental::signatures);
+use Cwd qw(getcwd);
+use Data::Dumper;
+use Getopt::Long qw(:config posix_default no_ignore_case bundling auto_help);
+use IPC::Open3 qw(open3);
+use List::Util qw(reduce);
+use Path::Tiny qw(path);
+use Pod::Usage qw(pod2usage);
+binmode STDOUT => ':utf8';
+
+GetOptions(
+    \my %opt, qw(
+        from|f=s
+        to|t=s
+        max-files
+        max-size
+        no-gitignore
+        execute|e
+        help|h
+    ),
+) or pod2usage(1);
+
+# default values
+%opt = (
+    from => 'v2',
+    to => 'v3',
+    'max-files' => 1_000,
+    'max-size' => 1_000_000,
+    %opt,
+);
+
+sub is_valid_version($v) {
+    defined $v && $v =~ /\A(?:nerd_fonts_[23]|v[123])\z/;
+}
+
+pod2usage(-exitval => 0, -verbose => 2) if $opt{help};
+pod2usage(2) if !is_valid_version($opt{from}) || !is_valid_version($opt{to});
+
+sub code_map($name) {
+    # creates a map like this below.
+    # +{
+    #   Material => +{ 0xf500 => 0, 0xf501 => 1, ... , reverse => +{ 0 => 0xf500, ... } },
+    #   Codicons => +{ 0xea60 => 0, 0xea61 => 1, ... , reverse => +{ 0 => 0xea60, ... } },
+    #   Apple => +{ 0xf6d5 => 0, 0xf6d6 = . 1, ... , reverse => +{ 0 => f6d5, ... } },
+    # }
+    state sub create_map($name) {
+        my %glyphs = (
+            nerd_fonts_v2 => {
+                Material => [0xf500 .. 0xfd46],
+                Apple => undef,
+                Codicons => undef,
+            },
+
+            nerd_fonts_v3 => {
+                Material => [0xf0001 .. 0xf1af0],
+                Apple => [0xf6d5 .. 0xf6d8, 0xf8ff],
+                Codicons => [0xea60 .. 0xebeb],
+            },
+
+            v1 => {
+                Material => [0xf500 .. 0xf8ff, 0xe800 .. 0xec47],
+                Apple => undef,
+                Codicons => undef,
+            },
+
+            v2 => {
+                Material => [0xf500 .. 0xf6d4, 0xff6d5 .. 0xff6d8, 0xf6d9 .. 0xf8fe, 0xff8ff, 0xe800 .. 0xec46],
+                Apple => [0xf6d5 .. 0xf6d8, 0xf8ff],
+                Codicons => [0xfea60 .. 0xfebeb],
+            },
+
+            # same as nerd_fonts_v3
+            v3 => {
+                Material => [0xf0001 .. 0xf1af0],
+                Apple => [0xf6d5 .. 0xf6d8, 0xf8ff],
+                Codicons => [0xea60 .. 0xebeb],
+            },
+        );
+
+        reduce {
+            my $codes = $glyphs{$name}{$b};
+            if (defined $codes) {
+                my $code_map = $a->{$b} = +{};
+                for (my $i = 0; $i < $codes->@*; $i++) {
+                    $code_map->{$codes->[$i]} = $i;
+                }
+                $code_map->{reverse} = +{reverse $code_map->%*};
+            }
+            $a;
+        } +{}, keys $glyphs{$name}->%*,
+    };
+
+    state %map_cache;
+    $map_cache{$name} //= create_map($name);
+}
+
+
+sub search_index($code_map, $char) {
+    my $code = ord $char;
+    while (my ($k, $v) = each $code_map->%*) {
+        if (defined $v->{$code}) {
+            return $k, $v->{$code};
+        }
+    }
+    undef;
+}
+
+sub search_result($code_map, $name, $index) {
+    defined $code_map->{$name} ? $code_map->{$name}{reverse}{$index} : undef;
+}
+
+sub convert($char, $from, $to) {
+    my $from_map = code_map($from);
+    my $to_map = code_map($to);
+
+    my ($name, $index) = search_index($from_map, $char);
+    if (defined $name) {
+        my $result = search_result($to_map, $name, $index);
+        defined $result && $result != ord $char ? chr $result : undef;
+    } else {
+        undef;
+    }
+}
+
+sub process_file($path, $=) {
+    state $git_dir = path(getcwd)->child('.git');
+    return if !$path->exists || $path->is_dir || 0 == index $path, $git_dir;
+    if (-s $path > $opt{'max-size'}) {
+        say "$path:0:0:This is too large (> $opt{'max-size'} bytes).";
+        return;
+    }
+    if (!$opt{'no-gitignore'} && $git_dir->exists) {
+        0 == system "sh -c 'git check-ignore -q $path' 2> /dev/null" and return;
+    }
+    if (!-T $path) {
+        say "$path:0:0:This is not a text file.";
+        return;
+    }
+
+    state $called++;
+    if ($called > $opt{'max-files'}) {
+        say "$path:0:0:Too many files (limit: $opt{'max-files'})";
+        return \0;
+    }
+
+    my sub process_line() {
+        state $line++;
+        $_ = reduce {
+            state $column++;
+            my $converted = convert($b, $opt{from}, $opt{to});
+            if (defined $converted) {
+                say sprintf '%s:%d:%d:%s (U+%X) => %s (U+%X)', $path, $line, $column, $b, ord $b, $converted, ord $converted;
+                $a .= $converted;
+            } else {
+                $a .= $b;
+            }
+        } '', split //;
+    };
+
+    if ($opt{execute}) {
+        $path->edit_lines_utf8(\&process_line);
+    } else {
+        process_line for $path->lines_utf8;
+    }
+}
+
+sub git_top ($path) {
+    state sub search_git ($dir) {
+        if ($dir->is_rootdir) {
+            undef;
+        } elsif ($dir->child('.git')->is_dir) {
+            $dir;
+        } else {
+            __SUB__->($dir->parent);
+        }
+    };
+
+    search_git($path->is_dir ? $path : $path->parent);
+}
+
+sub process($path) {
+    my $git_top = git_top($path);
+    chdir $git_top if defined $git_top;
+    if ($path->is_file) {
+        process_file $path;
+    } else {
+        $path->visit(\&process_file, +{ recurse => 1, follow_symlinks => 1 });
+    }
+}
+
+sub main() {
+    my $path = path(shift @ARGV // getcwd);
+    if ($path->exists) {
+        process($path);
+    } else {
+        die "$path is not a file or a directory";
+    }
+}
+
+main if $0 eq __FILE__;
 
 =head1 NAME
 
@@ -74,7 +277,7 @@ This solves errors above. It uses the same as L</v3>.
     --to, -t [version]      This is the one to convert to.
                             Default: "v3"
     --max-files [count]     Finish if the file count is over this.
-                            Default: 10000
+                            Default: 1000
     --max-size [size]       Ignore if the file is larger than this bytes.
                             Default: 1000000 (1MB)
     --no-gitignore          Do not consider .gitignore file.
@@ -88,203 +291,3 @@ JINNOUCHI Yasushi <me@delphinus.dev>
 MIT License
 
 =cut
-
-use v5.30;
-use feature qw(signatures state);
-use warnings;
-no warnings qw(experimental::signatures);
-use Cwd qw(getcwd);
-use Data::Dumper;
-use Getopt::Long qw(:config posix_default no_ignore_case bundling auto_help);
-use List::Util qw(reduce);
-use Path::Tiny qw(path);
-use Pod::Usage qw(pod2usage);
-binmode STDOUT => ':utf8';
-
-GetOptions(
-    \my %opt, qw(
-        from|f=s
-        to|t=s
-        max-files
-        max-size
-        no-gitignore
-        execute|e
-        help|h
-    ),
-) or pod2usage(1);
-
-# default values
-%opt = (
-    from => 'v2',
-    to => 'v3',
-    'max-files' => 10_000,
-    'max-size' => 1_000_000,
-    %opt,
-);
-
-sub is_valid_version :prototype($) ($v) {
-    defined $v && $v =~ /\A(?:nerd_fonts_[23]|v[123])\z/;
-}
-
-pod2usage(-exitval => 0, -verbose => 2) if $opt{help};
-pod2usage(2) if !is_valid_version $opt{from} || !is_valid_version $opt{to};
-
-sub code_map :prototype($) ($name) {
-    # creates a map like this below.
-    # +{
-    #   Material => +{ 0xf500 => 0, 0xf501 => 1, ... , reverse => +{ 0 => 0xf500, ... } },
-    #   Codicons => +{ 0xea60 => 0, 0xea61 => 1, ... , reverse => +{ 0 => 0xea60, ... } },
-    #   Apple => +{ 0xf6d5 => 0, 0xf6d6 = . 1, ... , reverse => +{ 0 => f6d5, ... } },
-    # }
-    state sub create_map :prototype($)($name) {
-        my %glyphs = (
-            nerd_fonts_v2 => {
-                Material => [0xf500 .. 0xfd46],
-                Apple => undef,
-                Codicons => undef,
-            },
-
-            nerd_fonts_v3 => {
-                Material => [0xf0001 .. 0xf1af0],
-                Apple => [0xf6d5 .. 0xf6d8, 0xf8ff],
-                Codicons => [0xea60 .. 0xebeb],
-            },
-
-            v1 => {
-                Material => [0xf500 .. 0xf8ff, 0xe800 .. 0xec47],
-                Apple => undef,
-                Codicons => undef,
-            },
-
-            v2 => {
-                Material => [0xf500 .. 0xf6d4, 0xff6d5 .. 0xff6d8, 0xf6d9 .. 0xf8fe, 0xff8ff, 0xe800 .. 0xec46],
-                Apple => [0xf6d5 .. 0xf6d8, 0xf8ff],
-                Codicons => [0xfea60 .. 0xfebeb],
-            },
-
-            # same as nerd_fonts_v3
-            v3 => {
-                Material => [0xf0001 .. 0xf1af0],
-                Apple => [0xf6d5 .. 0xf6d8, 0xf8ff],
-                Codicons => [0xea60 .. 0xebeb],
-            },
-        );
-
-        reduce {
-            my $codes = $glyphs{$name}{$b};
-            if (defined $codes) {
-                my $code_map = $a->{$b} = +{};
-                for (my $i = 0; $i < $codes->@*; $i++) {
-                    $code_map->{$codes->[$i]} = $i;
-                }
-                $code_map->{reverse} = +{reverse $code_map->%*};
-            }
-            $a;
-        } +{}, keys $glyphs{$name}->%*,
-    };
-
-    state %map_cache;
-    $map_cache{$name} //= create_map $name;
-}
-
-
-sub search_index :prototype($$) ($code_map, $char) {
-    my $code = ord $char;
-    while (my ($k, $v) = each $code_map->%*) {
-        if (defined $v->{$code}) {
-            return $k, $v->{$code};
-        }
-    }
-    undef;
-}
-
-sub search_result :prototype($$$) ($code_map, $name, $index) {
-    defined $code_map->{$name} ? $code_map->{$name}{reverse}{$index} : undef;
-}
-
-sub convert :prototype($$$) ($char, $from, $to) {
-    my $from_map = code_map $from;
-    my $to_map = code_map $to;
-
-    my ($name, $index) = search_index $from_map, $char;
-    if (defined $name) {
-        my $result = search_result $to_map, $name, $index;
-        defined $result && $result != ord $char ? chr($result) : undef;
-    } else {
-        undef;
-    }
-}
-
-sub process_file :prototype($;$) ($path, $=) {
-    state $git_dir = path(getcwd)->child('.git');
-    return if !$path->exists || $path->is_dir || 0 == index $path, $git_dir;
-    if (-s $path > $opt{'max-size'}) {
-        say "$path:0:0:This is too large (> $opt{'max-size'} bytes).";
-        return;
-    }
-    if (!$opt{'no-gitignore'} && $git_dir->exists) {
-        0 == system 'git', 'check-ignore', '-q', $path and return;
-    }
-    if (!-T $path) {
-        say "$path:0:0:This is not a text file.";
-        return;
-    }
-
-    state $called++;
-    return \0 if $called > $opt{'max-files'};
-
-    my sub process_line :prototype() () {
-        state $line++;
-        $_ = reduce {
-            state $column++;
-            my $converted = convert $b, $opt{from}, $opt{to};
-            if (defined $converted) {
-                say sprintf '%s:%d:%d:%s (U+%X) => %s (U+%X)', $path, $line, $column, $b, ord $b, $converted, ord $converted;
-                $a .= $converted;
-            } else {
-                $a .= $b;
-            }
-        } '', split //;
-    };
-
-    if ($opt{execute}) {
-        $path->edit_lines_utf8(\&process_line);
-    } else {
-        process_line for $path->lines_utf8;
-    }
-}
-
-sub git_top :prototype($) ($path) {
-    state sub search_git :prototype($) ($dir) {
-        if ($dir->is_rootdir) {
-            undef;
-        } elsif ($dir->child('.git')->is_dir) {
-            $dir;
-        } else {
-            __SUB__->($dir->parent);
-        }
-    };
-
-    search_git($path->is_dir ? $path : $path->parent);
-}
-
-sub process :prototype($) ($path) {
-    my $git_top = git_top $path;
-    chdir $git_top if defined $git_top;
-    if ($path->is_file) {
-        process_file $path;
-    } else {
-        $path->visit(\&process_file, +{ recurse => 1, follow_symlinks => 1 });
-    }
-}
-
-sub main :prototype() {
-    my $path = path(shift @ARGV // getcwd);
-    if ($path->exists) {
-        process $path;
-    } else {
-        die "$path is not a file or a directory";
-    }
-}
-
-main if $0 eq __FILE__;
