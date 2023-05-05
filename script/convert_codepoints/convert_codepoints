@@ -215,22 +215,23 @@ sub convert :prototype($$$) ($char, $from, $to) {
 
 sub process_file :prototype($;$) ($path, $) {
     state $git_dir = path(getcwd)->child('.git');
-    return if -d $path || 0 == index $path, $git_dir;
-    if (!-T $path) {
-        say "$path:0:0:This is not a text file.";
-        return;
-    } elsif (-s $path > $opt{'max-size'}) {
+    return if !$path->exists || $path->is_dir || 0 == index $path, $git_dir;
+    if (-s $path > $opt{'max-size'}) {
         say "$path:0:0:This is too large (> $opt{'max-size'} bytes).";
         return;
     }
     if ($git_dir->exists) {
         0 == system 'git', 'check-ignore', '-q', $path and return;
     }
+    if (!-T $path) {
+        say "$path:0:0:This is not a text file.";
+        return;
+    }
 
     state $called++;
     return \0 if $called > $opt{'max-files'};
 
-    my $process_line = sub :prototype() {
+    my $process_line = sub {
         state $line++;
         $_ = reduce {
             state $column++;
@@ -253,20 +254,37 @@ sub process_file :prototype($;$) ($path, $) {
     }
 }
 
-sub process :prototype($) ($entry) {
-    if (-f $entry) {
-        process_file path($entry);
+sub git_top :prototype($) ($path) {
+    state $search_git;
+    $search_git = sub ($dir) {
+        if ($dir->is_rootdir) {
+            undef;
+        } elsif ($dir->child('.git')->is_dir) {
+            $dir;
+        } else {
+            $search_git->($dir->parent);
+        }
+    };
+
+    $search_git->($path->is_dir ? $path : $path->parent);
+}
+
+sub process :prototype($) ($path) {
+    my $git_top = git_top $path;
+    chdir $git_top if defined $git_top;
+    if ($path->is_file) {
+        process_file $path;
     } else {
-        path($entry)->visit(\&process_file, +{ recurse => 1, follow_symlinks => 1 });
+        $path->visit(\&process_file, +{ recurse => 1, follow_symlinks => 1 });
     }
 }
 
 sub main :prototype() {
-    my $entry = shift @ARGV // getcwd;
-    if (-f $entry || -d $entry) {
-        process $entry;
+    my $path = path(shift @ARGV // getcwd);
+    if ($path->exists) {
+        process $path;
     } else {
-        die "$entry is not a file or a directory";
+        die "$path is not a file or a directory";
     }
 }
 
