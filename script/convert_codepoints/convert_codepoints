@@ -207,7 +207,7 @@ sub convert :prototype($$$) ($char, $from, $to) {
     my ($name, $index) = search_index $from_map, $char;
     if (defined $name) {
         my $result = search_result $to_map, $name, $index;
-        defined $result ? chr($result) : undef;
+        defined $result && $result != ord $char ? chr($result) : undef;
     } else {
         undef;
     }
