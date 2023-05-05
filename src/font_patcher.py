@@ -226,6 +226,7 @@ def _patch(font):
                 symfont.close()
                 symfont = None
             symfont = fontforge.open(f"src/glyphs/{info['filename']}")
+            symfont.encoding = "UnicodeFull"
             # Match the symbol font size to the source font size
             symfont.em = font.em
             previous_symbol_filename = info["filename"]
