@@ -18,14 +18,14 @@ PATCH_SET = [
         "src_start": 0xE5FA,
         "exact": False,
     },
-    {
-        "name": "Heavy Angle Brackets",
-        "filename": "extraglyphs.sfd",
-        "sym_start": 0x276C,
-        "sym_end": 0x2771,
-        "src_start": None,
-        "exact": True,
-    },
+    #   {
+    #       "name": "Heavy Angle Brackets",
+    #       "filename": "extraglyphs.sfd",
+    #       "sym_start": 0x276C,
+    #       "sym_end": 0x2771,
+    #       "src_start": None,
+    #       "exact": True,
+    #   },
     #   {
     #       "name": "Box Drawing",
     #       "filename": "extraglyphs.sfd",
