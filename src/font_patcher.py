@@ -190,7 +190,7 @@ PATCH_SET = [
     },  # Desktop
     {
         "name": "Codicons",
-        "filename": "condicons/codicon.ttf",
+        "filename": "codicons/codicon.ttf",
         "sym_start": 0xEA60,
         "sym_end": 0xEBEB,
         "src_start": None,
