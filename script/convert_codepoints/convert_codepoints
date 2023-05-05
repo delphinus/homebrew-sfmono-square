@@ -8,7 +8,7 @@ use Data::Dumper;
 use Getopt::Long qw(:config posix_default no_ignore_case bundling auto_help);
 use IPC::Open3 qw(open3);
 use List::Util qw(reduce);
-use Path::Tiny qw(path);
+use Path::Tiny qw(path rootdir);
 use Pod::Usage qw(pod2usage);
 binmode STDOUT => ':utf8';
 
@@ -18,6 +18,7 @@ GetOptions(
         to|t=s
         max-files
         max-size
+        submodules
         no-gitignore
         execute|e
         help|h
@@ -127,10 +128,16 @@ sub convert($char, $from, $to) {
 }
 
 sub process_file($path, $=) {
-    state $git_dir = path(getcwd)->child('.git');
+    my $cwd = path(getcwd);
+    state $git_dir = $cwd->child('.git');
     return if !$path->exists || $path->is_dir || 0 == index $path, $git_dir;
     if (-s $path > $opt{'max-size'}) {
         say "$path:0:0:This is too large (> $opt{'max-size'} bytes).";
+        return;
+    }
+    my $is_in_submodules = !!git_top($path, $cwd);
+    if ($is_in_submodules) {
+        say "$path:0:0:This is in a submodule";
         return;
     }
     if (!$opt{'no-gitignore'} && $git_dir->exists) {
@@ -168,18 +175,18 @@ sub process_file($path, $=) {
     }
 }
 
-sub git_top ($path) {
-    state sub search_git ($dir) {
-        if ($dir->is_rootdir) {
+sub git_top ($path, $root = rootdir) {
+    state sub search_git($dir, $root = rootdir) {
+        if ($dir eq $root) {
             undef;
         } elsif ($dir->child('.git')->is_dir) {
             $dir;
         } else {
-            __SUB__->($dir->parent);
+            __SUB__->($dir->parent, $root);
         }
     };
 
-    search_git($path->is_dir ? $path : $path->parent);
+    search_git($path->is_dir ? $path : $path->parent, $root);
 }
 
 sub process($path) {
@@ -280,6 +287,7 @@ This solves errors above. It uses the same as L</v3>.
                             Default: 1000
     --max-size [size]       Ignore if the file is larger than this bytes.
                             Default: 1000000 (1MB)
+    --submodules            Search files in submodules.
     --no-gitignore          Do not consider .gitignore file.
     --execute, -e           Without this, it prints the diff only.
     --help, -h              Show this document and exit.
