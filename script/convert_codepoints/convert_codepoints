@@ -77,6 +77,7 @@ This solves errors above. It uses the same as L</v3>.
                             Default: 10000
     --max-size [size]       Ignore if the file is larger than this bytes.
                             Default: 1000000 (1MB)
+    --no-gitignore          Do not consider .gitignore file.
     --execute, -e           Without this, it prints the diff only.
     --help, -h              Show this document and exit.
 
@@ -88,7 +89,7 @@ MIT License
 
 =cut
 
-use v5.20;
+use v5.30;
 use feature qw(signatures state);
 use warnings;
 no warnings qw(experimental::signatures);
@@ -106,6 +107,7 @@ GetOptions(
         to|t=s
         max-files
         max-size
+        no-gitignore
         execute|e
         help|h
     ),
@@ -127,7 +129,6 @@ sub is_valid_version :prototype($) ($v) {
 pod2usage(-exitval => 0, -verbose => 2) if $opt{help};
 pod2usage(2) if !is_valid_version $opt{from} || !is_valid_version $opt{to};
 
-my %map_cache;
 sub code_map :prototype($) ($name) {
     # creates a map like this below.
     # +{
@@ -135,7 +136,7 @@ sub code_map :prototype($) ($name) {
     #   Codicons => +{ 0xea60 => 0, 0xea61 => 1, ... , reverse => +{ 0 => 0xea60, ... } },
     #   Apple => +{ 0xf6d5 => 0, 0xf6d6 = . 1, ... , reverse => +{ 0 => f6d5, ... } },
     # }
-    state $create_map = sub ($name) {
+    state sub create_map :prototype($)($name) {
         my %glyphs = (
             nerd_fonts_v2 => {
                 Material => [0xf500 .. 0xfd46],
@@ -173,22 +174,23 @@ sub code_map :prototype($) ($name) {
             my $codes = $glyphs{$name}{$b};
             if (defined $codes) {
                 my $code_map = $a->{$b} = +{};
-                for (my $i = 0; $i < @$codes; $i++) {
+                for (my $i = 0; $i < $codes->@*; $i++) {
                     $code_map->{$codes->[$i]} = $i;
                 }
-                $code_map->{reverse} = +{reverse %$code_map};
+                $code_map->{reverse} = +{reverse $code_map->%*};
             }
             $a;
-        } +{}, keys %{$glyphs{$name}},
+        } +{}, keys $glyphs{$name}->%*,
     };
 
-    $map_cache{$name} //= $create_map->($name);
+    state %map_cache;
+    $map_cache{$name} //= create_map $name;
 }
 
 
 sub search_index :prototype($$) ($code_map, $char) {
     my $code = ord $char;
-    while (my ($k, $v) = each %$code_map) {
+    while (my ($k, $v) = each $code_map->%*) {
         if (defined $v->{$code}) {
             return $k, $v->{$code};
         }
@@ -213,14 +215,14 @@ sub convert :prototype($$$) ($char, $from, $to) {
     }
 }
 
-sub process_file :prototype($;$) ($path, $) {
+sub process_file :prototype($;$) ($path, $=) {
     state $git_dir = path(getcwd)->child('.git');
     return if !$path->exists || $path->is_dir || 0 == index $path, $git_dir;
     if (-s $path > $opt{'max-size'}) {
         say "$path:0:0:This is too large (> $opt{'max-size'} bytes).";
         return;
     }
-    if ($git_dir->exists) {
+    if (!$opt{'no-gitignore'} && $git_dir->exists) {
         0 == system 'git', 'check-ignore', '-q', $path and return;
     }
     if (!-T $path) {
@@ -231,7 +233,7 @@ sub process_file :prototype($;$) ($path, $) {
     state $called++;
     return \0 if $called > $opt{'max-files'};
 
-    my $process_line = sub {
+    my sub process_line :prototype() () {
         state $line++;
         $_ = reduce {
             state $column++;
@@ -246,27 +248,24 @@ sub process_file :prototype($;$) ($path, $) {
     };
 
     if ($opt{execute}) {
-        $path->edit_lines_utf8($process_line);
+        $path->edit_lines_utf8(\&process_line);
     } else {
-        for ($path->lines_utf8) {
-            $process_line->();
-        }
+        process_line for $path->lines_utf8;
     }
 }
 
 sub git_top :prototype($) ($path) {
-    state $search_git;
-    $search_git = sub ($dir) {
+    state sub search_git :prototype($) ($dir) {
         if ($dir->is_rootdir) {
             undef;
         } elsif ($dir->child('.git')->is_dir) {
             $dir;
         } else {
-            $search_git->($dir->parent);
+            __SUB__->($dir->parent);
         }
     };
 
-    $search_git->($path->is_dir ? $path : $path->parent);
+    search_git($path->is_dir ? $path : $path->parent);
 }
 
 sub process :prototype($) ($path) {
