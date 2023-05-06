@@ -36,10 +36,10 @@ class SfmonoSquare < Formula
     (share / "fonts/src").install Dir["*.otf"]
     (share / "fonts/src").install Dir["*.ttf"]
 
-    dir = Dir["script/convert_codepoints"]
-    system "#{Formula['pod2man'].opt_bin}/pod2man", dir / "convert_codepoints", dir / "convert_codepoints.1"
-    bin.install dir / "convert_codepoints"
-    man1.install dir / "convert_codepoints.1"
+    dir = "script/convert_codepoints"
+    system "#{Formula['pod2man'].opt_bin}/pod2man", "#{dir}/convert_codepoints", "#{dir}/convert_codepoints.1"
+    bin.install "#{dir}/convert_codepoints"
+    man1.install "#{dir}/convert_codepoints.1"
   end
 
   def _stage
