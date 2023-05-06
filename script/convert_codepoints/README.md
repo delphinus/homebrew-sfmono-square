@@ -1,21 +1,28 @@
 # NAME
 
-convert\_codepoints
+convert\_codepoints - convert files according to changes in SF Mono Square
 
 # SYNOPSIS
 
-    # convert files from v2 => v3 (default values)
-    % bin/convert_codepoints
+    # convert all files below the current directory
+    # from v2 => v3 (default values)
+    % bin/convert_codepoints .
 
     # specify versions
-    % bin/convert_codepoints -f v1 -t v3
+    % bin/convert_codepoints -f v1 -t v3 .
+
+    # specify a file
+    % bin/convert_codepoints -f v1 -t v3 /path/to/file
+
+    # not show diffs, but execute
+    % bin/convert_codepoints -e
 
 # DESCRIPTION
 
 This is a script to convert glyphs in your dotfiles according to versions of SF
 Mono Square. Now this font has 3 versions that has some codepoints without
-compatibility. This script can search any file in the current directory and
-convert characters that have such codepoints according to supplied options.
+compatibility. This script can search a supplied directory or file and convert
+characters that have such codepoints according to supplied options.
 
 Here is an outline of changes in v1, v2, v3, nerd-fonts v2 and nerd-fonts v3.
 
@@ -42,9 +49,9 @@ Now v2 has Codicons glyphs in U+FEA60 .. U+FEBEB not to overwrite Material ones.
 
 v3 uses completely the same codepoints as nerd-fonts v3 ones.
 
-Material => U+F0001 .. U+F1AF0
-Apple    => U+F6D5 .. U+F6D8, U+F8FF
-Codicons => U+EA60 .. U+EBEB
+    Material => U+F0001 .. U+F1AF0
+    Apple    => U+F6D5 .. U+F6D8, U+F8FF
+    Codicons => U+EA60 .. U+EBEB
 
 ## nerd-fonts v2
 
@@ -57,15 +64,62 @@ This solves errors above. It uses the same as ["v3"](#v3).
 
 # OPTIONS
 
-    --from, -f [version]    This specifies a version string to convert from.
-                            This accepts "v1", "v2", "v3", "nerd_fonts_v2" or
-                            "nerd_fonts_v3". "nerd_fonts_XX" means the
-                            codepoints from nerd-fonts. Default: "v2"
-    --to, -t [version]      This is the one to convert to. Default: "v3"
-    --dry-run, -n           Dry-run. With this, it prints the diff only.
+- **--from** _version_, **-f** _version_
+
+    This specifies a version string to convert from. This accepts `"v1"`, `"v2"`,
+    `"v3"`, `"nerd_fonts_v2"` or `"nerd_fonts_v3"`. `"nerd_fonts_XX"` means the
+    codepoints from nerd-fonts.
+
+    Default: `"v2"`
+
+- **--to** _version_, **-t** _version_
+
+    This is the one to convert to.
+
+    Default: `"v3"`
+
+- **--ignore-regex** _regex_, **-r** _regex_
+
+    Ignore files matched this RegEx (Perl style).
+
+    Default: `undef`
+
+- **--max-files** _count_
+
+    Finish if the file count is over this.
+
+    Default: `1000`
+
+- **--max-size** _size_
+
+    Ignore if the file is larger than this bytes.
+
+    Default: `1000000` (1MB)
+
+- **--submodules**
+
+    Search files in submodules.
+
+- **--gitignore**
+
+    Consider `.gitignore` file.
+
+- **--execute**, **-e**
+
+    Without this, it prints the diff only.
+
+- **--help**, **-h**
+
+    Show this document and exit.
 
 # COPYRIGHT & LICENSE
 
-JINNOUCHI Yasushi <me@delphinus.dev>
+Copyright 2023 JINNOUCHI Yasushi <me@delphinus.dev>
 
-MIT License
+This library is free software; you may redistribute it and/or modify it under
+the same terms as Perl itself.
+
+# SEE ALSO
+
+- [https://github.com/delphinus/homebrew-sfmono-square](https://github.com/delphinus/homebrew-sfmono-square)
+- [https://www.nerdfonts.com](https://www.nerdfonts.com)

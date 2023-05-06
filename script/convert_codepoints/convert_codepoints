@@ -17,6 +17,7 @@ GetOptions(
     \my %opt, qw(
         from|f=s
         to|t=s
+        ignore-regex|r=s
         max-files
         max-size
         submodules
@@ -132,6 +133,8 @@ sub process_file($path, $=) {
     my $cwd = path(getcwd);
     state $git_dir = $cwd->child('.git');
     return if !$path->is_file || 0 == index $path, $git_dir;
+    state $ignore_regex = defined $opt{'ignore-regex'} ? qr/$opt{'ignore-regex'}/ : undef;
+    return if defined $ignore_regex && $path =~ $ignore_regex;
     # This means the path is in a submodule.
     return if !$opt{submodules} && !!search_git($path, $cwd, 1);
     if (-s $path > $opt{'max-size'}) {
@@ -146,8 +149,8 @@ sub process_file($path, $=) {
         return;
     }
 
-    state $called++;
-    if ($called > $opt{'max-files'}) {
+    state $files++;
+    if ($files > $opt{'max-files'}) {
         say "$path:0:0:Too many files (limit: $opt{'max-files'})";
         return \0;
     }
@@ -207,16 +210,16 @@ main if $0 eq __FILE__;
 
 =head1 NAME
 
-convert_codepoints
+convert_codepoints - convert files according to changes in SF Mono Square
 
 =head1 SYNOPSIS
 
     # convert all files below the current directory
     # from v2 => v3 (default values)
-    % bin/convert_codepoints
+    % bin/convert_codepoints .
 
     # specify versions
-    % bin/convert_codepoints -f v1 -t v3
+    % bin/convert_codepoints -f v1 -t v3 .
 
     # specify a file
     % bin/convert_codepoints -f v1 -t v3 /path/to/file
@@ -228,8 +231,8 @@ convert_codepoints
 
 This is a script to convert glyphs in your dotfiles according to versions of SF
 Mono Square. Now this font has 3 versions that has some codepoints without
-compatibility. This script can search any file in the current directory and
-convert characters that have such codepoints according to supplied options.
+compatibility. This script can search a supplied directory or file and convert
+characters that have such codepoints according to supplied options.
 
 Here is an outline of changes in v1, v2, v3, nerd-fonts v2 and nerd-fonts v3.
 
@@ -256,9 +259,9 @@ Now v2 has Codicons glyphs in U+FEA60 .. U+FEBEB not to overwrite Material ones.
 
 v3 uses completely the same codepoints as nerd-fonts v3 ones.
 
-Material => U+F0001 .. U+F1AF0
-Apple    => U+F6D5 .. U+F6D8, U+F8FF
-Codicons => U+EA60 .. U+EBEB
+    Material => U+F0001 .. U+F1AF0
+    Apple    => U+F6D5 .. U+F6D8, U+F8FF
+    Codicons => U+EA60 .. U+EBEB
 
 =head2 nerd-fonts v2
 
@@ -271,26 +274,74 @@ This solves errors above. It uses the same as L</v3>.
 
 =head1 OPTIONS
 
-    --from, -f [version]    This specifies a version string to convert from.
-                            This accepts "v1", "v2", "v3", "nerd_fonts_v2" or
-                            "nerd_fonts_v3". "nerd_fonts_XX" means the
-                            codepoints from nerd-fonts.
-                            Default: "v2"
-    --to, -t [version]      This is the one to convert to.
-                            Default: "v3"
-    --max-files [count]     Finish if the file count is over this.
-                            Default: 1000
-    --max-size [size]       Ignore if the file is larger than this bytes.
-                            Default: 1000000 (1MB)
-    --submodules            Search files in submodules.
-    --gitignore             Consider .gitignore file.
-    --execute, -e           Without this, it prints the diff only.
-    --help, -h              Show this document and exit.
+=over 4
+
+=item B<--from> I<version>, B<-f> I<version>
+
+This specifies a version string to convert from. This accepts C<"v1">, C<"v2">,
+C<"v3">, C<"nerd_fonts_v2"> or C<"nerd_fonts_v3">. C<"nerd_fonts_XX"> means the
+codepoints from nerd-fonts.
+
+Default: C<"v2">
+
+=item B<--to> I<version>, B<-t> I<version>
+
+This is the one to convert to.
+
+Default: C<"v3">
+
+=item B<--ignore-regex> I<regex>, B<-r> I<regex>
+
+Ignore files matched this RegEx (Perl style).
+
+Default: C<undef>
+
+
+=item B<--max-files> I<count>
+
+Finish if the file count is over this.
+
+Default: C<1000>
+
+=item B<--max-size> I<size>
+
+Ignore if the file is larger than this bytes.
+
+Default: C<1000000> (1MB)
+
+=item B<--submodules>
+
+Search files in submodules.
+
+=item B<--gitignore>
+
+Consider C<.gitignore> file.
+
+=item B<--execute>, B<-e>
+
+Without this, it prints the diff only.
+
+=item B<--help>, B<-h>
+
+Show this document and exit.
+
+=back
 
 =head1 COPYRIGHT & LICENSE
 
-JINNOUCHI Yasushi <me@delphinus.dev>
+Copyright 2023 JINNOUCHI Yasushi <me@delphinus.dev>
 
-MIT License
+This library is free software; you may redistribute it and/or modify it under
+the same terms as Perl itself.
+
+=head1 SEE ALSO
+
+=over 4
+
+=item L<https://github.com/delphinus/homebrew-sfmono-square>
+
+=item L<https://www.nerdfonts.com>
+
+=back
 
 =cut
