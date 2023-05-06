@@ -1,11 +1,9 @@
 #!/usr/bin/perl
-$|++;
 use v5.30;
 use feature qw(signatures state);
 use warnings;
 no warnings qw(experimental::signatures);
 use Cwd qw(getcwd);
-use Data::Dumper;
 use Getopt::Long qw(:config posix_default no_ignore_case bundling auto_help);
 use IPC::Open3 qw(open3);
 use List::Util qw(reduce);
@@ -33,6 +31,7 @@ GetOptions(
     to => 'v3',
     'max-files' => 1_000,
     'max-size' => 1_000_000,
+    path => shift @ARGV,
     %opt,
 );
 
@@ -41,6 +40,7 @@ sub is_valid_version($v) {
 }
 
 pod2usage(-exitval => 0, -verbose => 2) if $opt{help};
+pod2usage(-exitval => 2, -msg => 'supply a file or a directory to search.') unless $opt{path};
 pod2usage(2) if !is_valid_version($opt{from}) || !is_valid_version($opt{to});
 
 sub code_map($name) {
@@ -198,7 +198,7 @@ sub process($path) {
 }
 
 sub main() {
-    my $path = path(shift @ARGV // getcwd);
+    my $path = path($opt{path});
     if ($path->exists) {
         process($path);
     } else {
@@ -216,34 +216,64 @@ convert_codepoints - convert files according to changes in SF Mono Square
 
     # convert all files below the current directory
     # from v2 => v3 (default values)
-    % bin/convert_codepoints .
+    % convert_codepoints .
 
     # specify versions
-    % bin/convert_codepoints -f v1 -t v3 .
+    % convert_codepoints -f v1 -t v3 .
 
     # specify a file
-    % bin/convert_codepoints -f v1 -t v3 /path/to/file
+    % convert_codepoints -f v1 -t v3 /path/to/file
 
     # not show diffs, but execute
-    % bin/convert_codepoints -e
+    % convert_codepoints -e /path/to/dir
 
 =head1 DESCRIPTION
 
 This is a script to convert glyphs in your dotfiles according to versions of SF
 Mono Square. Now this font has 3 versions that has some codepoints without
-compatibility. This script can search a supplied directory or file and convert
+compatibility. This script can search a directory or file and convert
 characters that have such codepoints according to supplied options.
+
+You can specify dotfiles git directory for the typical usecase.
+
+    % convert_codepoints /path/to/dotfiles
+
+You can also check one file.
+
+    % convert_codepoints /path/to/file
+
+It does not edit files in examples above. Use B<-e> to edit (carefully!).
+
+    % convert_codepoints -e /path/to/file
+
+In default, it ignores files below.
+
+=over 8
+
+=item Files under the directory C<.git>.
+
+=item Non-text files.
+
+=item Large files that size is over 1MB.
+
+=item Count over 1000 files.
+
+=item Files in submodules.
+
+=back
+
+=head2 Changes In Codepoints For Versions
 
 Here is an outline of changes in v1, v2, v3, nerd-fonts v2 and nerd-fonts v3.
 
-=head2 v1
+=head3 v1
 
 Material glyphs in U+F500 .. U+F8FF and U+E800 .. U+EC46. They overwrites Apple
 glyphs (U+F6D5 .. U+F6D8, U+F8FF), so v1 has no such ones.
 
 Also, there are no glyphs from Codicons.
 
-=head2 v2
+=head3 v2
 
 To use Apple glyphs, some glyphs in Material have moved.
 
@@ -255,7 +285,7 @@ U+F8FE, U+E800 .. U+EC46.
 
 Now v2 has Codicons glyphs in U+FEA60 .. U+FEBEB not to overwrite Material ones.
 
-=head2 v3
+=head3 v3
 
 v3 uses completely the same codepoints as nerd-fonts v3 ones.
 
@@ -263,18 +293,18 @@ v3 uses completely the same codepoints as nerd-fonts v3 ones.
     Apple    => U+F6D5 .. U+F6D8, U+F8FF
     Codicons => U+EA60 .. U+EBEB
 
-=head2 nerd-fonts v2
+=head3 nerd-fonts v2
 
 nerd-fonts v2 has errros on codepoints. That overwrites some codepoints except
 PUA (Private USE Area - U+E000 .. U+F8FF).
 
-=head2 nerd-fonts v3
+=head3 nerd-fonts v3
 
 This solves errors above. It uses the same as L</v3>.
 
 =head1 OPTIONS
 
-=over 4
+=over 8
 
 =item B<--from> I<version>, B<-f> I<version>
 
@@ -336,7 +366,7 @@ the same terms as Perl itself.
 
 =head1 SEE ALSO
 
-=over 4
+=over 8
 
 =item L<https://github.com/delphinus/homebrew-sfmono-square>
 

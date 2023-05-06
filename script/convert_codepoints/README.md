@@ -6,34 +6,56 @@ convert\_codepoints - convert files according to changes in SF Mono Square
 
     # convert all files below the current directory
     # from v2 => v3 (default values)
-    % bin/convert_codepoints .
+    % convert_codepoints .
 
     # specify versions
-    % bin/convert_codepoints -f v1 -t v3 .
+    % convert_codepoints -f v1 -t v3 .
 
     # specify a file
-    % bin/convert_codepoints -f v1 -t v3 /path/to/file
+    % convert_codepoints -f v1 -t v3 /path/to/file
 
     # not show diffs, but execute
-    % bin/convert_codepoints -e
+    % convert_codepoints -e /path/to/dir
 
 # DESCRIPTION
 
 This is a script to convert glyphs in your dotfiles according to versions of SF
 Mono Square. Now this font has 3 versions that has some codepoints without
-compatibility. This script can search a supplied directory or file and convert
+compatibility. This script can search a directory or file and convert
 characters that have such codepoints according to supplied options.
+
+You can specify dotfiles git directory for the typical usecase.
+
+    % convert_codepoints /path/to/dotfiles
+
+You can also check one file.
+
+    % convert_codepoints /path/to/file
+
+It does not edit files in examples above. Use **-e** to edit (carefully!).
+
+    % convert_codepoints -e /path/to/file
+
+In default, it ignores files below.
+
+- Files under the directory `.git`.
+- Non-text files.
+- Large files that size is over 1MB.
+- Count over 1000 files.
+- Files in submodules.
+
+## Changes In Codepoints For Versions
 
 Here is an outline of changes in v1, v2, v3, nerd-fonts v2 and nerd-fonts v3.
 
-## v1
+### v1
 
 Material glyphs in U+F500 .. U+F8FF and U+E800 .. U+EC46. They overwrites Apple
 glyphs (U+F6D5 .. U+F6D8, U+F8FF), so v1 has no such ones.
 
 Also, there are no glyphs from Codicons.
 
-## v2
+### v2
 
 To use Apple glyphs, some glyphs in Material have moved.
 
@@ -45,7 +67,7 @@ U+F8FE, U+E800 .. U+EC46.
 
 Now v2 has Codicons glyphs in U+FEA60 .. U+FEBEB not to overwrite Material ones.
 
-## v3
+### v3
 
 v3 uses completely the same codepoints as nerd-fonts v3 ones.
 
@@ -53,12 +75,12 @@ v3 uses completely the same codepoints as nerd-fonts v3 ones.
     Apple    => U+F6D5 .. U+F6D8, U+F8FF
     Codicons => U+EA60 .. U+EBEB
 
-## nerd-fonts v2
+### nerd-fonts v2
 
 nerd-fonts v2 has errros on codepoints. That overwrites some codepoints except
 PUA (Private USE Area - U+E000 .. U+F8FF).
 
-## nerd-fonts v3
+### nerd-fonts v3
 
 This solves errors above. It uses the same as ["v3"](#v3).
 

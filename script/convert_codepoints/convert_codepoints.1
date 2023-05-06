@@ -145,33 +145,71 @@ convert_codepoints \- convert files according to changes in SF Mono Square
 .Vb 3
 \&    # convert all files below the current directory
 \&    # from v2 => v3 (default values)
-\&    % bin/convert_codepoints .
+\&    % convert_codepoints .
 \&
 \&    # specify versions
-\&    % bin/convert_codepoints \-f v1 \-t v3 .
+\&    % convert_codepoints \-f v1 \-t v3 .
 \&
 \&    # specify a file
-\&    % bin/convert_codepoints \-f v1 \-t v3 /path/to/file
+\&    % convert_codepoints \-f v1 \-t v3 /path/to/file
 \&
 \&    # not show diffs, but execute
-\&    % bin/convert_codepoints \-e
+\&    % convert_codepoints \-e /path/to/dir
 .Ve
 .SH "DESCRIPTION"
 .IX Header "DESCRIPTION"
 This is a script to convert glyphs in your dotfiles according to versions of \s-1SF\s0
 Mono Square. Now this font has 3 versions that has some codepoints without
-compatibility. This script can search a supplied directory or file and convert
+compatibility. This script can search a directory or file and convert
 characters that have such codepoints according to supplied options.
 .PP
+You can specify dotfiles git directory for the typical usecase.
+.PP
+.Vb 1
+\&    % convert_codepoints /path/to/dotfiles
+.Ve
+.PP
+You can also check one file.
+.PP
+.Vb 1
+\&    % convert_codepoints /path/to/file
+.Ve
+.PP
+It does not edit files in examples above. Use \fB\-e\fR to edit (carefully!).
+.PP
+.Vb 1
+\&    % convert_codepoints \-e /path/to/file
+.Ve
+.PP
+In default, it ignores files below.
+.ie n .IP "Files under the directory "".git""." 8
+.el .IP "Files under the directory \f(CW.git\fR." 8
+.IX Item "Files under the directory .git."
+.PD 0
+.IP "Non-text files." 8
+.IX Item "Non-text files."
+.IP "Large files that size is over 1MB." 8
+.IX Item "Large files that size is over 1MB."
+.IP "Count over 1000 files." 8
+.IX Item "Count over 1000 files."
+.IP "Files in submodules." 8
+.IX Item "Files in submodules."
+.PD
+.SS "Changes In Codepoints For Versions"
+.IX Subsection "Changes In Codepoints For Versions"
 Here is an outline of changes in v1, v2, v3, nerd-fonts v2 and nerd-fonts v3.
-.SS "v1"
+.PP
+\fIv1\fR
 .IX Subsection "v1"
+.PP
 Material glyphs in U+F500 .. U+F8FF and U+E800 .. U+EC46. They overwrites Apple
 glyphs (U+F6D5 .. U+F6D8, U+F8FF), so v1 has no such ones.
 .PP
 Also, there are no glyphs from Codicons.
-.SS "v2"
+.PP
+\fIv2\fR
 .IX Subsection "v2"
+.PP
 To use Apple glyphs, some glyphs in Material have moved.
 .PP
 .Vb 2
@@ -183,8 +221,10 @@ So this time Material glyphs in U+F500 .. U+F6D4, U+FF6D5 .. U+FF6D8, U+F6D9 =>
 U+F8FE, U+E800 .. U+EC46.
 .PP
 Now v2 has Codicons glyphs in U+FEA60 .. U+FEBEB not to overwrite Material ones.
-.SS "v3"
+.PP
+\fIv3\fR
 .IX Subsection "v3"
+.PP
 v3 uses completely the same codepoints as nerd-fonts v3 ones.
 .PP
 .Vb 3
@@ -192,52 +232,56 @@ v3 uses completely the same codepoints as nerd-fonts v3 ones.
 \&    Apple    => U+F6D5 .. U+F6D8, U+F8FF
 \&    Codicons => U+EA60 .. U+EBEB
 .Ve
-.SS "nerd-fonts v2"
+.PP
+\fInerd-fonts v2\fR
 .IX Subsection "nerd-fonts v2"
+.PP
 nerd-fonts v2 has errros on codepoints. That overwrites some codepoints except
 \&\s-1PUA\s0 (Private \s-1USE\s0 Area \- U+E000 .. U+F8FF).
-.SS "nerd-fonts v3"
+.PP
+\fInerd-fonts v3\fR
 .IX Subsection "nerd-fonts v3"
+.PP
 This solves errors above. It uses the same as \*(L"v3\*(R".
 .SH "OPTIONS"
 .IX Header "OPTIONS"
-.IP "\fB\-\-from\fR \fIversion\fR, \fB\-f\fR \fIversion\fR" 4
+.IP "\fB\-\-from\fR \fIversion\fR, \fB\-f\fR \fIversion\fR" 8
 .IX Item "--from version, -f version"
 This specifies a version string to convert from. This accepts \f(CW"v1"\fR, \f(CW"v2"\fR,
 \&\f(CW"v3"\fR, \f(CW"nerd_fonts_v2"\fR or \f(CW"nerd_fonts_v3"\fR. \f(CW"nerd_fonts_XX"\fR means the
 codepoints from nerd-fonts.
 .Sp
 Default: \f(CW"v2"\fR
-.IP "\fB\-\-to\fR \fIversion\fR, \fB\-t\fR \fIversion\fR" 4
+.IP "\fB\-\-to\fR \fIversion\fR, \fB\-t\fR \fIversion\fR" 8
 .IX Item "--to version, -t version"
 This is the one to convert to.
 .Sp
 Default: \f(CW"v3"\fR
-.IP "\fB\-\-ignore\-regex\fR \fIregex\fR, \fB\-r\fR \fIregex\fR" 4
+.IP "\fB\-\-ignore\-regex\fR \fIregex\fR, \fB\-r\fR \fIregex\fR" 8
 .IX Item "--ignore-regex regex, -r regex"
 Ignore files matched this RegEx (Perl style).
 .Sp
 Default: \f(CW\*(C`undef\*(C'\fR
-.IP "\fB\-\-max\-files\fR \fIcount\fR" 4
+.IP "\fB\-\-max\-files\fR \fIcount\fR" 8
 .IX Item "--max-files count"
 Finish if the file count is over this.
 .Sp
 Default: \f(CW1000\fR
-.IP "\fB\-\-max\-size\fR \fIsize\fR" 4
+.IP "\fB\-\-max\-size\fR \fIsize\fR" 8
 .IX Item "--max-size size"
 Ignore if the file is larger than this bytes.
 .Sp
 Default: \f(CW1000000\fR (1MB)
-.IP "\fB\-\-submodules\fR" 4
+.IP "\fB\-\-submodules\fR" 8
 .IX Item "--submodules"
 Search files in submodules.
-.IP "\fB\-\-gitignore\fR" 4
+.IP "\fB\-\-gitignore\fR" 8
 .IX Item "--gitignore"
 Consider \f(CW\*(C`.gitignore\*(C'\fR file.
-.IP "\fB\-\-execute\fR, \fB\-e\fR" 4
+.IP "\fB\-\-execute\fR, \fB\-e\fR" 8
 .IX Item "--execute, -e"
 Without this, it prints the diff only.
-.IP "\fB\-\-help\fR, \fB\-h\fR" 4
+.IP "\fB\-\-help\fR, \fB\-h\fR" 8
 .IX Item "--help, -h"
 Show this document and exit.
 .SH "COPYRIGHT & LICENSE"
@@ -248,8 +292,8 @@ This library is free software; you may redistribute it and/or modify it under
 the same terms as Perl itself.
 .SH "SEE ALSO"
 .IX Header "SEE ALSO"
-.IP "<https://github.com/delphinus/homebrew\-sfmono\-square>" 4
+.IP "<https://github.com/delphinus/homebrew\-sfmono\-square>" 8
 .IX Item "<https://github.com/delphinus/homebrew-sfmono-square>"
 .PD 0
-.IP "<https://www.nerdfonts.com>" 4
+.IP "<https://www.nerdfonts.com>" 8
 .IX Item "<https://www.nerdfonts.com>"
