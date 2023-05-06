@@ -11,6 +11,7 @@ class SfmonoSquare < Formula
 
   depends_on "fontforge" => :build
   depends_on "python@3.11" => :build
+  depends_on "pod2man" => :build
 
   resource "migu1mfonts" do
     output, = system_command curl_executable,
@@ -34,6 +35,11 @@ class SfmonoSquare < Formula
     (share / "fonts").install Dir["build/*.otf"]
     (share / "fonts/src").install Dir["*.otf"]
     (share / "fonts/src").install Dir["*.ttf"]
+
+    dir = Dir["script/convert_codepoints"]
+    system "#{Formula['pod2man'].opt_bin}/pod2man", dir / "convert_codepoints", dir / "convert_codepoints.1"
+    bin.install dir / "convert_codepoints"
+    man1.install dir / "convert_codepoints.1"
   end
 
   def _stage
