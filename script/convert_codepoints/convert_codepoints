@@ -132,7 +132,7 @@ sub convert($char, $from, $to) {
 sub process_file($path, $=) {
     my $cwd = path(getcwd);
     state $git_dir = $cwd->child('.git');
-    return if !$path->is_file || 0 == index $path, $git_dir;
+    return if !-f $path || 0 == index $path, $git_dir;
     state $ignore_regex = defined $opt{'ignore-regex'} ? qr/$opt{'ignore-regex'}/ : undef;
     return if defined $ignore_regex && $path =~ $ignore_regex;
     # This means the path is in a submodule.
