@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 dir=script/convert_codepoints
 script=$dir/convert_codepoints
 readme=$dir/README.md
