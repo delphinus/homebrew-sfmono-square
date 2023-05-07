@@ -10,6 +10,10 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: Homebrew/actions/setup-homebrew@master
+      - uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - run: bin/github-generate-doc.sh
       # Show timestamp for each line
       # https://unix.stackexchange.com/questions/26728/prepending-a-timestamp-to-each-line-of-output-from-a-command
       - run: bin/github-build.sh | perl -pe 'use POSIX strftime; print strftime "[%Y-%m-%d %H:%M:%S] ", localtime'
