@@ -43,6 +43,7 @@ In default, it ignores files below.
 - Large files that size is over 1MB.
 - Count over 1000 files.
 - Files in submodules.
+- Files in gitdir (`/.git/*`).
 
 ## Changes In Codepoints For Versions
 
@@ -121,6 +122,10 @@ This solves errors above. It uses the same as ["v3"](#v3).
 - **--submodules**
 
     Search files in submodules.
+
+- **--gitdir**
+
+    Search files in gitdir (`/.git/*`).
 
 - **--gitignore**
 
