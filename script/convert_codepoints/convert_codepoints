@@ -198,12 +198,10 @@ sub process($path) {
 }
 
 sub main() {
-    my $path = path($opt{path});
-    if ($path->exists) {
-        process($path);
-    } else {
-        die "$path is not a file or a directory";
-    }
+    my $path = eval { path($opt{path})->realpath };
+    die sprintf 'The supplied path cannot be resolved: %s: %s', ($opt{path} // ''), $@ if $@;
+    die "The path does not a file or a dir: $path" if !-f $path && !-d $path;
+    process($path);
 }
 
 main if $0 eq __FILE__;
