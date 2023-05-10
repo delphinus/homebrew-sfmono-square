@@ -4,13 +4,14 @@
 class SfmonoSquare < Formula
   desc "Square-sized SF Mono + Japanese fonts + nerd-fonts"
   homepage "https://github.com/delphinus/homebrew-sfmono-square"
-  url "https://github.com/delphinus/homebrew-sfmono-square/archive/v2.2.0.tar.gz"
-  sha256 "04ebb114bb63de16c6c78503ecb72d314fb0447f80b12c756fe36ec53c78b28e"
-  version "2.2.0"
+  url "https://github.com/delphinus/homebrew-sfmono-square/archive/v3.0.0-pre-09.tar.gz"
+  sha256 "5ae110de907de037319128e1f08fbbdcda42d82b01881e4c739ac7ef0aae945b"
+  version "3.0.0-pre-09"
   head "https://github.com/delphinus/homebrew-sfmono-square.git"
 
   depends_on "fontforge" => :build
   depends_on "python@3.11" => :build
+  depends_on "pod2man" => :build
 
   resource "migu1mfonts" do
     output, = system_command curl_executable,
@@ -34,6 +35,11 @@ class SfmonoSquare < Formula
     (share / "fonts").install Dir["build/*.otf"]
     (share / "fonts/src").install Dir["*.otf"]
     (share / "fonts/src").install Dir["*.ttf"]
+
+    dir = "script/convert_codepoints"
+    system "#{Formula['pod2man'].opt_bin}/pod2man", "#{dir}/convert_codepoints", "#{dir}/convert_codepoints.1"
+    bin.install "#{dir}/convert_codepoints"
+    man1.install "#{dir}/convert_codepoints.1"
   end
 
   def _stage

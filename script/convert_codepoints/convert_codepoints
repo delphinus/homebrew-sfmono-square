@@ -1,0 +1,426 @@
+#!/usr/bin/perl
+use v5.30;
+use feature qw(signatures state);
+use warnings;
+no warnings qw(experimental::signatures);
+use Cwd qw(getcwd);
+use Getopt::Long qw(:config posix_default no_ignore_case bundling auto_help);
+use IPC::Open3 qw(open3);
+use List::Util qw(reduce);
+use Path::Tiny qw(path rootdir);
+use Pod::Usage qw(pod2usage);
+binmode STDOUT => ':utf8';
+
+GetOptions(
+    \my %opt, qw(
+        from|f=s
+        to|t=s
+        ignore-regex|r=s
+        max-files
+        max-size
+        submodules
+        gitdir
+        gitignore
+        execute|e
+        help|h
+    ),
+) or pod2usage(1);
+
+# default values
+%opt = (
+    from => 'v2',
+    to => 'v3',
+    'max-files' => 1_000,
+    'max-size' => 1_000_000,
+    path => shift @ARGV,
+    %opt,
+);
+
+sub is_valid_version($v) {
+    defined $v && $v =~ /\A(?:nerd_fonts_[23]|v[123])\z/;
+}
+
+pod2usage(-exitval => 0, -verbose => 2) if $opt{help};
+pod2usage(-exitval => 2, -msg => 'supply a file or a directory to search.') unless $opt{path};
+pod2usage(2) if !is_valid_version($opt{from}) || !is_valid_version($opt{to});
+
+sub code_map($name) {
+    # creates a map like this below.
+    # +{
+    #   Material => +{ 0xf500 => 0, 0xf501 => 1, ... , reverse => +{ 0 => 0xf500, ... } },
+    #   Codicons => +{ 0xea60 => 0, 0xea61 => 1, ... , reverse => +{ 0 => 0xea60, ... } },
+    #   Apple => +{ 0xf6d5 => 0, 0xf6d6 = . 1, ... , reverse => +{ 0 => f6d5, ... } },
+    # }
+    state sub create_map($name) {
+        my %glyphs = (
+            nerd_fonts_v2 => {
+                Material => [0xf500 .. 0xfd46],
+                Apple => undef,
+                Codicons => undef,
+            },
+
+            nerd_fonts_v3 => {
+                Material => [0xf0001 .. 0xf1af0],
+                Apple => [0xf6d5 .. 0xf6d8, 0xf8ff],
+                Codicons => [0xea60 .. 0xebeb],
+            },
+
+            v1 => {
+                Material => [0xf500 .. 0xf8ff, 0xe800 .. 0xec47],
+                Apple => undef,
+                Codicons => undef,
+            },
+
+            v2 => {
+                Material => [0xf500 .. 0xf6d4, 0xff6d5 .. 0xff6d8, 0xf6d9 .. 0xf8fe, 0xff8ff, 0xe800 .. 0xec46],
+                Apple => [0xf6d5 .. 0xf6d8, 0xf8ff],
+                Codicons => [0xfea60 .. 0xfebeb],
+            },
+
+            # same as nerd_fonts_v3
+            v3 => {
+                Material => [0xf0001 .. 0xf1af0],
+                Apple => [0xf6d5 .. 0xf6d8, 0xf8ff],
+                Codicons => [0xea60 .. 0xebeb],
+            },
+        );
+
+        reduce {
+            my $codes = $glyphs{$name}{$b};
+            if (defined $codes) {
+                my $code_map = $a->{$b} = +{};
+                for (my $i = 0; $i < $codes->@*; $i++) {
+                    $code_map->{$codes->[$i]} = $i;
+                }
+                $code_map->{reverse} = +{reverse $code_map->%*};
+            }
+            $a;
+        } +{}, keys $glyphs{$name}->%*,
+    };
+
+    state %map_cache;
+    $map_cache{$name} //= create_map($name);
+}
+
+
+sub search_index($code_map, $char) {
+    my $code = ord $char;
+    while (my ($k, $v) = each $code_map->%*) {
+        if (defined $v->{$code}) {
+            return $k, $v->{$code};
+        }
+    }
+    undef;
+}
+
+sub search_result($code_map, $name, $index) {
+    defined $code_map->{$name} ? $code_map->{$name}{reverse}{$index} : undef;
+}
+
+sub convert($char, $from, $to) {
+    my $from_map = code_map($from);
+    my $to_map = code_map($to);
+
+    my ($name, $index) = search_index($from_map, $char);
+    if (defined $name) {
+        my $result = search_result($to_map, $name, $index);
+        defined $result && $result != ord $char ? chr $result : undef;
+    } else {
+        undef;
+    }
+}
+
+# This is a Path::Tiny::edit_lines_utf8 clone. Ths diffs are below.
+# * This does not overwrite the path when it has no changes.
+# * This preserves the original's permission.
+sub edit_lines_utf8($path, $cb) {
+    my $binmode = ':raw:encoding(UTF-8)';
+    my $in_fh = $path->filehandle(+{ locked => 1 }, '<', $binmode);
+    my $changed;
+    local $_;
+    my @lines;
+    while (<$in_fh>) {
+        my $original = $_;
+        $cb->();
+        $changed = 1 if !$changed && $_ ne $original;
+        push @lines, $_;
+    }
+    close $in_fh or $path->_throw('close');
+
+    if ($changed) {
+        my $resolved_path = $path->_resolve_symlinks;
+        my $temp = path($resolved_path . $$ . int rand 2 ** 31);
+        my $temp_fh = $temp->filehandle(+{ exclusive => 1, locked => 1 }, '>', $binmode);
+        $temp_fh->print($_) for @lines;
+        close $temp_fh or $path->_throw('close', $temp);
+        my $perm = $path->stat->mode & 0777;
+        $temp->chmod($perm | 0600);
+        $temp->move($resolved_path);
+    }
+}
+
+sub process_file($path, $=) {
+    my $cwd = path(getcwd);
+    return if !-f $path || (!$opt{gitdir} && $path =~ m{/\.git/});
+    state $ignore_regex = defined $opt{'ignore-regex'} ? qr/$opt{'ignore-regex'}/ : undef;
+    return if defined $ignore_regex && $path =~ $ignore_regex;
+    # This means the path is in a submodule.
+    return if !$opt{submodules} && !!search_git($path, $cwd, 1);
+    if (-s $path > $opt{'max-size'}) {
+        say "$path:0:0:This is too large (> $opt{'max-size'} bytes).";
+        return;
+    }
+    state $git_dir = $cwd->child('.git');
+    if ($opt{'gitignore'} && $git_dir->exists) {
+        0 == system "sh -c 'git check-ignore -q $path' 2> /dev/null" and return;
+    }
+    if (!-T $path) {
+        say "$path:0:0:This is not a text file.";
+        return;
+    }
+
+    state $files++;
+    if ($files > $opt{'max-files'}) {
+        say "$path:0:0:Too many files (limit: $opt{'max-files'})";
+        return \0;
+    }
+
+    my sub process_line() {
+        state $line++;
+        $_ = reduce {
+            state $column++;
+            my $converted = convert($b, $opt{from}, $opt{to});
+            if (defined $converted) {
+                say sprintf '%s:%d:%d:%s (U+%X) => %s (U+%X)', $path, $line, $column, $b, ord $b, $converted, ord $converted;
+                $a .= $converted;
+            } else {
+                $a .= $b;
+            }
+        } '', split //;
+    };
+
+    if ($opt{execute}) {
+        edit_lines_utf8($path, \&process_line);
+    } else {
+        process_line for $path->lines_utf8;
+    }
+}
+
+sub search_git($dir, $root = rootdir, $is_submodule = undef) {
+    return undef if $dir eq $root;
+    my $candidate = $dir->child('.git');
+    if ($is_submodule) {
+        return $dir if $candidate->is_file;
+    } else {
+        return $dir if $candidate->is_dir;
+    }
+    __SUB__->($dir->parent, $root, $is_submodule);
+}
+
+sub process($path) {
+    my $git_top = search_git($path->is_dir ? $path : $path->parent);
+    chdir $git_top if defined $git_top;
+    if ($path->is_file) {
+        process_file $path;
+    } else {
+        $path->visit(\&process_file, +{ recurse => 1, follow_symlinks => 1 });
+    }
+}
+
+sub main() {
+    my $path = eval { path($opt{path})->realpath };
+    die sprintf 'The supplied path cannot be resolved: %s: %s', ($opt{path} // ''), $@ if $@;
+    die "The path does not a file or a dir: $path" if !-f $path && !-d $path;
+    process($path);
+}
+
+main if $0 eq __FILE__;
+
+=head1 NAME
+
+convert_codepoints - convert files according to changes in SF Mono Square
+
+=head1 SYNOPSIS
+
+    # convert all files below the current directory
+    # from v2 => v3 (default values)
+    % convert_codepoints .
+
+    # specify versions
+    % convert_codepoints -f v1 -t v3 .
+
+    # specify a file
+    % convert_codepoints -f v1 -t v3 /path/to/file
+
+    # not show diffs, but execute
+    % convert_codepoints -e /path/to/dir
+
+=head1 DESCRIPTION
+
+This is a script to convert glyphs in your dotfiles according to versions of SF
+Mono Square. Now this font has 3 versions that has some codepoints without
+compatibility. This script can search a directory or file and convert
+characters that have such codepoints according to supplied options.
+
+You can specify dotfiles git directory for the typical usecase.
+
+    % convert_codepoints /path/to/dotfiles
+
+You can also check one file.
+
+    % convert_codepoints /path/to/file
+
+It does not edit files in examples above. Use B<-e> to edit (carefully!).
+
+    % convert_codepoints -e /path/to/file
+
+In default, it ignores files below.
+
+=over
+
+=item *
+
+Files under the directory F<.git>.
+
+=item *
+
+Non-text files.
+
+=item *
+
+Large files that size is over 1MB.
+
+=item *
+
+Count over 1000 files.
+
+=item *
+
+Files in submodules.
+
+=item *
+
+Files in gitdir (F</.git/*>).
+
+=back
+
+=head2 Changes In Codepoints For Versions
+
+Here is an outline of changes in v1, v2, v3, nerd-fonts v2 and nerd-fonts v3.
+
+=head3 v1
+
+Material glyphs in U+F500 .. U+F8FF and U+E800 .. U+EC46. They overwrites Apple
+glyphs (U+F6D5 .. U+F6D8, U+F8FF), so v1 has no such ones.
+
+Also, there are no glyphs from Codicons.
+
+=head3 v2
+
+To use Apple glyphs, some glyphs in Material have moved.
+
+    U+F6D5 .. U+F6D8 => U+FF6D5 .. U+FF6D8
+    U+F8FF => U+FF8FF
+
+So this time Material glyphs in U+F500 .. U+F6D4, U+FF6D5 .. U+FF6D8, U+F6D9 =>
+U+F8FE, U+E800 .. U+EC46.
+
+Now v2 has Codicons glyphs in U+FEA60 .. U+FEBEB not to overwrite Material ones.
+
+=head3 v3
+
+v3 uses completely the same codepoints as nerd-fonts v3 ones.
+
+    Material => U+F0001 .. U+F1AF0
+    Apple    => U+F6D5 .. U+F6D8, U+F8FF
+    Codicons => U+EA60 .. U+EBEB
+
+=head3 nerd-fonts v2
+
+nerd-fonts v2 has errros on codepoints. That overwrites some codepoints except
+PUA (Private USE Area - U+E000 .. U+F8FF).
+
+=head3 nerd-fonts v3
+
+This solves errors above. It uses the same as L</v3>.
+
+=head1 OPTIONS
+
+=over
+
+=item B<--from> I<version>, B<-f> I<version>
+
+This specifies a version string to convert from. This accepts C<"v1">, C<"v2">,
+C<"v3">, C<"nerd_fonts_v2"> or C<"nerd_fonts_v3">. C<"nerd_fonts_XX"> means the
+codepoints from nerd-fonts.
+
+Default: C<"v2">
+
+=item B<--to> I<version>, B<-t> I<version>
+
+This is the one to convert to.
+
+Default: C<"v3">
+
+=item B<--ignore-regex> I<regex>, B<-r> I<regex>
+
+Ignore files matched this RegEx (Perl style).
+
+Default: C<undef>
+
+=item B<--max-files> I<count>
+
+Finish if the file count is over this.
+
+Default: C<1000>
+
+=item B<--max-size> I<size>
+
+Ignore if the file is larger than this bytes.
+
+Default: C<1000000> (1MB)
+
+=item B<--submodules>
+
+Search files in submodules.
+
+=item B<--gitdir>
+
+Search files in gitdir (F</.git/*>).
+
+=item B<--gitignore>
+
+Consider F<.gitignore> file.
+
+=item B<--execute>, B<-e>
+
+Without this, it prints the diff only.
+
+=item B<--help>, B<-h>
+
+Show this document and exit.
+
+=back
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2023 JINNOUCHI Yasushi <me@delphinus.dev>
+
+This library is free software; you may redistribute it and/or modify it under
+the same terms as Perl itself.
+
+=head1 SEE ALSO
+
+=over
+
+=item *
+
+L<https://github.com/delphinus/homebrew-sfmono-square>
+
+=item *
+
+L<https://www.nerdfonts.com>
+
+=back
+
+=cut
