@@ -6,6 +6,8 @@
 
 **SF Mono** is a font from Apple, that is clear, easy to read, and suitable for programming.  **SFMono Square** is based on **SF Mono**, and added glyphs for Japanese & patched for [Nerd Fonts][].
 
+_Now, SF Mono Square v3 has completely the same codepoints as Nerd Fonts v3's ones._
+
 [Nerd Fonts]: https://github.com/ryanoasis/nerd-fonts
 
 Thoughts and detail description here:
@@ -55,20 +57,6 @@ See screenshots for examples [here][].
 [here]: https://github.com/delphinus/homebrew-sfmono-square/issues/9#issuecomment-515827269
 
 ## Troubleshooting
-
-### Some glyphs seem strange to see
-
-SF Mono Square has almost the same codepoints as nerd-fonts' ones. But some are different because the original SF Mono has glyphs placed on the duplicated codepoints that nerd-fonts use.
-
-| codepoint |                                                               SF Mono Square                                                               |                                                                  nerd-fonts                                                                  |                  |
-|:---------:|:------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------:|:----------------:|
-|   0xF6D5  | <img alt=" 0xF6D5" width="32" src="https://user-images.githubusercontent.com/1239245/189081110-055b21d0-6868-43e3-bf9a-20f26f1c8a1b.png"> | <img alt="󿛕 0xFF6D5" width="32" src="https://user-images.githubusercontent.com/1239245/189081906-6034a767-e995-4863-a7cd-608e30e9b690.png"> | moved to 0xFF6D5 |
-|   0xF6D6  | <img alt=" 0xF6D6" width="32" src="https://user-images.githubusercontent.com/1239245/189081128-96aa06ac-7a38-4cae-964b-87e9ae4f25af.png"> | <img alt="󿛖 0xFF6D6" width="32" src="https://user-images.githubusercontent.com/1239245/189081935-ffef5ed5-5d90-4cac-90ab-caf3c5adaa5f.png"> | moved to 0xFF6D6 |
-|   0xF6D7  | <img alt=" 0xF6D7" width="32" src="https://user-images.githubusercontent.com/1239245/189081145-74953367-fe04-40be-81cd-c937431642b8.png"> | <img alt="󿛗 0xFF6D7" width="32" src="https://user-images.githubusercontent.com/1239245/189081958-8861eca6-7743-433c-a4cd-8dd06fa6ef74.png"> | moved to 0xFF6D7 |
-|   0xF6D8  | <img alt=" 0xF6D8" width="32" src="https://user-images.githubusercontent.com/1239245/189081173-56466aed-056c-4c03-9184-17df58e1799a.png"> | <img alt="󿛘 0xFF6D8" width="32" src="https://user-images.githubusercontent.com/1239245/189081975-2c3e0a34-3307-49a1-a5f4-0d619bfa0070.png"> | moved to 0xFF6D8 |
-|   0xF8FF  | <img alt=" 0xF8FF" width="32" src="https://user-images.githubusercontent.com/1239245/189081193-2f0f43e3-2910-4559-99a7-e5c52413645b.png"> | <img alt="󿣿 0xFF8FF" width="32" src="https://user-images.githubusercontent.com/1239245/189081984-85e2d466-bdc8-4d44-9eb5-ea2aa2855876.png"> | moved to 0xFF8FF |
-
-See the detail on [this comment](https://github.com/delphinus/homebrew-sfmono-square/issues/67#issuecomment-1238868778).
 
 ### Install failure due to fontforge
 
