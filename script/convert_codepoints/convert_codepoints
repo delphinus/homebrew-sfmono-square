@@ -130,6 +130,35 @@ sub convert($char, $from, $to) {
     }
 }
 
+# This is a Path::Tiny::edit_lines_utf8 clone. Ths diffs are below.
+# * This does not overwrite the path when it has no changes.
+# * This preserves the original's permission.
+sub edit_lines_utf8($path, $cb) {
+    my $binmode = ':raw:encoding(UTF-8)';
+    my $in_fh = $path->filehandle(+{ locked => 1 }, '<', $binmode);
+    my $changed;
+    local $_;
+    my @lines;
+    while (<$in_fh>) {
+        my $original = $_;
+        $cb->();
+        $changed = 1 if !$changed && $_ ne $original;
+        push @lines, $_;
+    }
+    close $in_fh or $path->_throw('close');
+
+    if ($changed) {
+        my $resolved_path = $path->_resolve_symlinks;
+        my $temp = path($resolved_path . $$ . int rand 2 ** 31);
+        my $temp_fh = $temp->filehandle(+{ exclusive => 1, locked => 1 }, '>', $binmode);
+        $temp_fh->print($_) for @lines;
+        close $temp_fh or $path->_throw('close', $temp);
+        my $perm = $path->stat->mode & 0777;
+        $temp->chmod($perm | 0600);
+        $temp->move($resolved_path);
+    }
+}
+
 sub process_file($path, $=) {
     my $cwd = path(getcwd);
     return if !-f $path || (!$opt{gitdir} && $path =~ m{/\.git/});
@@ -171,7 +200,7 @@ sub process_file($path, $=) {
     };
 
     if ($opt{execute}) {
-        $path->edit_lines_utf8(\&process_line);
+        edit_lines_utf8($path, \&process_line);
     } else {
         process_line for $path->lines_utf8;
     }
