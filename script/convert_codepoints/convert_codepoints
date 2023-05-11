@@ -37,7 +37,7 @@ GetOptions(
 );
 
 sub is_valid_version($v) {
-    defined $v && $v =~ /\A(?:nerd_fonts_[23]|v[123])\z/;
+    defined $v && $v =~ /\A(?:nerd_fonts_v[23]|v[123])\z/;
 }
 
 pod2usage(-exitval => 0, -verbose => 2) if $opt{help};
