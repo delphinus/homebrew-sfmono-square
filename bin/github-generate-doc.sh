@@ -8,7 +8,7 @@ fi
 curl -L https://cpanmin.us/ -o bin/cpanm
 chmod +x bin/cpanm
 bin/cpanm -n Pod::Markdown
-/usr/local/Cellar/perl/5.36.0/bin/pod2markdown < $script > $readme
+/usr/local/Cellar/perl/5.36.1/bin/pod2markdown < $script > $readme
 if git status -sb | grep -q $readme; then
   # https://qiita.com/thaim/items/3d1a4d09ec4a7d8844ce
   git config user.name "github-actions[bot]"
