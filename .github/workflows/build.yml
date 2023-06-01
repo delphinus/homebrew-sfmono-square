@@ -6,7 +6,7 @@ on:
     - cron: '25 */3 * * *'
 jobs:
   build:
-    runs-on: macos-12
+    runs-on: macos-13
     timeout-minutes: 15
     steps:
       - uses: Homebrew/actions/setup-homebrew@master
