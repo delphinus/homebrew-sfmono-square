@@ -18,7 +18,8 @@ class SfmonoSquare < Formula
                              args: ["--version"],
                              print_stderr: true
     curl_name_and_version = output.sub(/^.*?lib(?=curl)/, "").sub(/\s+.*/m, "")
-    url "https://osdn.net/projects/mix-mplus-ipa/downloads/72511/migu-1m-20200307.zip",
+    # url "https://osdn.net/projects/mix-mplus-ipa/downloads/72511/migu-1m-20200307.zip",
+    url "https://github.com/delphinus/homebrew-sfmono-square/files/12063197/migu-1m-20200307.zip",
         user_agent: curl_name_and_version
     sha256 "a4770fca22410668d2747d7898ed4d7ef5d92330162ee428a6efd5cf247d9504"
   end
