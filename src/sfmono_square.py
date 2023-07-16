@@ -7,7 +7,6 @@ from psMat import compose, scale, translate
 
 
 FAMILYNAME = "SF Mono Square"
-FULLNAME = FAMILYNAME.replace(" ", "")
 ITALIC = "Italic"
 ITALIC_ANGLE = -10
 ASCENT = 1638
@@ -94,15 +93,20 @@ def read_opts(hankaku, zenkaku, version):
     (name, _) = splitext(hankaku)
     filename_style = name.split("-")[-1]
     style = filename_style.replace(ITALIC, " " + ITALIC)
-    fontname = FULLNAME + "-" + filename_style
+    compact_family = FAMILYNAME.replace(" ", "")
+    compact_style = style.split(" ")[-1]
+    fontname = f"{compact_family}-{filename_style}"
     return {
         "hankaku": hankaku,
         "zenkaku": zenkaku,
         "version": version,
         "filename_style": filename_style,
-        "style": style,
-        "fullname": f"{FULLNAME} {style}",
         "fontname": fontname,
+        "familyname": compact_family,
+        "fullname": f"{compact_family} {style}",
+        "sfnt_fullname": f"{FAMILYNAME} {compact_style}",
+        "sfnt_family": FAMILYNAME,
+        "sfnt_subfamily": compact_family,
         "out_file": f"{fontname}.otf",
     }
 
@@ -111,8 +115,8 @@ def new_font(opts):
     prop = STYLE_PROPERTY[opts["filename_style"]]
     sfmono = fontforge.open(SFMONO)
     migu1m = fontforge.open(MIGU1M)
-    sfmono_info = {key: value for (lang, key, value) in sfmono.sfnt_names}
-    migu1m_info = {key: value for (lang, key, value) in migu1m.sfnt_names}
+    sfmono_info = {key: value for (_, key, value) in sfmono.sfnt_names}
+    migu1m_info = {key: value for (_, key, value) in migu1m.sfnt_names}
 
     font = fontforge.font()
     font.ascent = ASCENT
@@ -120,36 +124,30 @@ def new_font(opts):
     font.italicangle = prop["italic_angle"]
     font.upos = UNDERLINE_POS
     font.uwidth = UNDERLINE_HEIGHT
-    font.familyname = "SFMonoSquare familyname"
     font.copyright = f"""Copyright (c) {YEAR} {ME} <{MAIL}>
 {sfmono_info['Copyright']}
 {sfmono_info['UniqueID']}
 {migu1m_info['Copyright']}
 {migu1m_info['UniqueID']}"""  # noqa
     font.encoding = ENCODING
-    font.fontname = "SFMonoSquare-Regular fontname"
-    font.fullname = "SFMonoSquare Regular fullname"
     font.version = opts["version"]
-    font.appendSFNTName("English (US)", "Fullname", "SF Mono Square SFNT Fullname")
-    font.appendSFNTName("English (US)", "Family", "SF Mono Square SFNT Family")
-    font.appendSFNTName("English (US)", "SubFamily", opts["style"])
-    font.appendSFNTName(
-        "English (US)", "Preferred Family", "SF Mono Square SFNT PreferredFamily"
-    )
-    font.appendSFNTName(
-        "English (US)", "Preferred Styles", "SF Mono Square SFNT PreferredSubFamily"
-    )
-    font.appendSFNTName("English (US)", "WWS Family", "SF Mono Square SFNT WWS Family")
-    font.appendSFNTName(
-        "English (US)", "WWS Subfamily", "SF Mono Square SFNT WWS Subfamily"
-    )
+    font.fontname = opts["fontname"]
+    font.familyname = opts["familyname"]
+    font.fullname = opts["fullname"]
+    font.appendSFNTName("English (US)", "Fullname", opts["sfnt_fullname"])
+    font.appendSFNTName("English (US)", "Family", opts["sfnt_family"])
+    font.appendSFNTName("English (US)", "SubFamily", opts["sfnt_subfamily"])
+    font.appendSFNTName("English (US)", "Preferred Family", opts["sfnt_family"])
+    font.appendSFNTName("English (US)", "Preferred Styles", opts["sfnt_subfamily"])
+    font.appendSFNTName("English (US)", "WWS Family", opts["sfnt_family"])
+    font.appendSFNTName("English (US)", "WWS Subfamily", opts["sfnt_subfamily"])
     font.appendSFNTName(
         "English (US)",
         "UniqueID",
         "; ".join(
             [
                 f"FontForge {fontforge.version()}",
-                opts["fullname"],
+                opts["sfnt_fullname"],
                 opts["version"],
                 datetime.today().strftime("%F"),
             ]
