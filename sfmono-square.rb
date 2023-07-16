@@ -4,9 +4,9 @@
 class SfmonoSquare < Formula
   desc "Square-sized SF Mono + Japanese fonts + nerd-fonts"
   homepage "https://github.com/delphinus/homebrew-sfmono-square"
-  url "https://github.com/delphinus/homebrew-sfmono-square/archive/v3.0.3.tar.gz"
-  sha256 "cee6c84dc6bf415e9258505b1ac161abdcb040b25d6e7ac5126072d5675d0625"
-  version "3.0.3"
+  url "https://github.com/delphinus/homebrew-sfmono-square/archive/v3.0.4-pre-03.tar.gz"
+  sha256 "9484e77e547198bd16c03d38e3fc6c8572ff25770da4974cc14c4d7061b012ee"
+  version "3.0.4-pre-03"
   head "https://github.com/delphinus/homebrew-sfmono-square.git"
 
   depends_on "fontforge" => :build
