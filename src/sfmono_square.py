@@ -49,24 +49,28 @@ STYLE_PROPERTY = {
         "os2_weight": 400,
         "panose_weight": 5,
         "panose_letterform": 2,
+        "italic_angle": 0,
     },
     "Bold": {
         "weight": "Bold",
         "os2_weight": 700,
         "panose_weight": 8,
         "panose_letterform": 2,
+        "italic_angle": 0,
     },
     "RegularItalic": {
         "weight": "Book",
         "os2_weight": 400,
         "panose_weight": 5,
         "panose_letterform": 9,
+        "italic_angle": ITALIC_ANGLE,
     },
     "BoldItalic": {
         "weight": "Bold",
         "os2_weight": 700,
         "panose_weight": 8,
         "panose_letterform": 9,
+        "italic_angle": ITALIC_ANGLE,
     },
 }
 
@@ -115,7 +119,7 @@ def new_font(opts):
     font = fontforge.font()
     font.ascent = ASCENT
     font.descent = DESCENT
-    font.italicangle = ITALIC_ANGLE
+    font.italicangle = prop["italic_angle"]
     font.upos = UNDERLINE_POS
     font.uwidth = UNDERLINE_HEIGHT
     font.familyname = FULLNAME
