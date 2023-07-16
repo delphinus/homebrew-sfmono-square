@@ -106,7 +106,7 @@ def read_opts(hankaku, zenkaku, version):
         "fullname": f"{compact_family} {style}",
         "sfnt_fullname": f"{FAMILYNAME} {compact_style}",
         "sfnt_family": FAMILYNAME,
-        "sfnt_subfamily": compact_family,
+        "sfnt_subfamily": compact_style,
         "out_file": f"{fontname}.otf",
     }
 
