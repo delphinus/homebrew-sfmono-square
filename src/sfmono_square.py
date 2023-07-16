@@ -101,7 +101,7 @@ def read_opts(hankaku, zenkaku, version):
         "version": version,
         "filename_style": filename_style,
         "style": style,
-        "fullname": f"{FAMILYNAME} {style}",
+        "fullname": f"{FULLNAME} {style}",
         "fontname": fontname,
         "out_file": f"{fontname}.otf",
     }
@@ -120,7 +120,7 @@ def new_font(opts):
     font.italicangle = prop["italic_angle"]
     font.upos = UNDERLINE_POS
     font.uwidth = UNDERLINE_HEIGHT
-    font.familyname = FAMILYNAME
+    font.familyname = FULLNAME
     font.copyright = f"""Copyright (c) {YEAR} {ME} <{MAIL}>
 {sfmono_info['Copyright']}
 {sfmono_info['UniqueID']}
