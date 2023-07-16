@@ -7,6 +7,7 @@ from psMat import compose, scale, translate
 
 
 FAMILYNAME = "SF Mono Square"
+REGULAR = "Regular"
 ITALIC = "Italic"
 ITALIC_ANGLE = -10
 ASCENT = 1638
@@ -94,7 +95,7 @@ def read_opts(hankaku, zenkaku, version):
     filename_style = name.split("-")[-1]
     style = filename_style.replace(ITALIC, " " + ITALIC)
     compact_family = FAMILYNAME.replace(" ", "")
-    compact_style = style.split(" ")[-1]
+    compact_style = style.replace(f"{REGULAR} ", "")
     fontname = f"{compact_family}-{filename_style}"
     return {
         "hankaku": hankaku,
