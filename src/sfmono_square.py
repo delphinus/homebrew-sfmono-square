@@ -120,7 +120,7 @@ def new_font(opts):
     font.italicangle = prop["italic_angle"]
     font.upos = UNDERLINE_POS
     font.uwidth = UNDERLINE_HEIGHT
-    font.familyname = FULLNAME
+    font.familyname = FAMILYNAME
     font.copyright = f"""Copyright (c) {YEAR} {ME} <{MAIL}>
 {sfmono_info['Copyright']}
 {sfmono_info['UniqueID']}
