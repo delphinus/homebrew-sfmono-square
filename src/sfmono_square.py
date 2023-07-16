@@ -43,7 +43,7 @@ HANKAKU_GLYPHS = [
 ]
 STYLE_PROPERTY = {
     "Regular": {
-        "weight": "Book",
+        "weight": "Normal",
         "os2_weight": 400,
         "panose_weight": 5,
         "panose_letterform": 2,
@@ -57,7 +57,7 @@ STYLE_PROPERTY = {
         "italic_angle": 0,
     },
     "RegularItalic": {
-        "weight": "Book",
+        "weight": "Normal",
         "os2_weight": 400,
         "panose_weight": 5,
         "panose_letterform": 9,
@@ -120,15 +120,15 @@ def new_font(opts):
     font.italicangle = prop["italic_angle"]
     font.upos = UNDERLINE_POS
     font.uwidth = UNDERLINE_HEIGHT
-    font.familyname = FULLNAME
+    font.familyname = "SFMonoSquare familyname"
     font.copyright = f"""Copyright (c) {YEAR} {ME} <{MAIL}>
 {sfmono_info['Copyright']}
 {sfmono_info['UniqueID']}
 {migu1m_info['Copyright']}
 {migu1m_info['UniqueID']}"""  # noqa
     font.encoding = ENCODING
-    font.fontname = opts["fontname"]
-    font.fullname = opts["fullname"]
+    font.fontname = "SFMonoSquare-Regular fontname"
+    font.fullname = "SFMonoSquare Regular fullname"
     font.version = opts["version"]
     font.appendSFNTName("English (US)", "SubFamily", opts["style"])
     font.appendSFNTName(
