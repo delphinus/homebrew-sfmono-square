@@ -6,10 +6,8 @@ import fontforge
 from psMat import compose, scale, translate
 
 
-FAMILY = "SF Mono"
-FAMILY_SUFFIX = "Square"
-FULLNAME = f"{FAMILY} {FAMILY_SUFFIX}"
-FILENAME = FULLNAME.replace(" ", "")
+FAMILYNAME = "SF Mono Square"
+FULLNAME = FAMILYNAME.replace(" ", "")
 ITALIC = "Italic"
 ITALIC_ANGLE = -10
 ASCENT = 1638
@@ -96,14 +94,14 @@ def read_opts(hankaku, zenkaku, version):
     (name, _) = splitext(hankaku)
     filename_style = name.split("-")[-1]
     style = filename_style.replace(ITALIC, " " + ITALIC)
-    fontname = FILENAME + "-" + filename_style
+    fontname = FULLNAME + "-" + filename_style
     return {
         "hankaku": hankaku,
         "zenkaku": zenkaku,
         "version": version,
         "filename_style": filename_style,
         "style": style,
-        "fullname": f"{FULLNAME} {style}",
+        "fullname": f"{FAMILYNAME} {style}",
         "fontname": fontname,
         "out_file": f"{fontname}.otf",
     }
