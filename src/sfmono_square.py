@@ -211,7 +211,7 @@ def _zenkaku_glyphs(font):
     font.selection.none()
     # select copied glyphs + 2 (0xff5f & 0xff60)
     font.selection.select(
-        ("ranges", "unicode"), zenkaku_start, zenkaku_start + glyphs_num + 1
+        ("ranges", "unicode"), zenkaku_start, zenkaku_start + glyphs_num
     )
     for glyph in list(font.selection.byGlyphs):
         paren = ZENKAKU_PARENTHESIS.get(glyph.encoding)
