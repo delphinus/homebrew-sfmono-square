@@ -137,7 +137,7 @@ def new_font(opts):
         "English (US)", "Preferred Family", "SF Mono Square SFNT PreferredFamily"
     )
     font.appendSFNTName(
-        "English (US)", "Preferred SubFamily", "SF Mono Square SFNT PreferredSubFamily"
+        "English (US)", "Preferred Style", "SF Mono Square SFNT PreferredSubFamily"
     )
     font.appendSFNTName(
         "English (US)",
