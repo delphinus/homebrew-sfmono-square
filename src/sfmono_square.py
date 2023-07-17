@@ -48,7 +48,7 @@ STYLE_PROPERTY = {
         "panose_weight": 5,
         "panose_letterform": 2,
         "italic_angle": 0,
-        "os2_stylemap": "Regular",
+        "os2_stylemap": 0b0001000000,
         "macstyle": 0b00,
     },
     "Bold": {
@@ -57,7 +57,7 @@ STYLE_PROPERTY = {
         "panose_weight": 8,
         "panose_letterform": 2,
         "italic_angle": 0,
-        "os2_stylemap": "Bold",
+        "os2_stylemap": 0b0000100000,
         "macstyle": 0b01,
     },
     "RegularItalic": {
@@ -66,7 +66,7 @@ STYLE_PROPERTY = {
         "panose_weight": 5,
         "panose_letterform": 9,
         "italic_angle": ITALIC_ANGLE,
-        "os2_stylemap": "Italic",
+        "os2_stylemap": 0b0001000001,
         "macstyle": 0b10,
     },
     "BoldItalic": {
@@ -76,6 +76,7 @@ STYLE_PROPERTY = {
         "panose_letterform": 9,
         "italic_angle": ITALIC_ANGLE,
         "os2_stylemap": "Bold Italic",
+        "os2_stylemap": 0b0000100001,
         "macstyle": 0b11,
     },
 }
