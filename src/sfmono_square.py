@@ -123,8 +123,8 @@ def new_font(opts):
     prop = STYLE_PROPERTY[opts["filename_style"]]
     sfmono = fontforge.open(SFMONO)
     migu1m = fontforge.open(MIGU1M)
-    sfmono_info = {key: value for (lang, key, value) in sfmono.sfnt_names}
-    migu1m_info = {key: value for (lang, key, value) in migu1m.sfnt_names}
+    sfmono_info = {key: value for (_, key, value) in sfmono.sfnt_names}
+    migu1m_info = {key: value for (_, key, value) in migu1m.sfnt_names}
 
     font = fontforge.font()
     font.ascent = ASCENT
