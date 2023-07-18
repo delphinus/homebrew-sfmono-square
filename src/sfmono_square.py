@@ -43,7 +43,7 @@ HANKAKU_GLYPHS = [
 ]
 STYLE_PROPERTY = {
     "Regular": {
-        "weight": "Book",
+        "weight": "Normal",
         "os2_weight": 400,
         "panose_weight": 5,
         "panose_letterform": 2,
@@ -57,7 +57,7 @@ STYLE_PROPERTY = {
         "italic_angle": 0,
     },
     "RegularItalic": {
-        "weight": "Book",
+        "weight": "Normal",
         "os2_weight": 400,
         "panose_weight": 5,
         "panose_letterform": 9,
