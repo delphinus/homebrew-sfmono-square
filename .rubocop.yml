@@ -4,3 +4,5 @@ StringLiterals:
   EnforcedStyle: double_quotes
 Naming/FileName:
   Enabled: false
+Metrics/AbcSize:
+  Max: 25
