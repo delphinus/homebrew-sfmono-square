@@ -103,7 +103,6 @@ def read_opts(hankaku, zenkaku, version):
     filename_style = name.split("-")[-1]
     style = filename_style.replace(ITALIC, " " + ITALIC)
     compact_family = FAMILYNAME.replace(" ", "")
-    compact_style = style.replace(f"{REGULAR} ", "")
     fontname = f"{compact_family}-{filename_style}"
     return {
         "hankaku": hankaku,
@@ -113,9 +112,9 @@ def read_opts(hankaku, zenkaku, version):
         "fontname": fontname,
         "familyname": compact_family,
         "fullname": f"{compact_family} {style}",
-        "sfnt_fullname": f"{FAMILYNAME} {compact_style}",
+        "sfnt_fullname": f"{FAMILYNAME} {style}",
         "sfnt_family": FAMILYNAME,
-        "sfnt_subfamily": compact_style,
+        "sfnt_subfamily": style,
         "out_file": f"{fontname}.otf",
     }
 
