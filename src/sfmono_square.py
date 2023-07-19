@@ -6,10 +6,8 @@ import fontforge
 from psMat import compose, scale, translate
 
 
-FAMILY = "SF Mono"
-FAMILY_SUFFIX = "Square"
-FULLNAME = f"{FAMILY} {FAMILY_SUFFIX}"
-FILENAME = FULLNAME.replace(" ", "")
+FAMILYNAME = "SF Mono Square"
+REGULAR = "Regular"
 ITALIC = "Italic"
 ITALIC_ANGLE = -10
 ASCENT = 1638
@@ -21,7 +19,7 @@ UNDERLINE_HEIGHT = 100
 WIDTH = ASCENT + DESCENT
 ME = "JINNOUCHI Yasushi"
 MAIL = "me@delphinus.dev"
-YEAR = 2021
+YEAR = "2018-2023"
 SFMONO = "SF-Mono-Regular.otf"
 MIGU1M = "migu-1m-regular.ttf"
 OVER_WRITTENS = [
@@ -45,28 +43,40 @@ HANKAKU_GLYPHS = [
 ]
 STYLE_PROPERTY = {
     "Regular": {
-        "weight": "Book",
+        "weight": "Normal",
         "os2_weight": 400,
         "panose_weight": 5,
         "panose_letterform": 2,
+        "italic_angle": 0,
+        "os2_stylemap": 0b0001000000,
+        "macstyle": 0b00,
     },
     "Bold": {
         "weight": "Bold",
         "os2_weight": 700,
         "panose_weight": 8,
         "panose_letterform": 2,
+        "italic_angle": 0,
+        "os2_stylemap": 0b0000100000,
+        "macstyle": 0b01,
     },
     "RegularItalic": {
-        "weight": "Book",
+        "weight": "Normal",
         "os2_weight": 400,
         "panose_weight": 5,
         "panose_letterform": 9,
+        "italic_angle": ITALIC_ANGLE,
+        "os2_stylemap": 0b0001000001,
+        "macstyle": 0b10,
     },
     "BoldItalic": {
         "weight": "Bold",
         "os2_weight": 700,
         "panose_weight": 8,
         "panose_letterform": 9,
+        "italic_angle": ITALIC_ANGLE,
+        "os2_stylemap": 0b0000100001,
+        "macstyle": 0b11,
     },
 }
 
@@ -92,15 +102,19 @@ def read_opts(hankaku, zenkaku, version):
     (name, _) = splitext(hankaku)
     filename_style = name.split("-")[-1]
     style = filename_style.replace(ITALIC, " " + ITALIC)
-    fontname = FILENAME + "-" + filename_style
+    compact_family = FAMILYNAME.replace(" ", "")
+    fontname = f"{compact_family}-{filename_style}"
     return {
         "hankaku": hankaku,
         "zenkaku": zenkaku,
         "version": version,
         "filename_style": filename_style,
-        "style": style,
-        "fullname": f"{FULLNAME} {style}",
         "fontname": fontname,
+        "familyname": compact_family,
+        "fullname": f"{compact_family} {style}",
+        "sfnt_fullname": f"{FAMILYNAME} {style}",
+        "sfnt_family": FAMILYNAME,
+        "sfnt_subfamily": style,
         "out_file": f"{fontname}.otf",
     }
 
@@ -109,33 +123,39 @@ def new_font(opts):
     prop = STYLE_PROPERTY[opts["filename_style"]]
     sfmono = fontforge.open(SFMONO)
     migu1m = fontforge.open(MIGU1M)
-    sfmono_info = {key: value for (lang, key, value) in sfmono.sfnt_names}
-    migu1m_info = {key: value for (lang, key, value) in migu1m.sfnt_names}
+    sfmono_info = {key: value for (_, key, value) in sfmono.sfnt_names}
+    migu1m_info = {key: value for (_, key, value) in migu1m.sfnt_names}
 
     font = fontforge.font()
     font.ascent = ASCENT
     font.descent = DESCENT
-    font.italicangle = ITALIC_ANGLE
+    font.italicangle = prop["italic_angle"]
     font.upos = UNDERLINE_POS
     font.uwidth = UNDERLINE_HEIGHT
-    font.familyname = FULLNAME
     font.copyright = f"""Copyright (c) {YEAR} {ME} <{MAIL}>
 {sfmono_info['Copyright']}
 {sfmono_info['UniqueID']}
 {migu1m_info['Copyright']}
 {migu1m_info['UniqueID']}"""  # noqa
     font.encoding = ENCODING
-    font.fontname = opts["fontname"]
-    font.fullname = opts["fullname"]
     font.version = opts["version"]
-    font.appendSFNTName("English (US)", "SubFamily", opts["style"])
+    font.fontname = opts["fontname"]
+    font.familyname = opts["familyname"]
+    font.fullname = opts["fullname"]
+    font.appendSFNTName("English (US)", "Fullname", opts["sfnt_fullname"])
+    font.appendSFNTName("English (US)", "Family", opts["sfnt_family"])
+    font.appendSFNTName("English (US)", "SubFamily", opts["sfnt_subfamily"])
+    font.appendSFNTName("English (US)", "Preferred Family", opts["sfnt_family"])
+    font.appendSFNTName("English (US)", "Preferred Styles", opts["sfnt_subfamily"])
+    font.appendSFNTName("English (US)", "WWS Family", opts["sfnt_family"])
+    font.appendSFNTName("English (US)", "WWS Subfamily", opts["sfnt_subfamily"])
     font.appendSFNTName(
         "English (US)",
         "UniqueID",
         "; ".join(
             [
                 f"FontForge {fontforge.version()}",
-                opts["fullname"],
+                opts["sfnt_fullname"],
                 opts["version"],
                 datetime.today().strftime("%F"),
             ]
@@ -179,6 +199,9 @@ def new_font(opts):
     # linegap is for gap between lines.  The `hhea_` version is for macOS.
     font.os2_typolinegap = 0
     font.hhea_linegap = 0
+    # Contents of these props always mean the same.
+    font.os2_stylemap = prop["os2_stylemap"]
+    font.macstyle = prop["macstyle"]
     return font
 
 
