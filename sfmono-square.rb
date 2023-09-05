@@ -14,7 +14,7 @@ class SfmonoSquare < Formula
   depends_on "pod2man" => :build
 
   resource "migu1mfonts" do
-    output, = system_command curl_executable,
+    output, = system_command Utils::Curl.curl_executable,
                              args: ["--version"],
                              print_stderr: true
     curl_name_and_version = output.sub(/^.*?lib(?=curl)/, "").sub(/\s+.*/m, "")
