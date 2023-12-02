@@ -91,6 +91,14 @@ PATCH_SET = [
         "exact": True,
     },
     {
+        "name": "Powerline Extra Symobls",
+        "filename": "PowerlineExtraSymbols.otf",
+        "sym_start": 0x2630,
+        "sym_end": 0x2630,
+        "src_start": None,
+        "exact": True,
+    },
+    {
         "name": "Pomicons",
         "filename": "Pomicons.otf",
         "sym_start": 0xE000,
@@ -150,9 +158,8 @@ PATCH_SET = [
     {
         "name": "Font Logos",
         "filename": "font-logos.ttf",
-        # Power, Power On/Off, Power On, Sleep
         "sym_start": 0xF300,
-        "sym_end": 0xF32F,
+        "sym_end": 0xF372,
         "src_start": None,
         "exact": True,
     },
@@ -184,7 +191,7 @@ PATCH_SET = [
         "name": "Octicons",
         "filename": "octicons/octicons.ttf",
         "sym_start": 0xF27C,
-        "sym_end": 0xF305,
+        "sym_end": 0xF306,
         "src_start": 0xF4A9,
         "exact": False,
     },  # Desktop
