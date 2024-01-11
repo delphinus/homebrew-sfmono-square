@@ -19,7 +19,7 @@ Thoughts and detail description here:
 ### font source
 
 * SF Mono: Apple
-* Migu 1M: [Miguフォント : M+とIPAの合成フォント](http://mix-mplus-ipa.osdn.jp/migu/)
+* Migu 1M: [Miguフォント : M+とIPAの合成フォント](https://itouhiro.github.io/mixfont-mplus-ipa/migu/)
 * Nerd Fonts: [ryanoasis/nerd-fonts: Iconic font aggregator, collection, and patcher. 40+ patched fonts, over 3,600 glyph/icons, includes popular collections such as Font Awesome & fonts such as Hack](https://github.com/ryanoasis/nerd-fonts)
 
 And, idea and some code is from [プログラミング用フォント Ricty](http://www.rs.tus.ac.jp/yyusa/ricty.html).
