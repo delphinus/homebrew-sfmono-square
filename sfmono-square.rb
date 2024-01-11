@@ -61,10 +61,8 @@ class SfmonoSquare < Formula
     # See https://github.com/delphinus/homebrew-sfmono-square/issues/9
     # ENV["MIGU1M_SCALE"] = "82"
 
-    # Set path for fontforge library to use it in Python
-    fontforge_lib = Formulary.factory("fontforge").lib / "python3.12/site-packages"
-
-    python312 = Formulary.factory("python@3.12").bin / "python3.12"
+    fontforge_lib = Formula["fontforge"].lib / "python3.12/site-packages"
+    python312 = Formula["python@3.12"].bin / "python3.12"
 
     system python312, "-c", <<~PYTHON
       import sys
