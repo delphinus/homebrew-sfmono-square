@@ -6,6 +6,7 @@ import font_patcher
 import migu1m
 import sfmono
 import sfmono_square
+import fonttools
 
 
 MIGU1M = [["migu-1m-regular.ttf"], ["migu-1m-bold.ttf"]]
@@ -23,11 +24,12 @@ SFMONO_MIGU1M = [
     ["SFMono-1x2-BoldItalic.otf", "modified-migu-1m-bold-oblique.ttf"],
 ]
 SFMONO_SQUARE = [
-    ["SFMonoSquare-Regular.otf", "build"],
-    ["SFMonoSquare-Bold.otf", "build"],
-    ["SFMonoSquare-RegularItalic.otf", "build"],
-    ["SFMonoSquare-BoldItalic.otf", "build"],
+    ["SFMonoSquare-Regular.otf", "Regular"],
+    ["SFMonoSquare-Bold.otf", "Bold"],
+    ["SFMonoSquare-RegularItalic.otf", "RegularItalic"],
+    ["SFMonoSquare-BoldItalic.otf", "BoldItalic"],
 ]
+OUT_DIR = "build"
 
 
 def build(version):
@@ -45,7 +47,12 @@ def build(version):
     if concurrent_execute(sfmono_square.generate, args):
         return 1
     print("---- adding nerd-fonts glyphs ----")
-    if concurrent_execute(font_patcher.patch, SFMONO_SQUARE):
+    args = [[a[0], OUT_DIR] for a in SFMONO_SQUARE]
+    if concurrent_execute(font_patcher.patch, args):
+        return 1
+    print("---- overwriting table with fonttools")
+    args = [[f"{OUT_DIR}/{a[0]}", a[1]] for a in SFMONO_SQUARE]
+    if concurrent_execute(fonttools.update, args):
         return 1
     return 0
 

@@ -48,8 +48,6 @@ STYLE_PROPERTY = {
         "panose_weight": 5,
         "panose_letterform": 2,
         "italic_angle": 0,
-        "os2_stylemap": 0b0001000000,
-        "macstyle": 0b00,
     },
     "Bold": {
         "weight": "Bold",
@@ -57,8 +55,6 @@ STYLE_PROPERTY = {
         "panose_weight": 8,
         "panose_letterform": 2,
         "italic_angle": 0,
-        "os2_stylemap": 0b0000100000,
-        "macstyle": 0b01,
     },
     "RegularItalic": {
         "weight": "Normal",
@@ -66,8 +62,6 @@ STYLE_PROPERTY = {
         "panose_weight": 5,
         "panose_letterform": 9,
         "italic_angle": ITALIC_ANGLE,
-        "os2_stylemap": 0b0001000001,
-        "macstyle": 0b10,
     },
     "BoldItalic": {
         "weight": "Bold",
@@ -75,8 +69,6 @@ STYLE_PROPERTY = {
         "panose_weight": 8,
         "panose_letterform": 9,
         "italic_angle": ITALIC_ANGLE,
-        "os2_stylemap": 0b0000100001,
-        "macstyle": 0b11,
     },
 }
 
@@ -199,9 +191,6 @@ def new_font(opts):
     # linegap is for gap between lines.  The `hhea_` version is for macOS.
     font.os2_typolinegap = 0
     font.hhea_linegap = 0
-    # Contents of these props always mean the same.
-    font.os2_stylemap = prop["os2_stylemap"]
-    font.macstyle = prop["macstyle"]
     return font
 
 
