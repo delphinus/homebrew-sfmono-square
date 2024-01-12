@@ -10,6 +10,7 @@ class SfmonoSquare < Formula
   head "https://github.com/delphinus/homebrew-sfmono-square.git"
 
   depends_on "fontforge" => :build
+  depends_on "fonttools" => :build
   depends_on "python@3.12" => :build
   depends_on "pod2man" => :build
 
@@ -60,12 +61,14 @@ class SfmonoSquare < Formula
     # ENV["MIGU1M_SCALE"] = "82"
 
     fontforge_lib = Formula["fontforge"].lib / "python3.12/site-packages"
+    fonttools_lib = Formula["fonttools"].lib / "python3.12/site-packages"
     python312 = Formula["python@3.12"].bin / "python3.12"
 
     system python312, "-c", <<~PYTHON
       import sys
       sys.path.append('#{buildpath / 'src'}')
       sys.path.append('#{fontforge_lib}')
+      sys.path.append('#{fonttools_lib}')
       import build
       sys.exit(build.build('#{version}'))
     PYTHON
