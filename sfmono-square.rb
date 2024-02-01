@@ -15,9 +15,7 @@ class SfmonoSquare < Formula
   depends_on "pod2man" => :build
 
   resource "migu1mfonts" do
-    output, = system_command Utils::Curl.curl_executable,
-                             args: ["--version"],
-                             print_stderr: true
+    output = `#{Utils::Curl.curl_executable} --version`
     curl_name_and_version = output.sub(/^.*?lib(?=curl)/, "").sub(/\s+.*/m, "")
     url "https://github.com/itouhiro/mixfont-mplus-ipa/releases/download/v2020.0307/migu-1m-20200307.zip",
         user_agent: curl_name_and_version
