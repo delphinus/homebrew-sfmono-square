@@ -5,7 +5,12 @@ on:
     - cron: '25 */3 * * *'
 jobs:
   build:
-    runs-on: macos-13
+    strategy:
+      matrix:
+        os:
+          - macos-13
+          - macos-14
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     steps:
       - uses: Homebrew/actions/setup-homebrew@master
