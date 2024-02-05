@@ -1,5 +1,5 @@
 #!/bin/bash -eux
-font_dir=/usr/local/opt/sfmono-square/share/fonts
+font_dir=$(brew --prefix sfmono-square)/share/fonts
 
 for i in Bold BoldItalic Regular RegularItalic; do
   font=$font_dir/SFMonoSquare-$i.otf
