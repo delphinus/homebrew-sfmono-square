@@ -4,6 +4,7 @@ export HOMEBREW_NO_INSTALL_CLEANUP=1
 export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
 export HOMEBREW_NO_INSTALL_FROM_API=1
 sw_vers # show macOS version
+brew update
 if [[ $GITHUB_REF = refs/heads/master ]]; then
   : build on the latest tag
   brew tap delphinus/sfmono-square
