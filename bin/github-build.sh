@@ -22,10 +22,8 @@ else
   perl -i -pe 's,(?<=^  version ").*(?="$),$ENV{HASH},' $FORMULA
   os_version=$(sw_vers -productVersion | cut -d. -f1)
   if [[ $os_version -eq 13 ]]; then
-    if ! brew install -v --formula $FORMULA; then
-      # HACK: ignore strange errors for old macOS
-      echo 'failed to install formula, but ignored' >&2
-    fi
+    # HACK: ignore strange errors for old macOS
+    brew install -v --formula $FORMULA || true
   else
     brew install -v --formula $FORMULA
   fi
