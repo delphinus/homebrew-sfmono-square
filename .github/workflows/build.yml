@@ -8,7 +8,8 @@ jobs:
     strategy:
       matrix:
         os:
-          - macos-13
+          # FIX: disable old macOS due to strange errors
+          #- macos-13
           - macos-14
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
