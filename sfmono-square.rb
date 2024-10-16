@@ -11,7 +11,7 @@ class SfmonoSquare < Formula
 
   depends_on "fontforge" => :build
   depends_on "fonttools" => :build
-  depends_on "python@3.12" => :build
+  depends_on "python@3.13" => :build
   depends_on "pod2man" => :build
 
   resource "migu1mfonts" do
@@ -58,11 +58,11 @@ class SfmonoSquare < Formula
     # See https://github.com/delphinus/homebrew-sfmono-square/issues/9
     # ENV["MIGU1M_SCALE"] = "82"
 
-    fontforge_lib = Formula["fontforge"].libexec / "lib/python3.12/site-packages"
-    fonttools_lib = Formula["fonttools"].libexec / "lib/python3.12/site-packages"
-    python312 = Formula["python@3.12"].bin / "python3.12"
+    fontforge_lib = Formula["fontforge"].libexec / "lib/python3.13/site-packages"
+    fonttools_lib = Formula["fonttools"].libexec / "lib/python3.13/site-packages"
+    python313 = Formula["python@3.13"].bin / "python3.13"
 
-    system python312, "-c", <<~PYTHON
+    system python313, "-c", <<~PYTHON
       import sys
       sys.path.append('#{buildpath / 'src'}')
       sys.path.append('#{fontforge_lib}')
