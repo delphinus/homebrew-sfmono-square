@@ -9,13 +9,13 @@ import fontforge
 
 # Double-quotes required here, for version-bump.sh:
 # version-bump.sh is not working here, need to adjust manually!
-version = "3.0.0"
+version = "3.4.0"
 
 archive = 'v18.3.0.tar.gz'
 
 vectorsdir = 'icons'
 fontdir = '.'
-fontfile = 'octicons.ttf'
+fontfile = 'octicons.otf'
 glyphsetfile = 'i_oct.sh'
 glyphsetsdir = '../../../bin/scripts/lib'
 
