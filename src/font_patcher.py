@@ -36,7 +36,7 @@ PATCH_SET = [
     #   },
     {
         "name": "Devicons",
-        "filename": "devicons/devicons.ttf",
+        "filename": "devicons/devicons.otf",
         "sym_start": 0xE600,
         "sym_end": 0xE7EF,
         "src_start": 0xE700,
@@ -75,7 +75,7 @@ PATCH_SET = [
         "exact": True,
     },
     {
-        "name": "Powerline Extra Symobls",
+        "name": "Powerline Extra Symbols",
         "filename": "powerline-extra/PowerlineExtraSymbols.otf",
         "sym_start": 0xE0CA,
         "sym_end": 0xE0CA,
@@ -83,7 +83,7 @@ PATCH_SET = [
         "exact": True,
     },
     {
-        "name": "Powerline Extra Symobls",
+        "name": "Powerline Extra Symbols",
         "filename": "powerline-extra/PowerlineExtraSymbols.otf",
         "sym_start": 0xE0CC,
         "sym_end": 0xE0D7,
@@ -91,7 +91,7 @@ PATCH_SET = [
         "exact": True,
     },
     {
-        "name": "Powerline Extra Symobls",
+        "name": "Powerline Extra Symbols",
         "filename": "powerline-extra/PowerlineExtraSymbols.otf",
         "sym_start": 0x2630,
         "sym_end": 0x2630,
@@ -165,7 +165,7 @@ PATCH_SET = [
     },
     {
         "name": "Octicons",
-        "filename": "octicons/octicons.ttf",
+        "filename": "octicons/octicons.otf",
         "sym_start": 0xF000,
         "sym_end": 0xF105,
         "src_start": 0xF400,
@@ -173,7 +173,7 @@ PATCH_SET = [
     },
     {
         "name": "Octicons",
-        "filename": "octicons/octicons.ttf",
+        "filename": "octicons/octicons.otf",
         "sym_start": 0x2665,
         "sym_end": 0x2665,
         "src_start": None,
@@ -181,7 +181,7 @@ PATCH_SET = [
     },  # Heart
     {
         "name": "Octicons",
-        "filename": "octicons/octicons.ttf",
+        "filename": "octicons/octicons.otf",
         "sym_start": 0x26A1,
         "sym_end": 0x26A1,
         "src_start": None,
@@ -189,7 +189,7 @@ PATCH_SET = [
     },  # Zap
     {
         "name": "Octicons",
-        "filename": "octicons/octicons.ttf",
+        "filename": "octicons/octicons.otf",
         "sym_start": 0xF27C,
         "sym_end": 0xF306,
         "src_start": 0xF4A9,
