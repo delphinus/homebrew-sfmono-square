@@ -38,12 +38,11 @@ It does not edit files in examples above. Use **-e** to edit (carefully!).
 
 In default, it ignores files below.
 
-- Files under the directory `.git`.
 - Non-text files.
 - Large files that size is over 1MB.
 - Count over 1000 files.
 - Files in submodules.
-- Files in gitdir (`/.git/*`).
+- Files in gitdir (`/.git/**/*`).
 
 ## Changes In Codepoints For Versions
 
@@ -93,31 +92,31 @@ This solves errors above. It uses the same as ["v3"](#v3).
     `"v3"`, `"nerd_fonts_v2"` or `"nerd_fonts_v3"`. `"nerd_fonts_XX"` means the
     codepoints from nerd-fonts.
 
-    Default: `"v2"`
+    Default: `v2`
 
 - **--to** _version_, **-t** _version_
 
     This is the one to convert to.
 
-    Default: `"v3"`
+    Default: `v3`
 
 - **--ignore-regex** _regex_, **-r** _regex_
 
     Ignore files matched this RegEx (Perl style).
 
-    Default: `undef`
+    Default: undef
 
 - **--max-files** _count_
 
     Finish if the file count is over this.
 
-    Default: `1000`
+    Default: 1000
 
 - **--max-size** _size_
 
     Ignore if the file is larger than this bytes.
 
-    Default: `1000000` (1MB)
+    Default: 1000000 (means 1MB)
 
 - **--submodules**
 
@@ -125,7 +124,7 @@ This solves errors above. It uses the same as ["v3"](#v3).
 
 - **--gitdir**
 
-    Search files in gitdir (`/.git/*`).
+    Search files in gitdir (`/.git/**/*`).
 
 - **--gitignore**
 
