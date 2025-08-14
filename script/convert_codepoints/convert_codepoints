@@ -280,10 +280,6 @@ In default, it ignores files below.
 
 =item *
 
-Files under the directory F<.git>.
-
-=item *
-
 Non-text files.
 
 =item *
@@ -300,7 +296,7 @@ Files in submodules.
 
 =item *
 
-Files in gitdir (F</.git/*>).
+Files in gitdir (F</.git/**/*>).
 
 =back
 
@@ -354,31 +350,31 @@ This specifies a version string to convert from. This accepts C<"v1">, C<"v2">,
 C<"v3">, C<"nerd_fonts_v2"> or C<"nerd_fonts_v3">. C<"nerd_fonts_XX"> means the
 codepoints from nerd-fonts.
 
-Default: C<"v2">
+Default: C<v2>
 
 =item B<--to> I<version>, B<-t> I<version>
 
 This is the one to convert to.
 
-Default: C<"v3">
+Default: C<v3>
 
 =item B<--ignore-regex> I<regex>, B<-r> I<regex>
 
 Ignore files matched this RegEx (Perl style).
 
-Default: C<undef>
+Default: undef
 
 =item B<--max-files> I<count>
 
 Finish if the file count is over this.
 
-Default: C<1000>
+Default: 1000
 
 =item B<--max-size> I<size>
 
 Ignore if the file is larger than this bytes.
 
-Default: C<1000000> (1MB)
+Default: 1000000 (means 1MB)
 
 =item B<--submodules>
 
@@ -386,7 +382,7 @@ Search files in submodules.
 
 =item B<--gitdir>
 
-Search files in gitdir (F</.git/*>).
+Search files in gitdir (F</.git/**/*>).
 
 =item B<--gitignore>
 
