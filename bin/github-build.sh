@@ -19,6 +19,10 @@ else
   perl -i -pe 's,(?<=^  version ").*(?="$),$ENV{HASH},' $FORMULA
 fi
 TAP=local/sfmono-square
+# NOTE: tap-new needs Git to be done setup.
+# https://qiita.com/thaim/items/3d1a4d09ec4a7d8844ce
+git config --global user.name "github-actions[bot]"
+git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 brew tap-new $TAP
 cp $FORMULA "$(brew --repo $TAP)/Formula/"
 brew install -v $TAP/sfmono-square
