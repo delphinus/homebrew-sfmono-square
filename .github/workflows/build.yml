@@ -2,14 +2,14 @@ name: Build check
 on:
   push:
   schedule:
-    - cron: '25 */3 * * *'
+    - cron: "25 */3 * * *"
 jobs:
   build:
     strategy:
       matrix:
         os:
-          - macos-14
           - macos-15
+          - macos-26
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     steps:
@@ -19,7 +19,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Generate doc and push it to the repo
         run: bin/github-generate-doc.sh
-        if: matrix.os == 'macos-15'
+        if: matrix.os == 'macos-26'
       # Show timestamp for each line
       # https://unix.stackexchange.com/questions/26728/prepending-a-timestamp-to-each-line-of-output-from-a-command
       - name: Generate fonts
