@@ -12,7 +12,7 @@ else
   HASH=$(git describe --tags HEAD | tr -d '\n')
   export HASH
   export URL=https://github.com/delphinus/homebrew-sfmono-square/tarball/$HASH
-  SHA=$(curl -L "$URL" | shasum -a256 | cut -f1 -d ' ')
+  SHA=$(curl -L "$URL" | shasum -a256 | cut -wf1)
   export SHA
   perl -i -pe 's,(?<=^  url ").*(?="$),$ENV{URL},' $FORMULA
   perl -i -pe 's,(?<=^  sha256 ").*(?="$),$ENV{SHA},' $FORMULA
