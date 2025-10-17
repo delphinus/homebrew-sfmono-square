@@ -1,12 +1,16 @@
 # -*- coding:utf-8 -*-
-import sys
+from __future__ import annotations
 
+import sys
+from collections.abc import Callable, Sequence
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from typing import Any
+
 import font_patcher
+import fonttools
 import migu1m
 import sfmono
 import sfmono_square
-import fonttools
 
 
 MIGU1M = [["migu-1m-regular.ttf"], ["migu-1m-bold.ttf"]]
@@ -32,7 +36,7 @@ SFMONO_SQUARE = [
 OUT_DIR = "build"
 
 
-def build(version):
+def build(version: str) -> int:
     print("---- modifying migu-1m ----")
     if concurrent_execute(migu1m.modify, MIGU1M):
         return 1
@@ -57,7 +61,7 @@ def build(version):
     return 0
 
 
-def concurrent_execute(func, args):
+def concurrent_execute(func: Callable[..., Any], args: Sequence[Sequence[Any]]) -> int:
     executor = ProcessPoolExecutor()
     futures = [executor.submit(func, *a) for a in args]
-    return 1 if any([r.result() for r in as_completed(futures)]) else 0
+    return 1 if any(r.result() for r in as_completed(futures)) else 0

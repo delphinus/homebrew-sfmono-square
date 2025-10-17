@@ -1,18 +1,19 @@
+# typed: strict
 # frozen_string_literal: true
 
 # Formula to install the font: SF Mono Square
 class SfmonoSquare < Formula
   desc "Square-sized SF Mono + Japanese fonts + nerd-fonts"
   homepage "https://github.com/delphinus/homebrew-sfmono-square"
-  url "https://github.com/delphinus/homebrew-sfmono-square/archive/v3.3.1.tar.gz"
-  sha256 "38cb48dd8dbc21e54b7c6a4f29f7676bdf8131731a8870248a1d1fa024b91006"
+  url "https://github.com/delphinus/homebrew-sfmono-square/archive/refs/tags/v3.3.1.tar.gz"
   version "3.3.1"
+  sha256 "38cb48dd8dbc21e54b7c6a4f29f7676bdf8131731a8870248a1d1fa024b91006"
   head "https://github.com/delphinus/homebrew-sfmono-square.git"
 
   depends_on "fontforge" => :build
   depends_on "fonttools" => :build
-  depends_on "python@3.14" => :build
   depends_on "pod2man" => :build
+  depends_on "python@3.14" => :build
 
   resource "migu1mfonts" do
     output = `#{Utils::Curl.curl_executable} --version`
@@ -36,7 +37,7 @@ class SfmonoSquare < Formula
     (share / "fonts/src").install Dir["*.ttf"]
 
     dir = "script/convert_codepoints"
-    system "#{Formula['pod2man'].opt_bin}/pod2man", "#{dir}/convert_codepoints", "#{dir}/convert_codepoints.1"
+    system "#{Formula["pod2man"].opt_bin}/pod2man", "#{dir}/convert_codepoints", "#{dir}/convert_codepoints.1"
     bin.install "#{dir}/convert_codepoints"
     man1.install "#{dir}/convert_codepoints.1"
   end
@@ -64,7 +65,7 @@ class SfmonoSquare < Formula
 
     system python, "-c", <<~PYTHON
       import sys
-      sys.path.append('#{buildpath / 'src'}')
+      sys.path.append('#{buildpath / "src"}')
       sys.path.append('#{fontforge_lib}')
       sys.path.append('#{fonttools_lib}')
       import build

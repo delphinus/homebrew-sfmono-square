@@ -1,7 +1,10 @@
 # -*- coding:utf-8 -*-
-from pathlib import Path
-from os.path import splitext
+from __future__ import annotations
+
 from json import load
+from os.path import splitext
+from pathlib import Path
+from typing import Any
 
 import fontforge
 from psMat import compose, scale, translate
@@ -40,7 +43,7 @@ GROMETRIC_SHAPES_GLYPHS = [
 ]
 
 
-def modify(in_file):
+def modify(in_file: str) -> int:
     name, ext = splitext(in_file)
     style = name.replace(FILE_PREFIX, "")
     regular_font = ""
@@ -60,25 +63,26 @@ def modify(in_file):
     font.familyname = f"{PS_FAMILY} {FAMILY_SUFFIX}"
     font.fullname = f"{PS_FAMILY} {FAMILY_SUFFIX} {style}"
     font.fontname = f"{PS_FAMILY}-{FAMILY_SUFFIX}-{style}"
-    sfnt_names = list(font.sfnt_names)
-    for i in range(len(sfnt_names)):
-        name = list(sfnt_names[i])
-        key = name[1]
+    sfnt_names_list = list(font.sfnt_names)
+    for i in range(len(sfnt_names_list)):
+        name_tuple = sfnt_names_list[i]
+        name_list = list(name_tuple)
+        key = name_list[1]
         if key == "Family":
-            name[2] = f"{FAMILY} {FAMILY_SUFFIX}"
+            name_list[2] = f"{FAMILY} {FAMILY_SUFFIX}"
         elif key == "SubFamily":
-            name[2] = style
+            name_list[2] = style
         elif key == "UniqueID" or key == "Fullname":
-            name[2] = f"{FAMILY} {FAMILY_SUFFIX} {style}"
-        sfnt_names[i] = tuple(name)
-    font.sfnt_names = tuple(sfnt_names)
+            name_list[2] = f"{FAMILY} {FAMILY_SUFFIX} {style}"
+        sfnt_names_list[i] = tuple(name_list)
+    font.sfnt_names = tuple(sfnt_names_list)
     out_file = f"{PS_FAMILY}-{FAMILY_SUFFIX}-{style}{ext}"
     print(f"Generate {out_file}")
     font.generate(out_file, flags=("opentype",))
     return 0
 
 
-def _expand_shades(font, code):
+def _expand_shades(font: fontforge.font, code: int) -> None:
     shades = fontforge.open(SHADES_FILE)
     shades.selection.select(code)
     shades.copy()
@@ -86,7 +90,7 @@ def _expand_shades(font, code):
     font.paste()
 
 
-def _add_white_triangle(font):
+def _add_white_triangle(font: fontforge.font) -> None:
     wt = fontforge.open(GEOMETRIC_SHAPES_FILE)
     for code in GROMETRIC_SHAPES_GLYPHS:
         wt.selection.select(code)
@@ -95,7 +99,7 @@ def _add_white_triangle(font):
         font.paste()
 
 
-def _add_bar_to_shade_bottom(font):
+def _add_bar_to_shade_bottom(font: fontforge.font) -> None:
     font.selection.select(LOWER_BLOCK)
     font.copy()
     font.selection.select(PRIVATE)
@@ -131,7 +135,7 @@ BRAILLE_POINTS = [
 ]
 
 
-def _add_braille(font):
+def _add_braille(font: fontforge.font) -> None:
     font.selection.select(BLACK_CIRCLE)
     font.copy()
     font.selection.select(PRIVATE)
@@ -144,7 +148,7 @@ def _add_braille(font):
         glyph.transform(compose(move_to_origin, make_small))
 
     with BRAILLE_JSON.open() as f:
-        braille = load(f)
+        braille: list[dict[str, Any]] = load(f)
 
     for b in braille:
         for p in b["points"]:
@@ -164,7 +168,7 @@ def _add_braille(font):
     font.cut()
 
 
-def _set_proportion(font):
+def _set_proportion(font: fontforge.font) -> None:
     mat = scale(SCALE_DOWN)
     font.selection.all()
     scaled = set()
