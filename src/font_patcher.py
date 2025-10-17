@@ -1,15 +1,26 @@
 # -*- coding=utf8 -*-
+from __future__ import annotations
 
 import errno
 import os
+from typing import TypedDict
 
 import fontforge
 import psMat
 
+
+class PatchInfo(TypedDict):
+    name: str
+    filename: str
+    sym_start: int
+    sym_end: int
+    src_start: int | None
+    exact: bool
+
 # Define the character ranges
 # Symbol font ranges
 
-PATCH_SET = [
+PATCH_SET: list[PatchInfo] = [
     {
         "name": "Seti-UI + Custom",
         "filename": "original-source.otf",
@@ -206,7 +217,7 @@ PATCH_SET = [
 ]
 
 
-def patch(in_file, out_dir):
+def patch(in_file: str, out_dir: str) -> int:
     font = fontforge.open(in_file)
     _patch(font)
     try:
@@ -220,11 +231,11 @@ def patch(in_file, out_dir):
     return 0
 
 
-def _patch(font):
+def _patch(font: fontforge.font) -> None:
     # Prevent opening and closing the fontforge font. Makes things faster when
     # patching multiple ranges using the same symbol font.
     previous_symbol_filename = ""
-    symfont = None
+    symfont: fontforge.font | None = None
 
     for info in PATCH_SET:
         if previous_symbol_filename != info["filename"]:
@@ -243,7 +254,7 @@ def _patch(font):
         symfont.close()
 
 
-def _transform_sym(symfont, info):
+def _transform_sym(symfont: fontforge.font, info: PatchInfo) -> None:
     x_ratio = 1.0
     y_ratio = 1.0
     x_diff = 0
@@ -303,7 +314,7 @@ def _transform_sym(symfont, info):
     symfont.transform(transform)
 
 
-def _copy_glyphs(font, symfont, info):
+def _copy_glyphs(font: fontforge.font, symfont: fontforge.font, info: PatchInfo) -> None:
     selected = symfont.selection.select(
         ("ranges", "unicode"), info["sym_start"], info["sym_end"]
     )
@@ -320,4 +331,3 @@ def _copy_glyphs(font, symfont, info):
         font.selection.select(src_encoding)
         font.paste()
         font[src_encoding].glyphname = glyph.glyphname
-    return
