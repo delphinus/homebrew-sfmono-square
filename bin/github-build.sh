@@ -23,6 +23,8 @@ TAP=local/sfmono-square
 # https://qiita.com/thaim/items/3d1a4d09ec4a7d8844ce
 git config --global user.name "github-actions[bot]"
 git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+# TODO: remove this when the cache is updated.
+brew update
 brew tap-new $TAP
 cp $FORMULA "$(brew --repo $TAP)/Formula/"
 brew install -v $TAP/sfmono-square
