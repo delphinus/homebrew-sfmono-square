@@ -2,6 +2,7 @@
 # Disable features because these takes much time.
 export HOMEBREW_NO_INSTALL_CLEANUP=1
 export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
+export HOMEBREW_NO_INSTALL_FROM_API=1
 sw_vers # show macOS version
 FORMULA=sfmono-square.rb
 if [[ $GITHUB_REF = refs/heads/master ]]; then
@@ -22,7 +23,7 @@ TAP=local/sfmono-square
 # https://qiita.com/thaim/items/3d1a4d09ec4a7d8844ce
 git config --global user.name "github-actions[bot]"
 git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-brew update --force
+brew update
 # Reinstall python@3.14 to ensure it's properly installed and linked
 # This works around issues with pre-installed python@3.14 in GitHub Actions runners
 brew reinstall python@3.14
