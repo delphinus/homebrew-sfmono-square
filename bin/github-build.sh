@@ -23,6 +23,9 @@ TAP=local/sfmono-square
 git config --global user.name "github-actions[bot]"
 git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 brew update --force
+# Reinstall python@3.14 to ensure it's properly installed and linked
+# This works around issues with pre-installed python@3.14 in GitHub Actions runners
+brew reinstall python@3.14
 brew tap-new $TAP
 cp $FORMULA "$(brew --repo $TAP)/Formula/"
 brew install -v $TAP/sfmono-square
