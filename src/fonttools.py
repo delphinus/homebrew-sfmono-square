@@ -1,7 +1,10 @@
 # -*- coding:utf-8 -*-
-from fontTools.ttLib import TTFont
+from __future__ import annotations
+
 from os import rename
 from tempfile import mkstemp
+
+from fontTools.ttLib import TTFont
 
 X_AVG_CHAR_WIDTH = 1024
 FS_SELECTION = {
@@ -18,7 +21,7 @@ MAC_STYLE = {
 }
 
 
-def update(fontname, style):
+def update(fontname: str, style: str) -> int:
     font = TTFont(fontname)
     font["post"].isFixedPitch = 1
     font["CFF "].cff[0].isFixedPitch = 1
@@ -29,3 +32,4 @@ def update(fontname, style):
     font.save(new_fontname)
     font.close()
     rename(new_fontname, fontname)
+    return 0
