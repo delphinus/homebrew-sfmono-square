@@ -322,20 +322,46 @@ def _transform_sym(symfont: fontforge.font, info: PatchInfo) -> None:
     symfont.transform(transform)
 
 
-def _copy_glyphs(font: fontforge.font, symfont: fontforge.font, info: PatchInfo) -> None:
+def _codepoints(
+    symfont: fontforge.font, info: PatchInfo
+) -> list[tuple[int, fontforge.glyph]]:
+    # A glyph can be mapped to more than one codepoint (glyph.altuni). Such a
+    # glyph appears only once in byGlyphs, so collect all of its codepoints
+    # here to avoid dropping the alternate ones.
     selected = symfont.selection.select(
         ("ranges", "unicode"), info["sym_start"], info["sym_end"]
     )
-    for i, glyph in enumerate(list(selected.byGlyphs)):
+    found: dict[int, fontforge.glyph] = {}
+    for glyph in list(selected.byGlyphs):
+        altuni = glyph.altuni or ()
+        for code in [glyph.unicode, *(v for v, _, _ in altuni)]:
+            if info["sym_start"] <= code <= info["sym_end"]:
+                found.setdefault(code, glyph)
+    return sorted(found.items())
+
+
+def _copy_glyphs(
+    font: fontforge.font, symfont: fontforge.font, info: PatchInfo
+) -> None:
+    copied: set[str] = set()
+    for i, (code, glyph) in enumerate(_codepoints(symfont, info)):
         if info["exact"]:
-            src_encoding = glyph.unicode + (
+            src_encoding = code + (
                 s - info["sym_start"] if (s := info["src_start"]) else 0
             )
         else:
             src_encoding = (info["src_start"] or info["sym_start"]) + i
-        symfont.selection.select(glyph.unicode)
-        _transform_sym(symfont, info)
+        # The transformation modifies the glyph in symfont itself, so it must
+        # be done only once even when the glyph has alternate codepoints.
+        first = glyph.glyphname not in copied
+        copied.add(glyph.glyphname)
+        symfont.selection.select(code)
+        if first:
+            _transform_sym(symfont, info)
         symfont.copy()
         font.selection.select(src_encoding)
         font.paste()
-        font[src_encoding].glyphname = glyph.glyphname
+        # Glyph names must be unique in a font.
+        font[src_encoding].glyphname = (
+            glyph.glyphname if first else f"uni{src_encoding:04X}"
+        )
