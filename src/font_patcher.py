@@ -46,10 +46,26 @@ PATCH_SET: list[PatchInfo] = [
     #       "exact": True,
     #   },
     {
+        "name": "Progress Bars",
+        "filename": "extraglyphs.sfd",
+        "sym_start": 0xEE00,
+        "sym_end": 0xEE05,
+        "src_start": None,
+        "exact": True,
+    },
+    {
+        "name": "Progress Circles",
+        "filename": "extraglyphs.sfd",
+        "sym_start": 0xEE06,
+        "sym_end": 0xEE0B,
+        "src_start": None,
+        "exact": True,
+    },
+    {
         "name": "Devicons",
-        "filename": "devicons/devicons.ttf",
+        "filename": "devicons/devicons.otf",
         "sym_start": 0xE600,
-        "sym_end": 0xE7EF,
+        "sym_end": 0xE858,
         "src_start": 0xE700,
         "exact": False,
     },
@@ -86,7 +102,7 @@ PATCH_SET: list[PatchInfo] = [
         "exact": True,
     },
     {
-        "name": "Powerline Extra Symobls",
+        "name": "Powerline Extra Symbols",
         "filename": "powerline-extra/PowerlineExtraSymbols.otf",
         "sym_start": 0xE0CA,
         "sym_end": 0xE0CA,
@@ -94,7 +110,7 @@ PATCH_SET: list[PatchInfo] = [
         "exact": True,
     },
     {
-        "name": "Powerline Extra Symobls",
+        "name": "Powerline Extra Symbols",
         "filename": "powerline-extra/PowerlineExtraSymbols.otf",
         "sym_start": 0xE0CC,
         "sym_end": 0xE0D7,
@@ -102,7 +118,7 @@ PATCH_SET: list[PatchInfo] = [
         "exact": True,
     },
     {
-        "name": "Powerline Extra Symobls",
+        "name": "Powerline Extra Symbols",
         "filename": "powerline-extra/PowerlineExtraSymbols.otf",
         "sym_start": 0x2630,
         "sym_end": 0x2630,
@@ -170,13 +186,13 @@ PATCH_SET: list[PatchInfo] = [
         "name": "Font Logos",
         "filename": "font-logos.ttf",
         "sym_start": 0xF300,
-        "sym_end": 0xF381,
+        "sym_end": 0xF385,
         "src_start": None,
         "exact": True,
     },
     {
         "name": "Octicons",
-        "filename": "octicons/octicons.ttf",
+        "filename": "octicons/octicons.otf",
         "sym_start": 0xF000,
         "sym_end": 0xF105,
         "src_start": 0xF400,
@@ -184,7 +200,7 @@ PATCH_SET: list[PatchInfo] = [
     },
     {
         "name": "Octicons",
-        "filename": "octicons/octicons.ttf",
+        "filename": "octicons/octicons.otf",
         "sym_start": 0x2665,
         "sym_end": 0x2665,
         "src_start": None,
@@ -192,7 +208,7 @@ PATCH_SET: list[PatchInfo] = [
     },  # Heart
     {
         "name": "Octicons",
-        "filename": "octicons/octicons.ttf",
+        "filename": "octicons/octicons.otf",
         "sym_start": 0x26A1,
         "sym_end": 0x26A1,
         "src_start": None,
@@ -200,7 +216,7 @@ PATCH_SET: list[PatchInfo] = [
     },  # Zap
     {
         "name": "Octicons",
-        "filename": "octicons/octicons.ttf",
+        "filename": "octicons/octicons.otf",
         "sym_start": 0xF27C,
         "sym_end": 0xF306,
         "src_start": 0xF4A9,
@@ -210,7 +226,7 @@ PATCH_SET: list[PatchInfo] = [
         "name": "Codicons",
         "filename": "codicons/codicon.ttf",
         "sym_start": 0xEA60,
-        "sym_end": 0xEC1E,
+        "sym_end": 0xEC84,
         "src_start": None,
         "exact": True,
     },
@@ -254,7 +270,9 @@ def _patch(font: fontforge.font) -> None:
         symfont.close()
 
 
-def _transform_sym(symfont: fontforge.font, info: PatchInfo) -> None:
+def _transform_sym(
+    symfont: fontforge.font, info: PatchInfo, glyph: fontforge.glyph
+) -> None:
     x_ratio = 1.0
     y_ratio = 1.0
     x_diff = 0
@@ -277,6 +295,15 @@ def _transform_sym(symfont: fontforge.font, info: PatchInfo) -> None:
         y_ratio = 0.88
         x_diff = 0
         y_diff = -30
+
+    elif info["name"] == "Progress Bars":
+        # A progress bar is drawn with these glyphs side by side, so each of
+        # them must be exactly one cell wide to be tiled without a seam.
+        x_ratio = symfont.em / 2 / glyph.width
+
+    elif info["name"] == "Progress Circles":
+        # These are round, so they should not be stretched horizontally only.
+        x_ratio = y_ratio = symfont.em / 2 / glyph.width
 
     elif info["name"] == "Font Logos":
         y_diff = -120
@@ -314,20 +341,46 @@ def _transform_sym(symfont: fontforge.font, info: PatchInfo) -> None:
     symfont.transform(transform)
 
 
-def _copy_glyphs(font: fontforge.font, symfont: fontforge.font, info: PatchInfo) -> None:
+def _codepoints(
+    symfont: fontforge.font, info: PatchInfo
+) -> list[tuple[int, fontforge.glyph]]:
+    # A glyph can be mapped to more than one codepoint (glyph.altuni). Such a
+    # glyph appears only once in byGlyphs, so collect all of its codepoints
+    # here to avoid dropping the alternate ones.
     selected = symfont.selection.select(
         ("ranges", "unicode"), info["sym_start"], info["sym_end"]
     )
-    for i, glyph in enumerate(list(selected.byGlyphs)):
+    found: dict[int, fontforge.glyph] = {}
+    for glyph in list(selected.byGlyphs):
+        altuni = glyph.altuni or ()
+        for code in [glyph.unicode, *(v for v, _, _ in altuni)]:
+            if info["sym_start"] <= code <= info["sym_end"]:
+                found.setdefault(code, glyph)
+    return sorted(found.items())
+
+
+def _copy_glyphs(
+    font: fontforge.font, symfont: fontforge.font, info: PatchInfo
+) -> None:
+    copied: set[str] = set()
+    for i, (code, glyph) in enumerate(_codepoints(symfont, info)):
         if info["exact"]:
-            src_encoding = glyph.unicode + (
+            src_encoding = code + (
                 s - info["sym_start"] if (s := info["src_start"]) else 0
             )
         else:
             src_encoding = (info["src_start"] or info["sym_start"]) + i
-        symfont.selection.select(glyph.unicode)
-        _transform_sym(symfont, info)
+        # The transformation modifies the glyph in symfont itself, so it must
+        # be done only once even when the glyph has alternate codepoints.
+        first = glyph.glyphname not in copied
+        copied.add(glyph.glyphname)
+        symfont.selection.select(code)
+        if first:
+            _transform_sym(symfont, info, glyph)
         symfont.copy()
         font.selection.select(src_encoding)
         font.paste()
-        font[src_encoding].glyphname = glyph.glyphname
+        # Glyph names must be unique in a font.
+        font[src_encoding].glyphname = (
+            glyph.glyphname if first else f"uni{src_encoding:04X}"
+        )
