@@ -64,7 +64,7 @@ See screenshots for examples [here][].
 
 `bin/release` only checks the tree (on `master`, clean, up to date with `origin`, notes written, build check green) and pushes the tag `vX.Y.Z`. Everything else is done by [the release workflow][]: it creates the release from the notes and commits the formula that points at the new tag (`url` / `version` / `sha256`) into `master`.
 
-Nothing is released unless the fonts are built from the very commit the tag points at. The workflow waits while the build check of the commit is running, and stops when it is not successful or does not exist. This is checked on the workflow, so tagging without `bin/release` cannot skip it.
+Nothing is released unless the fonts are built from the very commit the tag points at. The workflow waits for the build check of the commit to start and to finish, and stops when it is not successful or when it never appears. This is checked on the workflow, so tagging without `bin/release` cannot skip it.
 
 [the release workflow]: .github/workflows/release.yml
 
