@@ -7,6 +7,8 @@
 # Set FORCE=1 to skip the check for the build status of HEAD.
 NOTES_DIR=.github/release-notes
 WORKFLOW=https://github.com/delphinus/homebrew-sfmono-square/actions/workflows/release.yml
+NONE_TRIES=6
+NONE_INTERVAL=10
 
 abort() {
   echo "$1" >&2
@@ -47,27 +49,37 @@ check_build() {
     echo 'gh is not installed. skip the check for the build status' >&2
     return
   fi
-  state=$(
-    gh api "repos/{owner}/{repo}/commits/$(git rev-parse HEAD)/check-runs?per_page=100" --jq '
-      [.check_runs[] | select(.name | startswith("build "))]
-      | if length == 0 then "none"
-        elif any(.status != "completed") then "running"
-        elif all(.conclusion == "success") then "success"
-        else "failure" end
-    '
-  )
-  case $state in
-  success) ;;
-  running)
-    echo 'the build check for HEAD is still running. The workflow waits for it.' >&2
-    ;;
-  none)
-    abort 'no build check is found for HEAD. Push it to master first.'
-    ;;
-  *)
-    abort 'the build check for HEAD is not successful.'
-    ;;
-  esac
+  # The check runs are not registered right after a push, so wait a while
+  # before deciding that the commit is not built at all.
+  for _ in $(seq $NONE_TRIES); do
+    case $(build_state) in
+    success)
+      return
+      ;;
+    running)
+      echo 'the build check for HEAD is still running. The workflow waits for it.' >&2
+      return
+      ;;
+    none)
+      echo 'the build check for HEAD has not started yet' >&2
+      sleep $NONE_INTERVAL
+      ;;
+    *)
+      abort 'the build check for HEAD is not successful.'
+      ;;
+    esac
+  done
+  abort 'no build check is found for HEAD. Push it to master first.'
+}
+
+build_state() {
+  gh api "repos/{owner}/{repo}/commits/$(git rev-parse HEAD)/check-runs?per_page=100" --jq '
+    [.check_runs[] | select(.name | startswith("build "))]
+    | if length == 0 then "none"
+      elif any(.status != "completed") then "running"
+      elif all(.conclusion == "success") then "success"
+      else "failure" end
+  '
 }
 
 [[ ${BASH_SOURCE[0]} = "$0" ]] && main "$@"

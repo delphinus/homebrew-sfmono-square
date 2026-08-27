@@ -7,6 +7,9 @@ NOTES_DIR=.github/release-notes
 # The build takes 15-25 minutes, so wait for a while when it is still running.
 BUILD_TRIES=70
 BUILD_INTERVAL=30
+# When a tag is pushed just after a merge, the check runs of the commit are not
+# registered yet. Wait for them to appear, but not as long as the build itself.
+BUILD_NONE_TRIES=10
 
 abort() {
   echo "::error::$1"
@@ -31,6 +34,7 @@ main() {
 # points at. Note that this cannot be skipped by tagging without bin/release.
 wait_for_build() {
   sha=$(git rev-parse "$1^{commit}")
+  none=0
   for _ in $(seq $BUILD_TRIES); do
     state=$(build_state "$sha")
     case $state in
@@ -43,7 +47,11 @@ wait_for_build() {
       sleep $BUILD_INTERVAL
       ;;
     none)
-      abort "no build check is found for $sha. Tag a commit built on master."
+      none=$((none + 1))
+      [[ $none -lt $BUILD_NONE_TRIES ]] ||
+        abort "no build check is found for $sha. Tag a commit built on master."
+      echo "the build check for $sha has not started yet"
+      sleep $BUILD_INTERVAL
       ;;
     *)
       abort "the build check for $sha is not successful"
