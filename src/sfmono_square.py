@@ -1,4 +1,6 @@
 # -*- coding:utf-8 -*-
+from __future__ import annotations
+
 from datetime import datetime
 from os.path import splitext
 
@@ -19,7 +21,7 @@ UNDERLINE_HEIGHT = 100
 WIDTH = ASCENT + DESCENT
 ME = "JINNOUCHI Yasushi"
 MAIL = "me@delphinus.dev"
-YEAR = "2018-2023"
+YEAR = "2018-2025"
 SFMONO = "SF-Mono-Regular.otf"
 MIGU1M = "migu-1m-regular.ttf"
 OVER_WRITTENS = [
@@ -73,7 +75,7 @@ STYLE_PROPERTY = {
 }
 
 
-def generate(hankaku, zenkaku, version):
+def generate(hankaku: str, zenkaku: str, version: str) -> int:
     opts = read_opts(hankaku, zenkaku, version)
     font = new_font(opts)
     _merge(font, opts)
@@ -90,7 +92,7 @@ def generate(hankaku, zenkaku, version):
     return 0
 
 
-def read_opts(hankaku, zenkaku, version):
+def read_opts(hankaku: str, zenkaku: str, version: str) -> dict[str, str]:
     (name, _) = splitext(hankaku)
     filename_style = name.split("-")[-1]
     style = filename_style.replace(ITALIC, " " + ITALIC)
@@ -111,7 +113,7 @@ def read_opts(hankaku, zenkaku, version):
     }
 
 
-def new_font(opts):
+def new_font(opts: dict[str, str]) -> fontforge.font:
     prop = STYLE_PROPERTY[opts["filename_style"]]
     sfmono = fontforge.open(SFMONO)
     migu1m = fontforge.open(MIGU1M)
@@ -194,13 +196,13 @@ def new_font(opts):
     return font
 
 
-def _merge(font, opts):
+def _merge(font: fontforge.font, opts: dict[str, str]) -> None:
     font.mergeFonts(opts["hankaku"])
     font.mergeFonts(opts["zenkaku"])
 
 
 # FIX: some glyphs may be overwritten by zenkaku fonts. This func copy them again from hankaku fonts.
-def _copy_again(font, orig):
+def _copy_again(font: fontforge.font, orig: str) -> None:
     o = fontforge.open(orig)
     for i in OVER_WRITTENS:
         o.selection.select(i)
@@ -209,7 +211,7 @@ def _copy_again(font, orig):
         font.paste()
 
 
-def _zenkaku_glyphs(font):
+def _zenkaku_glyphs(font: fontforge.font) -> None:
     hankaku_start = 0x21
     zenkaku_start = 0xFF01
     glyphs_num = 95
@@ -234,7 +236,7 @@ def _zenkaku_glyphs(font):
         glyph.width = WIDTH
 
 
-def _hankaku_glyphs(font):
+def _hankaku_glyphs(font: fontforge.font) -> None:
     origin = translate(-DESCENT, 0)
     # scale will scale glyphs with the origin (0, DESCENT)
     scl = scale(SCALE_DOWN)
