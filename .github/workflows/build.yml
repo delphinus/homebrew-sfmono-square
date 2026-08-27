@@ -1,6 +1,10 @@
 name: Build check
 on:
   push:
+    # NOTE: This excludes tags. Releasing is done in release.yml, and the
+    # commit the tag points at has been built already.
+    branches:
+      - "**"
   schedule:
     - cron: "25 */3 * * *"
 jobs:
