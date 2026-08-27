@@ -1,0 +1,73 @@
+#!/bin/bash -eu
+# Cuts a release. This only checks the tree and pushes a tag. Updating the
+# formula and publishing the release are done by .github/workflows/release.yml.
+#
+#   bin/release 3.4.0
+#
+# Set FORCE=1 to skip the check for the build status of HEAD.
+NOTES_DIR=.github/release-notes
+WORKFLOW=https://github.com/delphinus/homebrew-sfmono-square/actions/workflows/release.yml
+
+abort() {
+  echo "$1" >&2
+  exit 1
+}
+
+main() {
+  ver=${1:-}
+  [[ -n $ver ]] || abort 'usage: bin/release <version> (e.g. bin/release 3.4.0)'
+  [[ $ver =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || abort "not a semver: $ver"
+  tag=v$ver
+  notes=$NOTES_DIR/$tag.md
+  [[ -f $notes ]] || abort "$notes is not found. Write the release notes first."
+  [[ $(git branch --show-current) = master ]] || abort 'not on master'
+  if ! git diff --quiet || ! git diff --cached --quiet; then
+    abort 'the working tree is dirty'
+  fi
+  git fetch --quiet origin master --tags
+  if git rev-parse --quiet --verify "refs/tags/$tag" >/dev/null; then
+    abort "$tag already exists"
+  fi
+  [[ $(git rev-parse HEAD) = $(git rev-parse origin/master) ]] ||
+    abort 'HEAD is not the same as origin/master'
+  check_build
+  git tag "$tag"
+  git push origin "$tag"
+  echo "pushed $tag. The release is made by the workflow: $WORKFLOW"
+}
+
+# This is only to fail early. The release workflow checks it again, and it
+# releases nothing unless the build check of the tagged commit is successful.
+check_build() {
+  if [[ ${FORCE:-} = 1 ]]; then
+    echo 'skip the check for the build status' >&2
+    return
+  fi
+  if ! command -v gh >/dev/null; then
+    echo 'gh is not installed. skip the check for the build status' >&2
+    return
+  fi
+  state=$(
+    gh api "repos/{owner}/{repo}/commits/$(git rev-parse HEAD)/check-runs?per_page=100" --jq '
+      [.check_runs[] | select(.name | startswith("build "))]
+      | if length == 0 then "none"
+        elif any(.status != "completed") then "running"
+        elif all(.conclusion == "success") then "success"
+        else "failure" end
+    '
+  )
+  case $state in
+  success) ;;
+  running)
+    echo 'the build check for HEAD is still running. The workflow waits for it.' >&2
+    ;;
+  none)
+    abort 'no build check is found for HEAD. Push it to master first.'
+    ;;
+  *)
+    abort 'the build check for HEAD is not successful.'
+    ;;
+  esac
+}
+
+[[ ${BASH_SOURCE[0]} = "$0" ]] && main "$@"

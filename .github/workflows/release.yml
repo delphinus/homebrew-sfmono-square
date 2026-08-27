@@ -1,0 +1,29 @@
+name: Release
+on:
+  push:
+    tags:
+      - "v*"
+permissions:
+  contents: write
+  # NOTE: This is needed to see whether the fonts are built from the commit
+  # the tag points at.
+  checks: read
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    # NOTE: This waits for the build check of the commit when it is running.
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      # NOTE: The formula is committed into master, which is a protected
+      # branch. Pushing with GITHUB_TOKEN is rejected, so use the same SSH key
+      # as bin/github-generate-doc.sh does.
+      - uses: webfactory/ssh-agent@v0.10.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Create the release and update the formula
+        run: bin/github-release.sh
+        env:
+          GH_TOKEN: ${{ github.token }}
