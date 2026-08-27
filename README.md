@@ -56,6 +56,16 @@ See screenshots for examples [here][].
 
 [here]: https://github.com/delphinus/homebrew-sfmono-square/issues/9#issuecomment-515827269
 
+## Release
+
+1. Write the release notes in `.github/release-notes/vX.Y.Z.md`. The first line is the title of the release, and the rest is its body.
+2. Merge them into `master`.
+3. Run `bin/release X.Y.Z`.
+
+`bin/release` only checks the tree (on `master`, clean, up to date with `origin`, notes written, build check green) and pushes the tag `vX.Y.Z`. Everything else is done by [the release workflow][]: it creates the release from the notes and commits the formula that points at the new tag (`url` / `version` / `sha256`) into `master`.
+
+[the release workflow]: .github/workflows/release.yml
+
 ## Screen Shots
 
 <img width="746" alt="スクリーンショット 0003-04-21 9 20 16" src="https://user-images.githubusercontent.com/1239245/115479188-d8b32780-a282-11eb-9571-4fdc811ddd7c.png">
