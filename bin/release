@@ -36,6 +36,8 @@ main() {
   echo "pushed $tag. The release is made by the workflow: $WORKFLOW"
 }
 
+# This is only to fail early. The release workflow checks it again, and it
+# releases nothing unless the build check of the tagged commit is successful.
 check_build() {
   if [[ ${FORCE:-} = 1 ]]; then
     echo 'skip the check for the build status' >&2
@@ -46,15 +48,26 @@ check_build() {
     return
   fi
   state=$(
-    gh api "repos/{owner}/{repo}/commits/$(git rev-parse HEAD)/check-runs" --jq '
-      [.check_runs[] | select(.name | startswith("build ")) | .conclusion]
-      | if length == 0 then "not finished"
-        elif all(. == "success") then "success"
-        else "not successful" end
+    gh api "repos/{owner}/{repo}/commits/$(git rev-parse HEAD)/check-runs?per_page=100" --jq '
+      [.check_runs[] | select(.name | startswith("build "))]
+      | if length == 0 then "none"
+        elif any(.status != "completed") then "running"
+        elif all(.conclusion == "success") then "success"
+        else "failure" end
     '
   )
-  [[ $state = success ]] ||
-    abort "the build check for HEAD is $state. Set FORCE=1 to release anyway."
+  case $state in
+  success) ;;
+  running)
+    echo 'the build check for HEAD is still running. The workflow waits for it.' >&2
+    ;;
+  none)
+    abort 'no build check is found for HEAD. Push it to master first.'
+    ;;
+  *)
+    abort 'the build check for HEAD is not successful.'
+    ;;
+  esac
 }
 
 [[ ${BASH_SOURCE[0]} = "$0" ]] && main "$@"

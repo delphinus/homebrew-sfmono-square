@@ -4,6 +4,9 @@
 # formula that points at the new tag into master.
 FORMULA=sfmono-square.rb
 NOTES_DIR=.github/release-notes
+# The build takes 15-25 minutes, so wait for a while when it is still running.
+BUILD_TRIES=70
+BUILD_INTERVAL=30
 
 abort() {
   echo "::error::$1"
@@ -17,10 +20,47 @@ main() {
   git fetch origin master
   git merge-base --is-ancestor "$tag" origin/master ||
     abort "$tag is not on master"
+  wait_for_build "$tag"
   # NOTE: The notes must be read before switching to master, as they are the
   # ones the tag has.
   create_release "$tag"
   update_formula "$tag" "${tag#v}"
+}
+
+# Nothing is released unless the fonts are built from the very commit the tag
+# points at. Note that this cannot be skipped by tagging without bin/release.
+wait_for_build() {
+  sha=$(git rev-parse "$1^{commit}")
+  for _ in $(seq $BUILD_TRIES); do
+    state=$(build_state "$sha")
+    case $state in
+    success)
+      echo "the build check for $sha is successful"
+      return
+      ;;
+    running)
+      echo "the build check for $sha is still running"
+      sleep $BUILD_INTERVAL
+      ;;
+    none)
+      abort "no build check is found for $sha. Tag a commit built on master."
+      ;;
+    *)
+      abort "the build check for $sha is not successful"
+      ;;
+    esac
+  done
+  abort "the build check for $sha did not finish in time"
+}
+
+build_state() {
+  gh api "repos/$GITHUB_REPOSITORY/commits/$1/check-runs?per_page=100" --jq '
+    [.check_runs[] | select(.name | startswith("build "))]
+    | if length == 0 then "none"
+      elif any(.status != "completed") then "running"
+      elif all(.conclusion == "success") then "success"
+      else "failure" end
+  '
 }
 
 create_release() {

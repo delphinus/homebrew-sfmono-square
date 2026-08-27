@@ -5,10 +5,14 @@ on:
       - "v*"
 permissions:
   contents: write
+  # NOTE: This is needed to see whether the fonts are built from the commit
+  # the tag points at.
+  checks: read
 jobs:
   release:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # NOTE: This waits for the build check of the commit when it is running.
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v7
         with:
