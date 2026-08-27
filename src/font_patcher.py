@@ -46,9 +46,17 @@ PATCH_SET: list[PatchInfo] = [
     #       "exact": True,
     #   },
     {
-        "name": "Progress Indicators",
+        "name": "Progress Bars",
         "filename": "extraglyphs.sfd",
         "sym_start": 0xEE00,
+        "sym_end": 0xEE05,
+        "src_start": None,
+        "exact": True,
+    },
+    {
+        "name": "Progress Circles",
+        "filename": "extraglyphs.sfd",
+        "sym_start": 0xEE06,
         "sym_end": 0xEE0B,
         "src_start": None,
         "exact": True,
@@ -262,7 +270,9 @@ def _patch(font: fontforge.font) -> None:
         symfont.close()
 
 
-def _transform_sym(symfont: fontforge.font, info: PatchInfo) -> None:
+def _transform_sym(
+    symfont: fontforge.font, info: PatchInfo, glyph: fontforge.glyph
+) -> None:
     x_ratio = 1.0
     y_ratio = 1.0
     x_diff = 0
@@ -285,6 +295,15 @@ def _transform_sym(symfont: fontforge.font, info: PatchInfo) -> None:
         y_ratio = 0.88
         x_diff = 0
         y_diff = -30
+
+    elif info["name"] == "Progress Bars":
+        # A progress bar is drawn with these glyphs side by side, so each of
+        # them must be exactly one cell wide to be tiled without a seam.
+        x_ratio = symfont.em / 2 / glyph.width
+
+    elif info["name"] == "Progress Circles":
+        # These are round, so they should not be stretched horizontally only.
+        x_ratio = y_ratio = symfont.em / 2 / glyph.width
 
     elif info["name"] == "Font Logos":
         y_diff = -120
@@ -357,7 +376,7 @@ def _copy_glyphs(
         copied.add(glyph.glyphname)
         symfont.selection.select(code)
         if first:
-            _transform_sym(symfont, info)
+            _transform_sym(symfont, info, glyph)
         symfont.copy()
         font.selection.select(src_encoding)
         font.paste()
