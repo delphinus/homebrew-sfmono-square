@@ -46,10 +46,18 @@ PATCH_SET: list[PatchInfo] = [
     #       "exact": True,
     #   },
     {
+        "name": "Progress Indicators",
+        "filename": "extraglyphs.sfd",
+        "sym_start": 0xEE00,
+        "sym_end": 0xEE0B,
+        "src_start": None,
+        "exact": True,
+    },
+    {
         "name": "Devicons",
-        "filename": "devicons/devicons.ttf",
+        "filename": "devicons/devicons.otf",
         "sym_start": 0xE600,
-        "sym_end": 0xE7EF,
+        "sym_end": 0xE858,
         "src_start": 0xE700,
         "exact": False,
     },
@@ -86,7 +94,7 @@ PATCH_SET: list[PatchInfo] = [
         "exact": True,
     },
     {
-        "name": "Powerline Extra Symobls",
+        "name": "Powerline Extra Symbols",
         "filename": "powerline-extra/PowerlineExtraSymbols.otf",
         "sym_start": 0xE0CA,
         "sym_end": 0xE0CA,
@@ -94,7 +102,7 @@ PATCH_SET: list[PatchInfo] = [
         "exact": True,
     },
     {
-        "name": "Powerline Extra Symobls",
+        "name": "Powerline Extra Symbols",
         "filename": "powerline-extra/PowerlineExtraSymbols.otf",
         "sym_start": 0xE0CC,
         "sym_end": 0xE0D7,
@@ -102,7 +110,7 @@ PATCH_SET: list[PatchInfo] = [
         "exact": True,
     },
     {
-        "name": "Powerline Extra Symobls",
+        "name": "Powerline Extra Symbols",
         "filename": "powerline-extra/PowerlineExtraSymbols.otf",
         "sym_start": 0x2630,
         "sym_end": 0x2630,
@@ -170,13 +178,13 @@ PATCH_SET: list[PatchInfo] = [
         "name": "Font Logos",
         "filename": "font-logos.ttf",
         "sym_start": 0xF300,
-        "sym_end": 0xF381,
+        "sym_end": 0xF385,
         "src_start": None,
         "exact": True,
     },
     {
         "name": "Octicons",
-        "filename": "octicons/octicons.ttf",
+        "filename": "octicons/octicons.otf",
         "sym_start": 0xF000,
         "sym_end": 0xF105,
         "src_start": 0xF400,
@@ -184,7 +192,7 @@ PATCH_SET: list[PatchInfo] = [
     },
     {
         "name": "Octicons",
-        "filename": "octicons/octicons.ttf",
+        "filename": "octicons/octicons.otf",
         "sym_start": 0x2665,
         "sym_end": 0x2665,
         "src_start": None,
@@ -192,7 +200,7 @@ PATCH_SET: list[PatchInfo] = [
     },  # Heart
     {
         "name": "Octicons",
-        "filename": "octicons/octicons.ttf",
+        "filename": "octicons/octicons.otf",
         "sym_start": 0x26A1,
         "sym_end": 0x26A1,
         "src_start": None,
@@ -200,7 +208,7 @@ PATCH_SET: list[PatchInfo] = [
     },  # Zap
     {
         "name": "Octicons",
-        "filename": "octicons/octicons.ttf",
+        "filename": "octicons/octicons.otf",
         "sym_start": 0xF27C,
         "sym_end": 0xF306,
         "src_start": 0xF4A9,
@@ -210,7 +218,7 @@ PATCH_SET: list[PatchInfo] = [
         "name": "Codicons",
         "filename": "codicons/codicon.ttf",
         "sym_start": 0xEA60,
-        "sym_end": 0xEC1E,
+        "sym_end": 0xEC84,
         "src_start": None,
         "exact": True,
     },
