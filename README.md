@@ -10,6 +10,15 @@ _Now, SF Mono Square v3 has completely the same codepoints as Nerd Fonts v3's on
 
 [Nerd Fonts]: https://github.com/ryanoasis/nerd-fonts
 
+### Nerd Fonts glyphs are scaled by measurement
+
+Since v3.5.0, a Nerd Fonts glyph is placed by mapping the design grid it was drawn on onto the
+cell, instead of the four constants per source that used to be tuned by eye.  Sizes and vertical
+centres line up across the icon sets, and the font carries 2 advance widths where it used to carry
+315.
+
+![The same icons from eight Nerd Fonts sets, drawn over the cell grid in v3.4.0 and in v3.5.0](.github/images/v3.5.0-scaling.png)
+
 Thoughts and detail description here:
 
 * [SF Mono を使って最高のプログラミング用フォントを作った話 - Qiita][qiita] (in Japanese)
