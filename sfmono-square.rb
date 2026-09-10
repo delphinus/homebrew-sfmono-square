@@ -14,6 +14,7 @@ class SfmonoSquare < Formula
   depends_on "fonttools" => :build
   depends_on "pod2man" => :build
   depends_on "python@3.14" => :build
+  depends_on "sevenzip" => :build
 
   resource "migu1mfonts" do
     output = `#{Utils::Curl.curl_executable} --version`
@@ -23,8 +24,10 @@ class SfmonoSquare < Formula
     sha256 "e4806d297e59a7f9c235b0079b2819f44b8620d4365a8955cb612c9ff5809321"
   end
 
+  # NOTE: The dmg is staged as it is. Homebrew opens a dmg with `hdiutil
+  # attach`, which the build sandbox no longer lets through. See _stage.
   resource "sfmono" do
-    url "https://developer.apple.com/design/downloads/SF-Mono.dmg"
+    url "https://developer.apple.com/design/downloads/SF-Mono.dmg", using: :nounzip
     sha256 "6d4a0b78e3aacd06f913f642cead1c7db4af34ed48856d7171a2e0b55d9a7945"
   end
 
@@ -46,7 +49,13 @@ class SfmonoSquare < Formula
     resource("migu1mfonts").stage { buildpath.install Dir["*"] }
 
     resource("sfmono").stage do
-      system "/usr/bin/xar", "-xf", "SF Mono Fonts.pkg"
+      # NOTE: Mounting the dmg is not an option any more. Homebrew denies
+      # mach-lookup in the build sandbox since 2026-09-09, and `hdiutil attach`
+      # dies with "Device not configured" without the Mach services it needs.
+      # 7zz reads the image without mounting it.
+      system "#{formula_opt_bin("sevenzip")}/7zz", "x", "-y", "-bso0", "SF-Mono.dmg",
+             "SFMonoFonts/SF Mono Fonts.pkg"
+      system "/usr/bin/xar", "-xf", "SFMonoFonts/SF Mono Fonts.pkg"
       system "/bin/bash", "-c", "cat SFMonoFonts.pkg/Payload | gunzip -dc | cpio -i"
       ["SF-Mono-Regular.otf", "SF-Mono-RegularItalic.otf", "SF-Mono-Bold.otf", "SF-Mono-BoldItalic.otf"].each do |otf|
         buildpath.install "Library/Fonts/#{otf}"
