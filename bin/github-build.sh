@@ -27,6 +27,9 @@ brew update
 # Reinstall python@3.14 to ensure it's properly installed and linked
 # This works around issues with pre-installed python@3.14 in GitHub Actions runners
 brew reinstall python@3.14
+# openssl@3 became keg-only upstream; unlink it so the upgrade does not try to
+# relink over openssl@1.1, which the runner image links into bin/openssl.
+brew unlink openssl@3 || true
 brew tap-new $TAP
 cp $FORMULA "$(brew --repo $TAP)/Formula/"
 brew install -v $TAP/sfmono-square

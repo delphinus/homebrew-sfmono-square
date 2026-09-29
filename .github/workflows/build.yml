@@ -20,7 +20,7 @@ jobs:
       # NOTE: The `master` branch is deprecated and has already been deleted.
       # Upstream asks consumers to pin a CalVer release tag instead.
       - uses: Homebrew/actions/setup-homebrew@2026.09.13.1
-      - uses: webfactory/ssh-agent@v0.7.0
+      - uses: webfactory/ssh-agent@v0.10.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Generate doc and push it to the repo
