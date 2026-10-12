@@ -125,7 +125,11 @@ class SfmonoSquare < Formula
     # ENV["MIGU1M_SCALE"] = "82"
 
     fontforge_lib = Formula["fontforge"].libexec / "lib/python3.14/site-packages"
-    fonttools_lib = Formula["fonttools"].libexec / "lib/python3.14/site-packages"
+    # NOTE: fonttools does not always use the same Python as fontforge (it
+    # moved to python@3.15 on 2026-10-12 while fontforge stayed on 3.14), so
+    # find its site-packages by globbing. fontTools runs on any Python 3 as it
+    # falls back to pure Python where the compiled modules do not match.
+    fonttools_lib = Dir[Formula["fonttools"].libexec / "lib/python3.*/site-packages"].first
     python = Formula["python@3.14"].bin / "python3.14"
 
     system python, "-c", <<~PYTHON
