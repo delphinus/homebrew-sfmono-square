@@ -27,11 +27,13 @@ brew update
 # openssl@3 became keg-only upstream; unlink it so the upgrade does not try to
 # relink over openssl@1.1, which the runner image links into bin/openssl. This
 # must come before anything that installs openssl@3 as a dependency, including
-# the python@3.14 reinstall below.
+# the Python reinstall below.
 brew unlink openssl@3 || true
-# Reinstall python@3.14 to ensure it's properly installed and linked
-# This works around issues with pre-installed python@3.14 in GitHub Actions runners
-brew reinstall python@3.14
+# Reinstall the Python fontforge uses to ensure it's properly installed and
+# linked. This works around issues with the pre-installed Python in GitHub
+# Actions runners. The formula takes the same Python from fontforge.
+PYTHON=$(brew deps --direct fontforge | grep '^python@3\.' | head -1)
+brew reinstall "$PYTHON"
 brew tap-new $TAP
 cp $FORMULA "$(brew --repo $TAP)/Formula/"
 brew install -v $TAP/sfmono-square

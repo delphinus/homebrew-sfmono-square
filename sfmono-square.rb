@@ -13,7 +13,6 @@ class SfmonoSquare < Formula
   depends_on "fontforge" => :build
   depends_on "fonttools" => :build
   depends_on "pod2man" => :build
-  depends_on "python@3.14" => :build
 
   # The four fonts taken out of the dmg. The dmg is pinned by its own sha256,
   # so these are fixed too, and they are checked to make sure the fonts the
@@ -124,13 +123,20 @@ class SfmonoSquare < Formula
     # See https://github.com/delphinus/homebrew-sfmono-square/issues/9
     # ENV["MIGU1M_SCALE"] = "82"
 
-    fontforge_lib = Formula["fontforge"].libexec / "lib/python3.14/site-packages"
+    # NOTE: fontforge is a C extension and loads only on the Python it was
+    # built for, so take the Python from fontforge's own dependency instead of
+    # pinning a version here. homebrew-core moves it without notice (3.14 ->
+    # 3.15 on 2026-10-14).
+    python_dep = Formula["fontforge"].deps.map(&:name).find { |name| name.start_with?("python@") }
+    odie "fontforge does not depend on python@3.x" unless python_dep
+    python_version = python_dep.delete_prefix("python@")
+    python = formula_opt_bin(python_dep) / "python#{python_version}"
+    fontforge_lib = Formula["fontforge"].libexec / "lib/python#{python_version}/site-packages"
     # NOTE: fonttools does not always use the same Python as fontforge (it
-    # moved to python@3.15 on 2026-10-12 while fontforge stayed on 3.14), so
-    # find its site-packages by globbing. fontTools runs on any Python 3 as it
+    # moved to python@3.15 on 2026-10-12, two days before fontforge), so find
+    # its site-packages by globbing. fontTools runs on any Python 3 as it
     # falls back to pure Python where the compiled modules do not match.
     fonttools_lib = Dir[Formula["fonttools"].libexec / "lib/python3.*/site-packages"].first
-    python = Formula["python@3.14"].bin / "python3.14"
 
     system python, "-c", <<~PYTHON
       import sys
