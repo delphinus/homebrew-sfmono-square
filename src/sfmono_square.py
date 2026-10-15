@@ -199,6 +199,9 @@ def new_font(opts: dict[str, str]) -> fontforge.font:
 def _merge(font: fontforge.font, opts: dict[str, str]) -> None:
     font.mergeFonts(opts["hankaku"])
     font.mergeFonts(opts["zenkaku"])
+    # NOTE: mergeFonts() carries the ss03/ss04 lookups over but drops their
+    # names, so copy them from the SF Mono side.
+    font.style_set_names = fontforge.open(opts["hankaku"]).style_set_names
 
 
 # FIX: some glyphs may be overwritten by zenkaku fonts. This func copy them again from hankaku fonts.
