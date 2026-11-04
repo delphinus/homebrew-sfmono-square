@@ -10,7 +10,11 @@
 #
 #   brew uninstall sfmono-square
 #   brew untap local/sfmono-square-testing
+#   brew untrust --formula local/sfmono-square-testing/sfmono-square
 #   brew install delphinus/sfmono-square/sfmono-square
+#
+# NOTE: untap before untrust. Homebrew loads the formula to untap the tap,
+# and refuses to load it once it is untrusted.
 REPO=delphinus/homebrew-sfmono-square
 REF=${REF:-feat/more-weights}
 TAP=local/sfmono-square-testing
@@ -22,6 +26,8 @@ main() {
   formula=$(brew --repo "$TAP")/Formula/sfmono-square.rb
   curl -fsSL "https://raw.githubusercontent.com/$REPO/$REF/sfmono-square.rb" -o "$formula"
   grep '^  version ' "$formula"
+  # NOTE: Homebrew refuses to load a formula from a tap that is not trusted.
+  brew trust --formula "$TAP/sfmono-square"
   # NOTE: The formula has the same name as the one in delphinus/sfmono-square,
   # and only one of them can be installed. This removes only the fonts in the
   # Cellar; the copies in ~/Library/Fonts are not touched.
