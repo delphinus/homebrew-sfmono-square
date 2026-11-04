@@ -4,8 +4,9 @@
 # formula that points at the new tag into master.
 FORMULA=sfmono-square.rb
 NOTES_DIR=.github/release-notes
-# The build takes 15-25 minutes, so wait for a while when it is still running.
-BUILD_TRIES=70
+# The build of the 12 fonts takes up to 2 hours (the timeout of build.yml), so
+# wait for a while when it is still running.
+BUILD_TRIES=250
 BUILD_INTERVAL=30
 # When a tag is pushed just after a merge, the check runs of the commit are not
 # registered yet. Wait for them to appear, but not as long as the build itself.

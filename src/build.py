@@ -13,30 +13,41 @@ import sfmono
 import sfmono_square
 
 
-MIGU1M = [["migu-1m-regular.ttf"], ["migu-1m-bold.ttf"]]
-MIGU1M_MODIFIED = [["modified-migu-1m-regular.ttf"], ["modified-migu-1m-bold.ttf"]]
-SFMONO = [
-    ["SF-Mono-Regular.otf"],
-    ["SF-Mono-Bold.otf"],
-    ["SF-Mono-RegularItalic.otf"],
-    ["SF-Mono-BoldItalic.otf"],
-]
-SFMONO_MIGU1M = [
-    ["SFMono-1x2-Regular.otf", "modified-migu-1m-regular.ttf"],
-    ["SFMono-1x2-Bold.otf", "modified-migu-1m-bold.ttf"],
-    ["SFMono-1x2-RegularItalic.otf", "modified-migu-1m-oblique.ttf"],
-    ["SFMono-1x2-BoldItalic.otf", "modified-migu-1m-bold-oblique.ttf"],
-]
-SFMONO_SQUARE = [
-    ["SFMonoSquare-Regular.otf", "Regular"],
-    ["SFMonoSquare-Bold.otf", "Bold"],
-    ["SFMonoSquare-RegularItalic.otf", "RegularItalic"],
-    ["SFMonoSquare-BoldItalic.otf", "BoldItalic"],
-]
+# The weights of SF Mono, and the weight of Migu 1M each of them is combined
+# with. Migu 1M has only regular and bold, and the others are made from regular
+# by migu1m.weight(). Heavy uses bold as it is.
+WEIGHTS = {
+    "Regular": "regular",
+    "Bold": "bold",
+    "Light": "light",
+    "Medium": "medium",
+    "Semibold": "semibold",
+    "Heavy": "bold",
+}
+MIGU1M_WEIGHTS = [["migu-1m-regular.ttf", s] for s in migu1m.WEIGHT_DELTA]
+MIGU1M_STYLES = list(dict.fromkeys(WEIGHTS.values()))
+MIGU1M = [[f"migu-1m-{s}.ttf"] for s in MIGU1M_STYLES]
+MIGU1M_MODIFIED = [[f"modified-migu-1m-{s}.ttf"] for s in MIGU1M_STYLES]
+STYLES = [f"{w}{i}" for i in ["", "Italic"] for w in WEIGHTS]
+SFMONO = [[f"SF-Mono-{s}.otf"] for s in STYLES]
+
+
+def _migu1m_for(style: str) -> str:
+    if not style.endswith("Italic"):
+        return f"modified-migu-1m-{WEIGHTS[style]}.ttf"
+    m = WEIGHTS[style.removesuffix("Italic")]
+    return f"modified-migu-1m-{'' if m == 'regular' else m + '-'}oblique.ttf"
+
+
+SFMONO_MIGU1M = [[f"SFMono-1x2-{s}.otf", _migu1m_for(s)] for s in STYLES]
+SFMONO_SQUARE = [[f"SFMonoSquare-{s}.otf", s] for s in STYLES]
 OUT_DIR = "build"
 
 
 def build(version: str) -> int:
+    print("---- changing the weight of migu-1m ----")
+    if concurrent_execute(migu1m.weight, MIGU1M_WEIGHTS):
+        return 1
     print("---- modifying migu-1m ----")
     if concurrent_execute(migu1m.modify, MIGU1M):
         return 1

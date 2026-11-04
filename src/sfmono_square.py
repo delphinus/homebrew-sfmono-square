@@ -43,36 +43,29 @@ HANKAKU_GLYPHS = [
     0x25CC,  # ◌  DOTTED CIRCLE
     0x25EF,  # ◯  LARGE CIRCLE
 ]
-STYLE_PROPERTY = {
-    "Regular": {
-        "weight": "Normal",
-        "os2_weight": 400,
-        "panose_weight": 5,
-        "panose_letterform": 2,
-        "italic_angle": 0,
-    },
-    "Bold": {
-        "weight": "Bold",
-        "os2_weight": 700,
-        "panose_weight": 8,
-        "panose_letterform": 2,
-        "italic_angle": 0,
-    },
-    "RegularItalic": {
-        "weight": "Normal",
-        "os2_weight": 400,
-        "panose_weight": 5,
-        "panose_letterform": 9,
-        "italic_angle": ITALIC_ANGLE,
-    },
-    "BoldItalic": {
-        "weight": "Bold",
-        "os2_weight": 700,
-        "panose_weight": 8,
-        "panose_letterform": 9,
-        "italic_angle": ITALIC_ANGLE,
-    },
+# weight: the PostScript weight, os2_weight: usWeightClass, panose_weight: the
+# weight in PANOSE (5: Book, 8: Bold, and so on).
+WEIGHT_PROPERTY = {
+    "Light": {"weight": "Light", "os2_weight": 300, "panose_weight": 3},
+    "Regular": {"weight": "Normal", "os2_weight": 400, "panose_weight": 5},
+    "Medium": {"weight": "Medium", "os2_weight": 500, "panose_weight": 6},
+    "Semibold": {"weight": "SemiBold", "os2_weight": 600, "panose_weight": 7},
+    "Bold": {"weight": "Bold", "os2_weight": 700, "panose_weight": 8},
+    "Heavy": {"weight": "Heavy", "os2_weight": 800, "panose_weight": 9},
 }
+STYLE_PROPERTY = {
+    f"{weight}{italic}": {
+        **prop,
+        "panose_letterform": 9 if italic else 2,
+        "italic_angle": ITALIC_ANGLE if italic else 0,
+    }
+    for weight, prop in WEIGHT_PROPERTY.items()
+    for italic in ["", ITALIC]
+}
+# The styles that make a family by themselves in the name IDs 1 & 2. Any other
+# weight makes a family of its own there, such as "SF Mono Square Light", and
+# joins "SF Mono Square" only in the name IDs 16 & 17.
+RIBBI = {"Regular", "Bold", "RegularItalic", "BoldItalic"}
 
 
 def generate(hankaku: str, zenkaku: str, version: str) -> int:
@@ -98,6 +91,13 @@ def read_opts(hankaku: str, zenkaku: str, version: str) -> dict[str, str]:
     style = filename_style.replace(ITALIC, " " + ITALIC)
     compact_family = FAMILYNAME.replace(" ", "")
     fontname = f"{compact_family}-{filename_style}"
+    if filename_style in RIBBI:
+        sfnt_family = FAMILYNAME
+        sfnt_subfamily = style
+    else:
+        weight = filename_style.removesuffix(ITALIC)
+        sfnt_family = f"{FAMILYNAME} {weight}"
+        sfnt_subfamily = ITALIC if filename_style.endswith(ITALIC) else REGULAR
     return {
         "hankaku": hankaku,
         "zenkaku": zenkaku,
@@ -107,8 +107,10 @@ def read_opts(hankaku: str, zenkaku: str, version: str) -> dict[str, str]:
         "familyname": compact_family,
         "fullname": f"{compact_family} {style}",
         "sfnt_fullname": f"{FAMILYNAME} {style}",
-        "sfnt_family": FAMILYNAME,
-        "sfnt_subfamily": style,
+        "sfnt_family": sfnt_family,
+        "sfnt_subfamily": sfnt_subfamily,
+        "sfnt_preferred_family": FAMILYNAME,
+        "sfnt_preferred_styles": style,
         "out_file": f"{fontname}.otf",
     }
 
@@ -139,10 +141,14 @@ def new_font(opts: dict[str, str]) -> fontforge.font:
     font.appendSFNTName("English (US)", "Fullname", opts["sfnt_fullname"])
     font.appendSFNTName("English (US)", "Family", opts["sfnt_family"])
     font.appendSFNTName("English (US)", "SubFamily", opts["sfnt_subfamily"])
-    font.appendSFNTName("English (US)", "Preferred Family", opts["sfnt_family"])
-    font.appendSFNTName("English (US)", "Preferred Styles", opts["sfnt_subfamily"])
-    font.appendSFNTName("English (US)", "WWS Family", opts["sfnt_family"])
-    font.appendSFNTName("English (US)", "WWS Subfamily", opts["sfnt_subfamily"])
+    font.appendSFNTName(
+        "English (US)", "Preferred Family", opts["sfnt_preferred_family"]
+    )
+    font.appendSFNTName(
+        "English (US)", "Preferred Styles", opts["sfnt_preferred_styles"]
+    )
+    font.appendSFNTName("English (US)", "WWS Family", opts["sfnt_preferred_family"])
+    font.appendSFNTName("English (US)", "WWS Subfamily", opts["sfnt_preferred_styles"])
     font.appendSFNTName(
         "English (US)",
         "UniqueID",
