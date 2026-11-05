@@ -1,8 +1,8 @@
 name: Release
 on:
   push:
-    # NOTE: Only semver tags. A tag for testing such as v4.0.0-testing is not
-    # released, and bin/github-release.sh would refuse it anyway.
+    # NOTE: Only semver tags, so that a tag for anything else, such as testing,
+    # is not released. bin/github-release.sh would refuse it anyway.
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
 permissions:
