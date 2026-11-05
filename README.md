@@ -25,6 +25,17 @@ Thoughts and detail description here:
 
 [qiita]: https://qiita.com/delphinus/items/f472eb04ff91daf44274
 
+### Weights
+
+SF Mono Square comes in the 6 weights SF Mono has — Light, Regular, Medium, Semibold, Bold and
+Heavy — each with its italic.  Migu 1M has only Regular and Bold, so the Japanese glyphs of the
+other weights are made from them: Light, Medium and Semibold by thinning or thickening the strokes
+of Regular, and Heavy uses those of Bold as they are.
+
+Regular, Bold and their italics make the family "SF Mono Square" just as before.  The other weights
+join it in the typographic family (name IDs 16 & 17); apps that do not read them list such a weight
+as a family of its own, such as "SF Mono Square Light".
+
 ### font source
 
 * SF Mono: Apple

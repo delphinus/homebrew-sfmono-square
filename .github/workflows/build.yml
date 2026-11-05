@@ -15,7 +15,8 @@ jobs:
           - macos-15
           - macos-26
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+    # NOTE: 12 fonts take about 6 times as long as the 4 fonts did.
+    timeout-minutes: 120
     steps:
       # NOTE: The `master` branch is deprecated and has already been deleted.
       # Upstream asks consumers to pin a CalVer release tag instead.

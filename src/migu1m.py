@@ -20,6 +20,53 @@ try:
 except ValueError:
     SCALE = 0.82
 X_TO_CENTER = EM * (1 - SCALE) / 2
+# Migu 1M has only Regular and Bold. The other weights are made by thinning or
+# thickening the strokes of Regular, in units of its own 1000-unit em. Heavy
+# uses Bold as it is, as thickening Bold fills the counters of dense kanji.
+# See https://github.com/delphinus/homebrew-sfmono-square/issues/123
+WEIGHT_DELTA = {
+    "light": -12,
+    "medium": 8,
+    "semibold": 18,
+}
+# Contours with a smaller bounding box than this (in units^2 of the 1000-unit
+# em, about 17x17) are debris that changeWeight() and removeOverlap() leave
+# at the joints of strokes.
+SPECK_AREA = 300
+
+
+def weight(in_file: str, style: str) -> int:
+    """Makes migu-1m-<style>.ttf by changing the weight of in_file."""
+    font = fontforge.open(in_file)
+    font.is_quadratic = False
+    font.selection.all()
+    font.unlinkReferences()
+    # NOTE: Do not call correctDirection() before this. Migu 1M has its
+    # contours the other way round, and correctDirection() reverses them, which
+    # makes changeWeight() thin the glyphs it should thicken.
+    font.changeWeight(WEIGHT_DELTA[style], "CJK", 0, 0, "auto")
+    font.removeOverlap()
+    _remove_specks(font)
+    out_file = f"migu-1m-{style}.ttf"
+    print(f"Generate {out_file}")
+    font.generate(out_file, flags=("opentype",))
+    return 0
+
+
+def _remove_specks(font: fontforge.font) -> None:
+    for glyph in font.glyphs():
+        layer = glyph.foreground
+        kept = fontforge.layer()
+        kept.is_quadratic = layer.is_quadratic
+        removed = False
+        for contour in layer:
+            xmin, ymin, xmax, ymax = contour.boundingBox()
+            if (xmax - xmin) * (ymax - ymin) < SPECK_AREA:
+                removed = True
+            else:
+                kept += contour
+        if removed:
+            glyph.foreground = kept
 
 
 def modify(in_file: str) -> int:
@@ -38,7 +85,7 @@ def oblique(in_file: str) -> int:
     _make_oblique(font)
     name, ext = splitext(in_file)
     in_style = name.split("-")[-1]
-    style = "oblique" if in_style == "regular" else "bold-oblique"
+    style = "oblique" if in_style == "regular" else f"{in_style}-oblique"
     out_file = f"modified-migu-1m-{style}{ext}"
     print(f"Generate {out_file}")
     font.generate(out_file, flags=("opentype",))

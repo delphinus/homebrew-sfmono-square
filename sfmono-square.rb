@@ -5,23 +5,31 @@
 class SfmonoSquare < Formula
   desc "Square-sized SF Mono + Japanese fonts + nerd-fonts"
   homepage "https://github.com/delphinus/homebrew-sfmono-square"
-  url "https://github.com/delphinus/homebrew-sfmono-square/archive/refs/tags/v3.5.3.tar.gz"
-  version "3.5.3"
-  sha256 "7b00a17038e5de9d397174eb850191a024f4de74a25f2091382baa17711db2d4"
+  url "https://github.com/delphinus/homebrew-sfmono-square/archive/d2e1d610f4940e11a376adc89c29f5fca4695a21.tar.gz"
+  version "3.6.0-testing"
+  sha256 "e96cbbe0325122086fc84628fe60568b9299a42f1e8ca9331478771ea466cbe7"
   head "https://github.com/delphinus/homebrew-sfmono-square.git"
 
   depends_on "fontforge" => :build
   depends_on "fonttools" => :build
   depends_on "pod2man" => :build
 
-  # The four fonts taken out of the dmg. The dmg is pinned by its own sha256,
-  # so these are fixed too, and they are checked to make sure the fonts the
-  # build reads are the fonts the dmg carries. See _stage.
+  # The fonts taken out of the dmg. The dmg is pinned by its own sha256, so
+  # these are fixed too, and they are checked to make sure the fonts the build
+  # reads are the fonts the dmg carries. See _stage.
   SFMONO_OTFS = {
-    "SF-Mono-Regular.otf"       => "d7186273849a922b3eafbbdd8289d1e708a2c7f7893ec90961d382353c872d49",
-    "SF-Mono-RegularItalic.otf" => "9fe5176e31a1ba9ba685ea3c3fab97f76c51574829bb06f2ab47c561a55dbecc",
-    "SF-Mono-Bold.otf"          => "88ba41467bea5c3f29273b6b2f630a95aa03589536de54ef41ac4db250d6a0a3",
-    "SF-Mono-BoldItalic.otf"    => "e177ffe6d3a27f513b54fea41a6e76c6c3d4b31a15d982a84bdc1b41972c093c",
+    "SF-Mono-Light.otf"          => "47e2469a7439209ae3611cc798779c21c9c98ca124022c8976f7d4aa82558431",
+    "SF-Mono-LightItalic.otf"    => "c3f6477be40037d59ae73c16dcc592768e09788cc9b7a31d53913aec92da82f7",
+    "SF-Mono-Regular.otf"        => "d7186273849a922b3eafbbdd8289d1e708a2c7f7893ec90961d382353c872d49",
+    "SF-Mono-RegularItalic.otf"  => "9fe5176e31a1ba9ba685ea3c3fab97f76c51574829bb06f2ab47c561a55dbecc",
+    "SF-Mono-Medium.otf"         => "f1826e890cfa89da5a3d0908a0ae6f10656fafe177b4de34317d5a432ffa8e89",
+    "SF-Mono-MediumItalic.otf"   => "3b022a1a297f1ac918e1c6fe08b60352e324e65de53549dac04bf0220772cc2e",
+    "SF-Mono-Semibold.otf"       => "ed5c7934c102d382ecee3406197ad3c74fbd1ba969d838698b0b74a80ea2021b",
+    "SF-Mono-SemiboldItalic.otf" => "5cb2de9ddbdf41faba67d04c76f984db540d05069b41c0f2bb56d5921f82bc81",
+    "SF-Mono-Bold.otf"           => "88ba41467bea5c3f29273b6b2f630a95aa03589536de54ef41ac4db250d6a0a3",
+    "SF-Mono-BoldItalic.otf"     => "e177ffe6d3a27f513b54fea41a6e76c6c3d4b31a15d982a84bdc1b41972c093c",
+    "SF-Mono-Heavy.otf"          => "12f70e641d64625f6ff06ee6e6189527d6931918aa6b17bce09c241e0a2c78e8",
+    "SF-Mono-HeavyItalic.otf"    => "a514ed643a34711e8e5f745248dc2fb442b41874f88ba062e5338cc034fd832e",
   }.freeze
 
   # The first four bytes of a xar archive, which "SF Mono Fonts.pkg" is.
