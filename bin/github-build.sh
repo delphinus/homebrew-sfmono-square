@@ -5,19 +5,6 @@ export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
 export HOMEBREW_NO_INSTALL_FROM_API=1
 sw_vers # show macOS version
 FORMULA=sfmono-square.rb
-if [[ $GITHUB_REF = refs/heads/master ]]; then
-  : build on the latest tag
-else
-  : build on "$GITHUB_REF"
-  HASH=$(git describe --tags HEAD | tr -d '\n')
-  export HASH
-  export URL=https://github.com/delphinus/homebrew-sfmono-square/tarball/$HASH
-  SHA=$(curl -L "$URL" | shasum -a256 | cut -wf1)
-  export SHA
-  perl -i -pe 's,(?<=^  url ").*(?="$),$ENV{URL},' $FORMULA
-  perl -i -pe 's,(?<=^  sha256 ").*(?="$),$ENV{SHA},' $FORMULA
-  perl -i -pe 's,(?<=^  version ").*(?="$),$ENV{HASH},' $FORMULA
-fi
 TAP=local/sfmono-square
 # NOTE: tap-new needs Git to be done setup.
 # https://qiita.com/thaim/items/3d1a4d09ec4a7d8844ce
@@ -35,5 +22,21 @@ brew unlink openssl@3 || true
 PYTHON=$(brew deps --direct fontforge | grep '^python@3\.' | head -1)
 brew reinstall "$PYTHON"
 brew tap-new $TAP
-cp $FORMULA "$(brew --repo $TAP)/Formula/"
+# Build the commit checked out, on master too: the release builds from the
+# tag, which is put on the head of master, so this is what new users get.
+#
+# NOTE: The checkout is the tap of this repository, and `brew update` above
+# stashes the changes made in it. The formula is edited in the local tap,
+# after `brew update`, so that it builds the commit and not the version the
+# formula points at.
+HASH=$(git describe --tags HEAD | tr -d '\n')
+URL=https://github.com/delphinus/homebrew-sfmono-square/tarball/$HASH
+SHA=$(curl -fL "$URL" | shasum -a256 | cut -wf1)
+export HASH URL SHA
+local_formula="$(brew --repo $TAP)/Formula/$FORMULA"
+cp $FORMULA "$local_formula"
+perl -i -pe 's,(?<=^  url ").*(?="$),$ENV{URL},' "$local_formula"
+perl -i -pe 's,(?<=^  sha256 ").*(?="$),$ENV{SHA},' "$local_formula"
+perl -i -pe 's,(?<=^  version ").*(?="$),$ENV{HASH},' "$local_formula"
+grep -E '^  (url|sha256|version) ' "$local_formula"
 brew install -v $TAP/sfmono-square
