@@ -36,6 +36,8 @@ Regular, Bold and their italics make the family "SF Mono Square" just as before.
 join it in the typographic family (name IDs 16 & 17); apps that do not read them list such a weight
 as a family of its own, such as "SF Mono Square Light".
 
+![SFMono Square in Light, Regular, Medium, Semibold, Bold and Heavy, upright and italic](.github/images/v3.6.0-weights.png)
+
 ### font source
 
 * SF Mono: Apple
