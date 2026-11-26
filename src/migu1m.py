@@ -85,10 +85,44 @@ def _change_weight(in_file: str, delta: int) -> fontforge.font:
     # NOTE: Do not call correctDirection() before this. Migu 1M has its
     # contours the other way round, and correctDirection() reverses them, which
     # makes changeWeight() thin the glyphs it should thicken.
+    _align_direction(font)
     font.changeWeight(delta, "CJK", 0, 0, "auto")
     font.removeOverlap()
     _remove_specks(font)
     return font
+
+
+def _align_direction(font: fontforge.font) -> None:
+    """
+    Reverses the contours drawn the other way round from the rest. Migu 1M has
+    all its outermost contours clockwise but those of 6 glyphs: U+30D8-30DA
+    (katakana he, be and pe) and the vertical forms of U+301C, U+30FC and
+    U+FF5E. changeWeight() thinned them where it thickened the others. The
+    dakuten and the handakuten of be and pe are drawn as the others, so only
+    the contour of the stroke is reversed, with the contours inside it.
+    """
+    for glyph in font.glyphs():
+        layer = glyph.foreground
+        contours = list(layer)
+        boxes = [c.boundingBox() for c in contours]
+        reversed_any = False
+        for i, contour in enumerate(contours):
+            if contour.isClockwise() or any(_inside(boxes[i], b) for j, b in enumerate(boxes) if j != i):
+                continue
+            for j, inner in enumerate(contours):
+                if j == i or _inside(boxes[j], boxes[i]):
+                    inner.reverseDirection()
+            reversed_any = True
+        if reversed_any:
+            new_layer = fontforge.layer()
+            new_layer.is_quadratic = layer.is_quadratic
+            for contour in contours:
+                new_layer += contour
+            glyph.foreground = new_layer
+
+
+def _inside(a: tuple[float, ...], b: tuple[float, ...]) -> bool:
+    return a != b and a[0] >= b[0] and a[1] >= b[1] and a[2] <= b[2] and a[3] <= b[3]
 
 
 def _bounding_boxes(font: fontforge.font) -> dict[str, tuple[float, ...]]:
