@@ -19,6 +19,18 @@ MAC_STYLE = {
     "Bold": 0b01,
     "BoldItalic": 0b11,
 }
+ITALIC = "Italic"
+
+
+def _ribbi(style: str) -> str:
+    """
+    The style in its own family of the name IDs 1 & 2. Other weights than
+    Regular and Bold are the Regular (or Italic) of a family such as "SF Mono
+    Square Light", so they have the same bits as Regular.
+    """
+    if style in FS_SELECTION:
+        return style
+    return "RegularItalic" if style.endswith(ITALIC) else "Regular"
 
 
 def update(fontname: str, style: str) -> int:
@@ -26,8 +38,8 @@ def update(fontname: str, style: str) -> int:
     font["post"].isFixedPitch = 1
     font["CFF "].cff[0].isFixedPitch = 1
     font["OS/2"].xAvgCharWidth = X_AVG_CHAR_WIDTH
-    font["OS/2"].fsSelection = FS_SELECTION[style]
-    font["head"].macStyle = MAC_STYLE[style]
+    font["OS/2"].fsSelection = FS_SELECTION[_ribbi(style)]
+    font["head"].macStyle = MAC_STYLE[_ribbi(style)]
     new_fontname = mkstemp(suffix=".otf")[1]
     font.save(new_fontname)
     font.close()
