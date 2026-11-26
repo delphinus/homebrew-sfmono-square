@@ -73,6 +73,10 @@ def build(version: str) -> int:
 
 
 def concurrent_execute(func: Callable[..., Any], args: Sequence[Sequence[Any]]) -> int:
-    executor = ProcessPoolExecutor()
+    # NOTE: A fresh process for each task. fontforge.open() and mergeFonts()
+    # take the font already open in the process for the same path, so a
+    # worker that ran another task hands over the fonts it changed: the shades
+    # of an italic were left unscaled when the worker had built its upright.
+    executor = ProcessPoolExecutor(max_tasks_per_child=1)
     futures = [executor.submit(func, *a) for a in args]
     return 1 if any(r.result() for r in as_completed(futures)) else 0
