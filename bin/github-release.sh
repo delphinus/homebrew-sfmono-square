@@ -63,8 +63,14 @@ wait_for_build() {
 }
 
 build_state() {
+  # A commit gets the check runs of every run of build.yml: the push, the
+  # scheduled runs and the ones started by hand. Only the latest one of each job
+  # counts, so that a job cancelled once does not block the commit for good
+  # when it is built again. The API lists the newest first, so the latest ones
+  # are on the first page.
   gh api "repos/$GITHUB_REPOSITORY/commits/$1/check-runs?per_page=100" --jq '
     [.check_runs[] | select(.name | startswith("build "))]
+    | group_by(.name) | map(max_by(.id))
     | if length == 0 then "none"
       elif any(.status != "completed") then "running"
       elif all(.conclusion == "success") then "success"

@@ -7,6 +7,11 @@ on:
       - "**"
   schedule:
     - cron: "25 */3 * * *"
+  # NOTE: To build a commit whose push did not start this, such as one merged
+  # with "[skip ci]" in its message. Scheduled runs are often skipped, so they
+  # cannot be relied on. The check runs go to the commit as those of a push do,
+  # so bin/release and release.yml take them.
+  workflow_dispatch:
 jobs:
   build:
     strategy:
