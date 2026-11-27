@@ -60,7 +60,7 @@ PLANGOTHIC = {
     "P2": "PlangothicP2-Regular.ttf",
 }
 EXT_RANGES = [
-    (0x20000, 0x323AF),  # CJK Unified Ideographs Extension B to J
+    (0x20000, 0x3347F),  # CJK Unified Ideographs Extension B to J
     (0x2F800, 0x2FA1F),  # CJK Compatibility Ideographs Supplement
 ]
 EXT_FAMILYNAME = "SF Mono Square Ext"

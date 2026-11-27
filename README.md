@@ -54,7 +54,7 @@ codepoints to them in your terminal, such as `symbol_map` in kitty:
 
 ```conf
 symbol_map U+20000-U+2A6DF,U+2A700-U+2EE5F,U+2F800-U+2FA1F SF Mono Square Ext P1
-symbol_map U+30000-U+323AF SF Mono Square Ext P2
+symbol_map U+30000-U+3347F SF Mono Square Ext P2
 ```
 
 ### font source
