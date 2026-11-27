@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 from __future__ import annotations
 
+import math
 from os import getenv
 from os.path import splitext
 from shutil import copy
@@ -42,6 +43,16 @@ SPECK_AREA = 300
 # the font's bounding box twice as tall. A glyph whose bounding box grows by
 # more than this (in units of the 1000-unit em) is taken as broken.
 BROKEN_GROWTH = 60
+# _plug_wedges() fills the white wedges sharper than this (in degrees). Of
+# the kanji that had a gap in Light, this takes in all but 1 in a sample of
+# 2,370, and leaves out the corners of counters, which do not open.
+WEDGE_ANGLE = 45
+# How far apart _flatten() takes the points along a curve (in units of the
+# 1000-unit em), and how many of them _plug() follows at most.
+WEDGE_STEP = 2
+WEDGE_STEPS = 400
+# How far into the ink a plug reaches (in units of the 1000-unit em).
+PLUG_INSET = 2
 
 
 def weight(in_file: str, style: str) -> int:
@@ -86,10 +97,204 @@ def _change_weight(in_file: str, delta: int) -> fontforge.font:
     # contours the other way round, and correctDirection() reverses them, which
     # makes changeWeight() thin the glyphs it should thicken.
     _align_direction(font)
+    if delta < 0:
+        # NOTE: The wedges are found where the outlines of strokes cross, so
+        # the strokes are merged first.
+        font.removeOverlap()
+        _plug_wedges(font, -delta)
     font.changeWeight(delta, "CJK", 0, 0, "auto")
     font.removeOverlap()
     _remove_specks(font)
     return font
+
+
+def _plug_wedges(font: fontforge.font, width: float) -> None:
+    """
+    Fills the sharp white wedges of the glyphs up to where they are as wide as
+    width, so that thinning them by width does not open them.
+
+    Where two strokes of Migu 1M meet at a small angle, there is a white wedge
+    between them, too narrow to be seen near its tip. Thinning cuts back both
+    sides of it, and the whole of it shows: a gap up to 12 units wide opened
+    between the strokes in Light (U+5D4B, U+4E7E and thousands of kanji). A
+    wedge filled up to where it is width wide is as wide as 2 * width there
+    after thinning, and as wide as it was in Regular plus width beyond.
+    """
+    for glyph in font.glyphs():
+        plugs = _plugs(glyph.foreground, width)
+        # Most glyphs take all their plugs at once. Those that do not take them
+        # one by one, and leave out the plugs they do not take.
+        if plugs and not _add_plugs(glyph, plugs):
+            for points in plugs:
+                _add_plugs(glyph, [points])
+
+
+def _add_plugs(glyph: fontforge.glyph, plugs: list[list[tuple[float, float]]]) -> bool:
+    """
+    Merges the plugs into the glyph. removeOverlap() now and then breaks the
+    glyph doing it: it turned the counter of U+601C the wrong way round, which
+    changeWeight() then filled. The plugs are left out, and False is returned,
+    when the glyph does not keep its contours or gains more ink than the plugs
+    have.
+    """
+    before = glyph.foreground
+    layer = glyph.foreground
+    for points in plugs:
+        contour = fontforge.contour()
+        contour.is_quadratic = layer.is_quadratic
+        for x, y in points:
+            contour += fontforge.point(x, y)
+        contour.closed = True
+        # The outermost contours of Migu 1M run clockwise.
+        if not contour.isClockwise():
+            contour.reverseDirection()
+        layer += contour
+    glyph.foreground = layer
+    glyph.removeOverlap()
+    after = glyph.foreground
+    gained = _ink(after) - _ink(before)
+    most = sum(abs(_signed_area(points)) for points in plugs)
+    if sorted(c.isClockwise() for c in after) == sorted(c.isClockwise() for c in before) and 0 <= gained <= most:
+        return True
+    glyph.foreground = before
+    return False
+
+
+def _ink(layer: fontforge.layer) -> float:
+    """The area of the ink. The counters run the other way round."""
+    return abs(sum(_signed_area(_flatten(c)[0]) for c in layer))
+
+
+def _plugs(layer: fontforge.layer, width: float) -> list[list[tuple[float, float]]]:
+    """The polygons that fill the sharp white wedges of layer."""
+    polygons = [_flatten(c)[0] for c in layer]
+    plugs = []
+    for contour, polygon in zip(layer, polygons):
+        if len(polygon) < 3:
+            continue
+        points, corners = _flatten(contour)
+        n = len(points)
+        # Whether the ink is on the left of the contour. A contour inside an
+        # odd number of others is a counter.
+        p = points[0]
+        depth = sum(1 for other in polygons if other is not polygon and _in_ink(p, [other]))
+        ink_left = (_signed_area(points) > 0) == (depth % 2 == 0)
+        for k in corners:
+            v, a, b = points[k], points[k - 1], points[(k + 1) % n]
+            turn = _turn(a, v, b)
+            # A tip of a white wedge turns away from the ink, by nearly 180
+            # degrees.
+            if turn is None or (turn > 0) == ink_left or abs(turn) <= 180 - WEDGE_ANGLE:
+                continue
+            plug = _plug(points, k, width)
+            if plug:
+                plugs.append(plug)
+    return plugs
+
+
+def _plug(points: list[tuple[float, float]], k: int, width: float) -> list[tuple[float, float]]:
+    """
+    The polygon that fills the wedge whose tip is points[k], up to where the
+    wedge is width wide. Its sides are moved PLUG_INSET into the ink, so that
+    they do not lie on the outline: removeOverlap() does not cope with that.
+    """
+    n = len(points)
+    v = points[k]
+    sides = []
+    for i in range(1, min(WEDGE_STEPS, n // 2)):
+        pa, pb = points[(k - i) % n], points[(k + i) % n]
+        sides.append((pa, pb))
+        if _distance(pa, pb) >= width:
+            break
+    else:
+        return []
+    ua = _unit((sides[0][0][0] - v[0], sides[0][0][1] - v[1]))
+    ub = _unit((sides[0][1][0] - v[0], sides[0][1][1] - v[1]))
+    bisector = _unit((ua[0] + ub[0], ua[1] + ub[1]))
+    plug = [(v[0] - bisector[0] * PLUG_INSET, v[1] - bisector[1] * PLUG_INSET)]
+    for pa, pb in sides:
+        d = _unit((pa[0] - pb[0], pa[1] - pb[1]))
+        plug.append((pa[0] + d[0] * PLUG_INSET, pa[1] + d[1] * PLUG_INSET))
+    for pa, pb in reversed(sides):
+        d = _unit((pb[0] - pa[0], pb[1] - pa[1]))
+        plug.append((pb[0] + d[0] * PLUG_INSET, pb[1] + d[1] * PLUG_INSET))
+    return plug
+
+
+def _flatten(contour: fontforge.contour) -> tuple[list[tuple[float, float]], list[int]]:
+    """
+    The points along a cubic contour, about WEDGE_STEP apart, and the indices
+    of those on its on-curve points.
+    """
+    src = list(contour)
+    n = len(src)
+    if n < 2:
+        return [], []
+    start = next(i for i, p in enumerate(src) if p.on_curve)
+    src = src[start:] + src[:start]
+    points: list[tuple[float, float]] = []
+    corners = []
+    i = 0
+    while i < n:
+        p0 = src[i]
+        corners.append(len(points))
+        if src[(i + 1) % n].on_curve:
+            p1 = src[(i + 1) % n]
+            steps = max(1, int(_distance((p0.x, p0.y), (p1.x, p1.y)) / WEDGE_STEP))
+            for j in range(steps):
+                t = j / steps
+                points.append((p0.x + (p1.x - p0.x) * t, p0.y + (p1.y - p0.y) * t))
+            i += 1
+            continue
+        p1, p2, p3 = src[(i + 1) % n], src[(i + 2) % n], src[(i + 3) % n]
+        length = sum(_distance((s.x, s.y), (e.x, e.y)) for s, e in ((p0, p1), (p1, p2), (p2, p3)))
+        steps = max(1, int(length / WEDGE_STEP))
+        for j in range(steps):
+            t = j / steps
+            u = 1 - t
+            points.append(
+                (
+                    u * u * u * p0.x + 3 * u * u * t * p1.x + 3 * u * t * t * p2.x + t * t * t * p3.x,
+                    u * u * u * p0.y + 3 * u * u * t * p1.y + 3 * u * t * t * p2.y + t * t * t * p3.y,
+                )
+            )
+        i += 3
+    return points, corners
+
+
+def _turn(a: tuple[float, float], v: tuple[float, float], b: tuple[float, float]) -> float | None:
+    """How far the path a -> v -> b turns at v, in degrees. Left is positive."""
+    x1, y1 = v[0] - a[0], v[1] - a[1]
+    x2, y2 = b[0] - v[0], b[1] - v[1]
+    if (x1 == 0 and y1 == 0) or (x2 == 0 and y2 == 0):
+        return None
+    return math.degrees(math.atan2(x1 * y2 - y1 * x2, x1 * x2 + y1 * y2))
+
+
+def _signed_area(points: list[tuple[float, float]]) -> float:
+    return sum(points[i - 1][0] * points[i][1] - points[i][0] * points[i - 1][1] for i in range(len(points))) / 2
+
+
+def _distance(a: tuple[float, float], b: tuple[float, float]) -> float:
+    return math.hypot(a[0] - b[0], a[1] - b[1])
+
+
+def _unit(v: tuple[float, float]) -> tuple[float, float]:
+    length = math.hypot(*v)
+    return (v[0] / length, v[1] / length) if length else (0.0, 0.0)
+
+
+def _in_ink(point: tuple[float, float], polygons: list[list[tuple[float, float]]]) -> bool:
+    """Whether point is in the ink of polygons, by the even-odd rule."""
+    x, y = point
+    inside = False
+    for polygon in polygons:
+        for i in range(len(polygon)):
+            x1, y1 = polygon[i]
+            x2, y2 = polygon[i - 1]
+            if (y1 > y) != (y2 > y) and x < x1 + (y - y1) * (x2 - x1) / (y2 - y1):
+                inside = not inside
+    return inside
 
 
 def _align_direction(font: fontforge.font) -> None:
