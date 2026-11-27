@@ -2,7 +2,8 @@
 # Disable features because these takes much time.
 export HOMEBREW_NO_INSTALL_CLEANUP=1
 export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
-export HOMEBREW_NO_INSTALL_FROM_API=1
+# NOTE: Do not set HOMEBREW_NO_INSTALL_FROM_API. Without the API, Homebrew
+# clones homebrew/core to read the formulae, which took 4 to 6 minutes.
 sw_vers # show macOS version
 FORMULA=sfmono-square.rb
 TAP=local/sfmono-square

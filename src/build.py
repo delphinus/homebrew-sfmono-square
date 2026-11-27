@@ -45,8 +45,13 @@ OUT_DIR = "build"
 
 
 def build(version: str) -> int:
-    print("---- changing the weight of migu-1m ----")
-    if concurrent_execute(migu1m.weight, MIGU1M_WEIGHTS):
+    # NOTE: The glyphs of Nerd Fonts are fitted to the cell here, as it needs
+    # nothing built before. Changing the weight runs 3 tasks of different
+    # lengths, and this takes a CPU that one of them has left.
+    print("---- changing the weight of migu-1m & fitting nerd-fonts glyphs ----")
+    tasks = [(migu1m.weight, a) for a in MIGU1M_WEIGHTS]
+    tasks.append((font_patcher.prepare, [sfmono_square.ASCENT, sfmono_square.DESCENT]))
+    if concurrent_run(tasks):
         return 1
     print("---- modifying migu-1m ----")
     if concurrent_execute(migu1m.modify, MIGU1M):
@@ -73,10 +78,14 @@ def build(version: str) -> int:
 
 
 def concurrent_execute(func: Callable[..., Any], args: Sequence[Sequence[Any]]) -> int:
+    return concurrent_run([(func, a) for a in args])
+
+
+def concurrent_run(tasks: Sequence[tuple[Callable[..., Any], Sequence[Any]]]) -> int:
     # NOTE: A fresh process for each task. fontforge.open() and mergeFonts()
     # take the font already open in the process for the same path, so a
     # worker that ran another task hands over the fonts it changed: the shades
     # of an italic were left unscaled when the worker had built its upright.
     executor = ProcessPoolExecutor(max_tasks_per_child=1)
-    futures = [executor.submit(func, *a) for a in args]
+    futures = [executor.submit(func, *a) for func, a in tasks]
     return 1 if any(r.result() for r in as_completed(futures)) else 0
