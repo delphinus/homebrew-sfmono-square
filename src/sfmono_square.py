@@ -24,6 +24,7 @@ MAIL = "me@delphinus.dev"
 YEAR = "2018-2025"
 SFMONO = "SF-Mono-Regular.otf"
 MIGU1M = "migu-1m-regular.ttf"
+SOURCE_HAN_SANS = "SourceHanSans-Regular.otf"
 OVER_WRITTENS = [
     0x25B8,  # BLACK RIGHT-POINTING SMALL TRIANGLE
 ]
@@ -68,8 +69,8 @@ STYLE_PROPERTY = {
 RIBBI = {"Regular", "Bold", "RegularItalic", "BoldItalic"}
 
 
-def generate(hankaku: str, zenkaku: str, version: str) -> int:
-    opts = read_opts(hankaku, zenkaku, version)
+def generate(hankaku: str, zenkaku: str, fill: str, version: str) -> int:
+    opts = read_opts(hankaku, zenkaku, fill, version)
     font = new_font(opts)
     _merge(font, opts)
     _copy_again(font, hankaku)
@@ -85,7 +86,7 @@ def generate(hankaku: str, zenkaku: str, version: str) -> int:
     return 0
 
 
-def read_opts(hankaku: str, zenkaku: str, version: str) -> dict[str, str]:
+def read_opts(hankaku: str, zenkaku: str, fill: str, version: str) -> dict[str, str]:
     (name, _) = splitext(hankaku)
     filename_style = name.split("-")[-1]
     style = filename_style.replace(ITALIC, " " + ITALIC)
@@ -101,6 +102,7 @@ def read_opts(hankaku: str, zenkaku: str, version: str) -> dict[str, str]:
     return {
         "hankaku": hankaku,
         "zenkaku": zenkaku,
+        "fill": fill,
         "version": version,
         "filename_style": filename_style,
         "fontname": fontname,
@@ -121,6 +123,9 @@ def new_font(opts: dict[str, str]) -> fontforge.font:
     migu1m = fontforge.open(MIGU1M)
     sfmono_info = {key: value for (_, key, value) in sfmono.sfnt_names}
     migu1m_info = {key: value for (_, key, value) in migu1m.sfnt_names}
+    # NOTE: Source Han Sans has its copyright in the CFF table only, not in
+    # the name table.
+    source_han_sans = fontforge.open(SOURCE_HAN_SANS)
 
     font = fontforge.font()
     font.ascent = ASCENT
@@ -132,7 +137,8 @@ def new_font(opts: dict[str, str]) -> fontforge.font:
 {sfmono_info['Copyright']}
 {sfmono_info['UniqueID']}
 {migu1m_info['Copyright']}
-{migu1m_info['UniqueID']}"""  # noqa
+{migu1m_info['UniqueID']}
+{source_han_sans.copyright}"""  # noqa
     font.encoding = ENCODING
     font.version = opts["version"]
     font.fontname = opts["fontname"]
@@ -205,6 +211,9 @@ def new_font(opts: dict[str, str]) -> fontforge.font:
 def _merge(font: fontforge.font, opts: dict[str, str]) -> None:
     font.mergeFonts(opts["hankaku"])
     font.mergeFonts(opts["zenkaku"])
+    # NOTE: This has only the kanji the zenkaku font lacks, as mergeFonts()
+    # does not tell what it does with a codepoint both fonts have.
+    font.mergeFonts(opts["fill"])
     # NOTE: mergeFonts() carries the ss03/ss04 lookups over but drops their
     # names, so copy them from the SF Mono side.
     font.style_set_names = fontforge.open(opts["hankaku"]).style_set_names

@@ -6,6 +6,7 @@ from collections.abc import Callable, Sequence
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Any
 
+import cjkfill
 import font_patcher
 import fonttools
 import migu1m
@@ -39,18 +40,28 @@ def _migu1m_for(style: str) -> str:
     return f"modified-migu-1m-{'' if m == 'regular' else m + '-'}oblique.ttf"
 
 
-SFMONO_MIGU1M = [[f"SFMono-1x2-{s}.otf", _migu1m_for(s)] for s in STYLES]
+def _cjkfill_for(style: str) -> str:
+    if not style.endswith("Italic"):
+        return f"cjkfill-{WEIGHTS[style]}.ttf"
+    return f"cjkfill-{WEIGHTS[style.removesuffix('Italic')]}-oblique.ttf"
+
+
+SFMONO_MIGU1M = [[f"SFMono-1x2-{s}.otf", _migu1m_for(s), _cjkfill_for(s)] for s in STYLES]
+EXT_PARTS = list(cjkfill.PLANGOTHIC)
 SFMONO_SQUARE = [[f"SFMonoSquare-{s}.otf", s] for s in STYLES]
 OUT_DIR = "build"
 
 
 def build(version: str) -> int:
-    # NOTE: The glyphs of Nerd Fonts are fitted to the cell here, as it needs
-    # nothing built before. Changing the weight runs 3 tasks of different
-    # lengths, and this takes a CPU that one of them has left.
-    print("---- changing the weight of migu-1m & fitting nerd-fonts glyphs ----")
+    # NOTE: The glyphs of Nerd Fonts are fitted to the cell, and the kanji
+    # Migu 1M lacks are taken out of Source Han Sans and Plangothic here, as
+    # they need nothing built before. Changing the weight runs 3 tasks of
+    # different lengths, and these take the CPUs they have left.
+    print("---- changing the weight of migu-1m & fitting nerd-fonts glyphs & filling kanji ----")
     tasks = [(migu1m.weight, a) for a in MIGU1M_WEIGHTS]
     tasks.append((font_patcher.prepare, [sfmono_square.ASCENT, sfmono_square.DESCENT]))
+    tasks += [(cjkfill.fill, [s]) for s in MIGU1M_STYLES]
+    tasks += [(cjkfill.ext, [p, version]) for p in EXT_PARTS]
     if concurrent_run(tasks):
         return 1
     print("---- modifying migu-1m ----")
