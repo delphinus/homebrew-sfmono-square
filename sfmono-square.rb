@@ -43,6 +43,35 @@ class SfmonoSquare < Formula
     sha256 "e4806d297e59a7f9c235b0079b2819f44b8620d4365a8955cb612c9ff5809321"
   end
 
+  # The kanji Migu 1M lacks in the BMP are taken from Source Han Sans. See
+  # src/cjkfill.py for the weights each of them fills.
+  SOURCE_HAN_SANS_OTFS = {
+    "SourceHanSans-Normal.otf"  => "2e2875e2028430aaeb4c467a4b2a86ffde774243996556ba0769615caaa4e503",
+    "SourceHanSans-Regular.otf" => "6fe3b72967986ccdef600128752d1ade57c13c68129a548cdebe4c7d3c0f8543",
+    "SourceHanSans-Medium.otf"  => "377372ded6fd6958c971cc69e8ac5ae2f97140a014f14f3dfc2f281cfb3d2a1b",
+    "SourceHanSans-Bold.otf"    => "371a9376a7c4293cfc7dcd9b09ea29084ceb71abea494350b6d3d8825bb71700",
+  }.freeze
+
+  SOURCE_HAN_SANS_OTFS.each do |otf, sha256|
+    resource otf do
+      url "https://github.com/adobe-fonts/source-han-sans/raw/2.005R/OTF/Japanese/#{otf}"
+      sha256 sha256
+    end
+  end
+
+  # The extensions B and later are made into fonts of their own from Plangothic.
+  PLANGOTHIC_TTFS = {
+    "PlangothicP1-Regular.ttf" => "550b5d0775b15405946b18f4843df439a51e69508d7e6778d94c1f7a53dc5ad6",
+    "PlangothicP2-Regular.ttf" => "681933370adfe0fc7253f77735275a82fea09fe4f8adba907bdeb46c110daf8f",
+  }.freeze
+
+  PLANGOTHIC_TTFS.each do |ttf, sha256|
+    resource ttf do
+      url "https://github.com/Fitzgerald-Porthmouth-Koenigsegg/Plangothic_Project/releases/download/V2.9.5795/#{ttf}"
+      sha256 sha256
+    end
+  end
+
   # NOTE: The dmg is staged as it is. Homebrew opens a dmg by mounting it,
   # which the build sandbox no longer lets through. See _stage.
   resource "sfmono" do
@@ -55,8 +84,11 @@ class SfmonoSquare < Formula
     _compile
 
     (share / "fonts").install Dir["build/*.otf"]
-    (share / "fonts/src").install Dir["*.otf"]
-    (share / "fonts/src").install Dir["*.ttf"]
+    (share / "fonts").install Dir["SFMonoSquareExt-*.ttf"]
+    # The fonts taken as they are from the others are not installed again.
+    sources = SOURCE_HAN_SANS_OTFS.keys + PLANGOTHIC_TTFS.keys
+    (share / "fonts/src").install Dir["*.otf"] - sources
+    (share / "fonts/src").install Dir["*.ttf"] - sources
 
     dir = "script/convert_codepoints"
     system "#{formula_opt_bin("pod2man")}/pod2man", "#{dir}/convert_codepoints", "#{dir}/convert_codepoints.1"
@@ -66,6 +98,9 @@ class SfmonoSquare < Formula
 
   def _stage
     resource("migu1mfonts").stage { buildpath.install Dir["*"] }
+    (SOURCE_HAN_SANS_OTFS.keys + PLANGOTHIC_TTFS.keys).each do |file|
+      resource(file).stage { buildpath.install file }
+    end
 
     resource("sfmono").stage do
       # NOTE: The dmg cannot be mounted. Homebrew denies mach-lookup in the

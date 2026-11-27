@@ -38,10 +38,31 @@ as a family of its own, such as "SF Mono Square Light".
 
 ![SFMono Square in Light, Regular, Medium, Semibold, Bold and Heavy, upright and italic](.github/images/v3.6.0-weights.png)
 
+### Kanji beyond JIS X 0213
+
+Migu 1M has the kanji of JIS X 0213 only, about 9,600 of the 21,000 CJK Unified Ideographs.  The
+others in the BMP — the rest of CJK Unified Ideographs, Extension A, CJK Compatibility Ideographs,
+the radicals and the strokes — are taken from Source Han Sans, scaled to the size of Migu 1M and
+merged into SF Mono Square.  Each weight is filled with the weight of Source Han Sans of the
+closest ink density: Normal for Light, Regular for Regular, Medium for Medium and Semibold, and
+Bold for Bold and Heavy.
+
+Extension B and later (more than 70,000 ideographs) do not fit in a font with the rest, as a font
+holds 65,535 glyphs at most.  They are made from Plangothic into 2 fonts of their own, "SF Mono
+Square Ext P1" and "SF Mono Square Ext P2", with the same metrics as SF Mono Square.  Map the
+codepoints to them in your terminal, such as `symbol_map` in kitty:
+
+```conf
+symbol_map U+20000-U+2A6DF,U+2A700-U+2EE5F,U+2F800-U+2FA1F SF Mono Square Ext P1
+symbol_map U+30000-U+3347F SF Mono Square Ext P2
+```
+
 ### font source
 
 * SF Mono: Apple
 * Migu 1M: [Miguフォント : M+とIPAの合成フォント](https://itouhiro.github.io/mixfont-mplus-ipa/migu/)
+* Source Han Sans: [adobe-fonts/source-han-sans](https://github.com/adobe-fonts/source-han-sans) (SIL Open Font License 1.1)
+* Plangothic: [Fitzgerald-Porthmouth-Koenigsegg/Plangothic_Project](https://github.com/Fitzgerald-Porthmouth-Koenigsegg/Plangothic_Project) (SIL Open Font License 1.1)
 * Nerd Fonts: [ryanoasis/nerd-fonts: Iconic font aggregator, collection, and patcher. 40+ patched fonts, over 3,600 glyph/icons, includes popular collections such as Font Awesome & fonts such as Hack](https://github.com/ryanoasis/nerd-fonts)
 
 And, idea and some code is from [プログラミング用フォント Ricty](http://www.rs.tus.ac.jp/yyusa/ricty.html).
