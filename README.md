@@ -88,6 +88,8 @@ See screenshots for examples [here][].
 
 Nothing is released unless the fonts are built from the very commit the tag points at. The workflow waits for the build check of the commit to start and to finish, and stops when it is not successful or when it never appears. This is checked on the workflow, so tagging without `bin/release` cannot skip it.
 
+When the push to `master` did not start the build check (for example, `[skip ci]` was in the message of the merged commit), start it by hand with `gh workflow run build.yml --ref master`, and run `bin/release` after it succeeds.
+
 [the release workflow]: .github/workflows/release.yml
 
 ## Screen Shots
