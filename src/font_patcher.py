@@ -19,6 +19,7 @@ needs its codepoints, and its scale groups for the proportional sources.
 from __future__ import annotations
 
 import errno
+import json
 import os
 from collections.abc import Sequence
 from typing import NamedTuple, NotRequired, TypedDict
@@ -44,6 +45,11 @@ MIN_FAMILY_WIDTH = 1.06
 # The sources that are drawn on a square design grid.  Checked by measuring
 # each font: these are the ones whose glyphs all share an advance width and
 # never draw outside it.
+NERD_FILE = "nerd-fonts-glyphs.sfd"
+# Some glyph names have spaces in them ("POWER SYMBOL"), and the SFD file cuts
+# them at the first one. So the names go to a file of their own.
+NERD_NAMES = "nerd-fonts-glyphs.json"
+
 GRID_SOURCES = frozenset(
     {
         "original-source.otf",
@@ -817,9 +823,49 @@ def _scale_groups(
     return groups
 
 
+def prepare(ascent: int, descent: int) -> int:
+    """Fit the glyphs into a cell once, for patch() to copy into every style.
+
+    Where a glyph goes depends only on the em, the ascent and the descent, and
+    the styles share them, so fitting the glyphs for each style made the same
+    glyphs 12 times over.  That took more than half of the time of patching.
+    """
+    font = fontforge.font()
+    font.encoding = "UnicodeFull"
+    font.ascent = ascent
+    font.descent = descent
+    _patch(font)
+    print(f"Generate {NERD_FILE}")
+    font.save(NERD_FILE)
+    with open(NERD_NAMES, "w") as f:
+        json.dump({g.encoding: g.glyphname for g in font.glyphs()}, f)
+    return 0
+
+
 def patch(in_file: str, out_dir: str) -> int:
     font = fontforge.open(in_file)
-    _patch(font)
+    nerd = fontforge.open(NERD_FILE)
+    metrics = (font.em, font.ascent, font.descent)
+    if metrics != (nerd.em, nerd.ascent, nerd.descent):
+        print(f"{in_file}: {metrics} do not match those of {NERD_FILE}")
+        return 1
+    with open(NERD_NAMES) as f:
+        names = {int(k): v for k, v in json.load(f).items()}
+    codes = [g.encoding for g in nerd.glyphs("encoding")]
+    if sorted(codes) != sorted(names):
+        print(f"{NERD_FILE} and {NERD_NAMES} do not have the same glyphs")
+        return 1
+    nerd.selection.none()
+    font.selection.none()
+    for code in codes:
+        nerd.selection.select(("more", "unicode"), code)
+        font.selection.select(("more", "unicode"), code)
+    # Both are pasted in the order of the encoding.
+    nerd.copy()
+    font.paste()
+    for code in codes:
+        font[code].glyphname = names[code]
+    nerd.close()
     try:
         os.makedirs(out_dir)
     except OSError as exception:
