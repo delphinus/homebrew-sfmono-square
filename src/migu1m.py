@@ -1,13 +1,18 @@
 # -*- coding:utf-8 -*-
 from __future__ import annotations
 
-from os import getenv
+import json
+from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures.process import BrokenProcessPool
+from os import cpu_count, getenv
 from os.path import splitext
 from shutil import copy
 from tempfile import TemporaryDirectory
 
 import fontforge
 import psMat
+
+import joints
 
 
 ASCENT = 1638
@@ -42,6 +47,7 @@ SPECK_AREA = 300
 # the font's bounding box twice as tall. A glyph whose bounding box grows by
 # more than this (in units of the 1000-unit em) is taken as broken.
 BROKEN_GROWTH = 60
+JOINT_PROCESSES = cpu_count() or 1
 
 
 def weight(in_file: str, style: str) -> int:
@@ -71,10 +77,136 @@ def weight(in_file: str, style: str) -> int:
     if broken:
         print(f"{style}: broken glyphs are left: {broken}")
         return 1
+    if delta < 0:
+        _mend_joints(in_file, font, -delta, style)
     out_file = f"migu-1m-{style}.ttf"
     print(f"Generate {out_file}")
     font.generate(out_file, flags=("opentype",))
     return 0
+
+
+def _mend_joints(in_file: str, font: fontforge.font, delta: int, style: str) -> None:
+    """
+    Tapers the slits that thinning by delta opened between strokes. See joints.
+    It takes about 0.1 second a glyph, so the glyphs are split among processes.
+    """
+    with TemporaryDirectory() as tmp:
+        regular = fontforge.open(copy(in_file, tmp))
+        regular.is_quadratic = False
+        regular.selection.all()
+        regular.unlinkReferences()
+        _align_direction(regular)
+        # NOTE: The wedges are found on the outline of the ink, so the strokes
+        # of Regular are merged.
+        regular.removeOverlap()
+        regular_sfd = f"{tmp}/regular.sfd"
+        regular.save(regular_sfd)
+        regular.close()
+        thinned_sfd = f"{tmp}/thinned.sfd"
+        font.save(thinned_sfd)
+        names = [g.glyphname for g in font.glyphs() if len(g.foreground)]
+        mended, merged, crashed = _mend_all(regular_sfd, thinned_sfd, names, delta, tmp)
+    for name, contours in mended.items():
+        font[name].foreground = _layer(contours, font[name].foreground.is_quadratic)
+    if crashed:
+        print(f"{style}: FontForge crashed mending, so left as thinned: {crashed}")
+    print(f"{style}: tapered {merged} slits of {len(mended)} glyphs")
+
+
+def _mend_all(regular_sfd: str, thinned_sfd: str, names: list[str], delta: int, tmp: str) -> tuple[dict[str, list], int, list[str]]:
+    """
+    Mends the glyphs in processes. removeOverlap() now and then crashes
+    FontForge on a glyph (it did on 2 glyphs of Light), which breaks the whole
+    pool. So each process logs the glyphs it starts and those it finishes with
+    their contours. After a crash, the glyphs finished are kept, those that
+    were started are tried again one by one, and the rest go on in new
+    processes. A glyph that crashes on its own is left as it is.
+    """
+    mended: dict[str, list] = {}
+    merged = 0
+    crashed: list[str] = []
+    remaining = names
+    round_ = 0
+    while remaining:
+        round_ += 1
+        chunks = [c for c in (remaining[i::JOINT_PROCESSES] for i in range(JOINT_PROCESSES)) if c]
+        logs = [f"{tmp}/mend-{round_}-{i}.log" for i in range(len(chunks))]
+        executor = ProcessPoolExecutor(max_tasks_per_child=1)
+        futures = [executor.submit(_mend_chunk, regular_sfd, thinned_sfd, c, delta, log) for c, log in zip(chunks, logs)]
+        for f in futures:
+            try:
+                f.result()
+            except BrokenProcessPool:
+                pass
+        executor.shutdown()
+        started: set[str] = set()
+        finished: set[str] = set()
+        for log in logs:
+            for name, contours, count in _read_log(log, started):
+                finished.add(name)
+                merged += count
+                if contours:
+                    mended[name] = contours
+        suspects = sorted(started - finished)
+        for name in suspects:
+            log = f"{tmp}/mend-{name}.log"
+            with ProcessPoolExecutor(max_workers=1) as single:
+                try:
+                    single.submit(_mend_chunk, regular_sfd, thinned_sfd, [name], delta, log).result()
+                except BrokenProcessPool:
+                    crashed.append(name)
+                    continue
+            for _, contours, count in _read_log(log, set()):
+                merged += count
+                if contours:
+                    mended[name] = contours
+        done = finished | set(suspects)
+        remaining = [n for n in remaining if n not in done]
+    return mended, merged, crashed
+
+
+def _mend_chunk(regular_sfd: str, thinned_sfd: str, names: list[str], delta: int, log: str) -> None:
+    regular = fontforge.open(regular_sfd)
+    thinned = fontforge.open(thinned_sfd)
+    with open(log, "w") as f:
+        for name in names:
+            print(json.dumps({"start": name}), file=f, flush=True)
+            count = joints.mend(regular[name], thinned[name], delta) if name in regular else 0
+            contours = [[(p.x, p.y, p.on_curve) for p in c] for c in thinned[name].foreground] if count else None
+            print(json.dumps({"done": name, "contours": contours, "count": count}), file=f, flush=True)
+
+
+def _read_log(log: str, started: set[str]) -> list[tuple[str, list | None, int]]:
+    """The glyphs finished in log. Those started are added to started."""
+    out = []
+    try:
+        with open(log) as f:
+            lines = f.read().splitlines()
+    except FileNotFoundError:
+        return out
+    for line in lines:
+        try:
+            entry = json.loads(line)
+        except ValueError:
+            continue  # the last line of a process that crashed writing it
+        if "start" in entry:
+            started.add(entry["start"])
+        else:
+            out.append((entry["done"], entry["contours"], entry["count"]))
+    return out
+
+
+def _layer(contours: list, is_quadratic: bool) -> fontforge.layer:
+    layer = fontforge.layer()
+    layer.is_quadratic = is_quadratic
+    for points in contours:
+        contour = fontforge.contour()
+        contour.is_quadratic = is_quadratic
+        for x, y, on_curve in points:
+            contour += fontforge.point(x, y, on_curve)
+        contour.closed = True
+        layer += contour
+    return layer
 
 
 def _change_weight(in_file: str, delta: int) -> fontforge.font:
