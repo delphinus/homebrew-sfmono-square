@@ -77,6 +77,10 @@ def generate(hankaku: str, zenkaku: str, fill: str, version: str) -> int:
     _zenkaku_glyphs(font)
     _hankaku_glyphs(font)
     font.selection.all()
+    # NOTE: The kanji merged from the fill font are not hinted. autoHint() on
+    # their 18,000 glyphs took 4 minutes of a build of 12 fonts on GitHub
+    # Actions, and macOS does not use the hints of a font.
+    _deselect_fill(font, opts["fill"])
     # TODO: remove this to avoid sementation fault
     # font.removeOverlap()
     font.autoHint()
@@ -84,6 +88,13 @@ def generate(hankaku: str, zenkaku: str, fill: str, version: str) -> int:
     print(f"Generate {opts['out_file']}")
     font.generate(opts["out_file"], flags=("opentype",))
     return 0
+
+
+def _deselect_fill(font: fontforge.font, fill: str) -> None:
+    fill_font = fontforge.open(fill)
+    codepoints = [g.unicode for g in fill_font.glyphs() if g.unicode >= 0]
+    fill_font.close()
+    font.selection.select(("less", "unicode"), *codepoints)
 
 
 def read_opts(hankaku: str, zenkaku: str, fill: str, version: str) -> dict[str, str]:
