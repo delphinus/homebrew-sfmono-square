@@ -4,10 +4,7 @@
 
 ## What's this?
 
-**SF Mono** is a font from Apple, that is clear, easy to read, and suitable for programming.  **SF Mono Square** is based on **SF Mono**, and added glyphs for Japanese & patched for [Nerd Fonts][].  Since v3, SF Mono Square has the same codepoints as Nerd Fonts v3; some icons were at other codepoints before.
-
-SF Mono Square is for macOS only.  The license of SF Mono does not allow it on any other operating
-system, and the formula builds the fonts on your Mac from the SF Mono it downloads from Apple.
+**SF Mono** is a font from Apple, that is clear, easy to read, and suitable for programming.  **SF Mono Square** is based on **SF Mono**, and added glyphs for Japanese & patched for [Nerd Fonts][].  Since v3, SF Mono Square has the same codepoints as Nerd Fonts v3; some icons were at other codepoints before.  SF Mono Square is for macOS only.
 
 [Nerd Fonts]: https://github.com/ryanoasis/nerd-fonts
 
