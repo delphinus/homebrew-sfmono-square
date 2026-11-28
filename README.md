@@ -1,23 +1,17 @@
-# SFMono Square - patched font: SFMono + Migu 1M + Nerd Fonts
+# SF Mono Square - patched font: SF Mono + Migu 1M + Nerd Fonts
 
-<img width="598" alt="スクリーンショット 0001-05-23 21 40 50" src="https://user-images.githubusercontent.com/1239245/58253912-802c3480-7da4-11e9-9936-1f68326b9c38.png">
+![SF Mono Square: a terminal with Japanese, Latin letters and Nerd Fonts icons on a grid of cells, in which a Japanese letter takes two cells](.github/images/readme-hero.png)
 
 ## What's this?
 
-**SF Mono** is a font from Apple, that is clear, easy to read, and suitable for programming.  **SFMono Square** is based on **SF Mono**, and added glyphs for Japanese & patched for [Nerd Fonts][].
+**SF Mono** is a font from Apple, that is clear, easy to read, and suitable for programming.  **SF Mono Square** is based on **SF Mono**, and added glyphs for Japanese & patched for [Nerd Fonts][].
 
-_Now, SF Mono Square v3 has completely the same codepoints as Nerd Fonts v3's ones._
+SF Mono Square has the same codepoints as Nerd Fonts v3.
+
+SF Mono Square is for macOS only.  The license of SF Mono does not allow it on any other operating
+system, and the formula builds the fonts on your Mac from the SF Mono it downloads from Apple.
 
 [Nerd Fonts]: https://github.com/ryanoasis/nerd-fonts
-
-### Nerd Fonts glyphs are scaled by measurement
-
-Since v3.5.0, a Nerd Fonts glyph is placed by mapping the design grid it was drawn on onto the
-cell, instead of the four constants per source that used to be tuned by eye.  Sizes and vertical
-centres line up across the icon sets, and the font carries 2 advance widths where it used to carry
-315.
-
-![The same icons from eight Nerd Fonts sets, drawn over the cell grid in v3.4.0 and in v3.5.0](.github/images/v3.5.0-scaling.png)
 
 Thoughts and detail description here:
 
@@ -32,11 +26,11 @@ Heavy — each with its italic.  Migu 1M has only Regular and Bold, so the Japan
 other weights are made from them: Light, Medium and Semibold by thinning or thickening the strokes
 of Regular, and Heavy uses those of Bold as they are.
 
-Regular, Bold and their italics make the family "SF Mono Square" just as before.  The other weights
-join it in the typographic family (name IDs 16 & 17); apps that do not read them list such a weight
-as a family of its own, such as "SF Mono Square Light".
+Regular, Bold and their italics make the family "SF Mono Square".  The other weights join it in the
+typographic family (name IDs 16 & 17); apps that do not read them list such a weight as a family of
+its own, such as "SF Mono Square Light".
 
-![SFMono Square in Light, Regular, Medium, Semibold, Bold and Heavy, upright and italic](.github/images/v3.6.0-weights.png)
+![SF Mono Square in Light, Regular, Medium, Semibold, Bold and Heavy, upright and italic](.github/images/readme-weights.png)
 
 ### Kanji beyond JIS X 0213
 
@@ -46,6 +40,8 @@ the radicals and the strokes — are taken from Source Han Sans, scaled to the s
 merged into SF Mono Square.  Each weight is filled with the weight of Source Han Sans of the
 closest ink density: Normal for Light, Regular for Regular, Medium for Medium and Semibold, and
 Bold for Bold and Heavy.
+
+![Glyphs of SF Mono Square coloured by the font each comes from: SF Mono, Migu 1M, Source Han Sans and Plangothic, on a grid of cells](.github/images/readme-kanji.png)
 
 Extension B and later (more than 70,000 ideographs) do not fit in a font with the rest, as a font
 holds 65,535 glyphs at most.  They are made from Plangothic into 2 fonts of their own, "SF Mono
@@ -99,6 +95,17 @@ See screenshots for examples [here][].
 
 [here]: https://github.com/delphinus/homebrew-sfmono-square/issues/9#issuecomment-515827269
 
+## Known issues
+
+### Powerline separators out of the row by a pixel
+
+A terminal that draws the Powerline separators (U+E0B0 and the others) from the font can show a
+pixel of them above or below their row, as it rounds the baseline to a pixel.  This cannot be fixed
+in the font.  Let the terminal draw them by itself: kitty and Ghostty always do, WezTerm does by
+default (`custom_block_glyphs = true`), and iTerm2 does with "Use built-in Powerline glyphs" in
+Settings → Profiles → Text.  Terminal.app has no such option.  See
+[the details](docs/powerline-separators.md).
+
 ## Release
 
 1. Write the release notes in `.github/release-notes/vX.Y.Z.md`. The first line is the title of the release, and the rest is its body.
@@ -113,14 +120,28 @@ When the push to `master` did not start the build check (for example, `[skip ci]
 
 [the release workflow]: .github/workflows/release.yml
 
-## Screen Shots
+## Gallery
 
-<img width="746" alt="スクリーンショット 0003-04-21 9 20 16" src="https://user-images.githubusercontent.com/1239245/115479188-d8b32780-a282-11eb-9571-4fdc811ddd7c.png">
+Neovim, with the file explorer of [snacks.nvim](https://github.com/folke/snacks.nvim) and [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim):
 
-<img width="746" alt="スクリーンショット 0003-04-21 9 50 04" src="https://user-images.githubusercontent.com/1239245/115481194-0601d480-a287-11eb-8b03-c45f76d2371a.png">
+![Neovim editing a Lua file with Japanese comments, with a file tree and a status line with icons](.github/images/gallery-nvim.png)
 
-<img width="746" alt="スクリーンショット 0001-05-23 21 47 37" src="https://user-images.githubusercontent.com/1239245/58253927-8e7a5080-7da4-11e9-9d6b-0520cea1438c.png">
+[eza](https://github.com/eza-community/eza) with `--icons`:
 
-<img width="746" alt="スクリーンショット 0001-05-23 21 42 22" src="https://user-images.githubusercontent.com/1239245/58253934-92a66e00-7da4-11e9-983d-1f90f9d8a846.png">
+![eza listing a tree of files with icons, some of them named in Japanese](.github/images/gallery-eza.png)
 
-<img width="746" alt="スクリーンショット 0001-05-23 21 43 33" src="https://user-images.githubusercontent.com/1239245/58253939-95a15e80-7da4-11e9-92d9-5e9693cfbccb.png">
+A table of SQLite with `-box`:
+
+![sqlite3 drawing a table with Japanese headers and values in box-drawing characters](.github/images/gallery-sqlite.png)
+
+[tig](https://github.com/jonas/tig):
+
+![tig showing a history of commits with Japanese messages and a graph of branches](.github/images/gallery-tig.png)
+
+The Japanese help of Vim from [vimdoc-ja](https://github.com/vim-jp/vimdoc-ja):
+
+![The Japanese help of eval() in Neovim](.github/images/gallery-help.png)
+
+[btop](https://github.com/aristocratos/btop):
+
+![btop drawing graphs of CPU and memory with braille patterns](.github/images/gallery-btop.png)
