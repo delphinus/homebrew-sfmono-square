@@ -6,7 +6,10 @@
 
 **SF Mono** is a font from Apple, that is clear, easy to read, and suitable for programming.  **SF Mono Square** is based on **SF Mono**, and added glyphs for Japanese & patched for [Nerd Fonts][].
 
-_Now, SF Mono Square v3 has completely the same codepoints as Nerd Fonts v3's ones._
+SF Mono Square has the same codepoints as Nerd Fonts v3.
+
+SF Mono Square is for macOS only.  The license of SF Mono does not allow it on any other operating
+system, and the formula builds the fonts on your Mac from the SF Mono it downloads from Apple.
 
 [Nerd Fonts]: https://github.com/ryanoasis/nerd-fonts
 
@@ -23,9 +26,9 @@ Heavy — each with its italic.  Migu 1M has only Regular and Bold, so the Japan
 other weights are made from them: Light, Medium and Semibold by thinning or thickening the strokes
 of Regular, and Heavy uses those of Bold as they are.
 
-Regular, Bold and their italics make the family "SF Mono Square" just as before.  The other weights
-join it in the typographic family (name IDs 16 & 17); apps that do not read them list such a weight
-as a family of its own, such as "SF Mono Square Light".
+Regular, Bold and their italics make the family "SF Mono Square".  The other weights join it in the
+typographic family (name IDs 16 & 17); apps that do not read them list such a weight as a family of
+its own, such as "SF Mono Square Light".
 
 ![SF Mono Square in Light, Regular, Medium, Semibold, Bold and Heavy, upright and italic](.github/images/readme-weights.png)
 
