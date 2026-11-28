@@ -1,15 +1,13 @@
 # SF Mono Square - patched font: SF Mono + Migu 1M + Nerd Fonts
 
-![SF Mono Square: a terminal with Japanese, Latin letters and Nerd Fonts icons on a grid of cells, in which a Japanese letter takes two cells](.github/images/readme-hero.png)
+<picture>
+  <source media="(max-width: 600px)" srcset=".github/images/readme-hero-narrow.png">
+  <img alt="SF Mono Square: a terminal with Japanese, Latin letters and Nerd Fonts icons on a grid of cells, in which a Japanese letter takes two cells" src=".github/images/readme-hero.png">
+</picture>
 
 ## What's this?
 
-**SF Mono** is a font from Apple, that is clear, easy to read, and suitable for programming.  **SF Mono Square** is based on **SF Mono**, and added glyphs for Japanese & patched for [Nerd Fonts][].
-
-SF Mono Square has the same codepoints as Nerd Fonts v3.
-
-SF Mono Square is for macOS only.  The license of SF Mono does not allow it on any other operating
-system, and the formula builds the fonts on your Mac from the SF Mono it downloads from Apple.
+**SF Mono** is a font from Apple, that is clear, easy to read, and suitable for programming.  **SF Mono Square** is based on **SF Mono**, and added glyphs for Japanese & patched for [Nerd Fonts][].  SF Mono Square is for macOS only.
 
 [Nerd Fonts]: https://github.com/ryanoasis/nerd-fonts
 
@@ -30,7 +28,10 @@ Regular, Bold and their italics make the family "SF Mono Square".  The other wei
 typographic family (name IDs 16 & 17); apps that do not read them list such a weight as a family of
 its own, such as "SF Mono Square Light".
 
-![SF Mono Square in Light, Regular, Medium, Semibold, Bold and Heavy, upright and italic](.github/images/readme-weights.png)
+<picture>
+  <source media="(max-width: 600px)" srcset=".github/images/readme-weights-narrow.png">
+  <img alt="SF Mono Square in Light, Regular, Medium, Semibold, Bold and Heavy, upright and italic" src=".github/images/readme-weights.png">
+</picture>
 
 ### Kanji beyond JIS X 0213
 
@@ -41,7 +42,10 @@ merged into SF Mono Square.  Each weight is filled with the weight of Source Han
 closest ink density: Normal for Light, Regular for Regular, Medium for Medium and Semibold, and
 Bold for Bold and Heavy.
 
-![Glyphs of SF Mono Square coloured by the font each comes from: SF Mono, Migu 1M, Source Han Sans and Plangothic, on a grid of cells](.github/images/readme-kanji.png)
+<picture>
+  <source media="(max-width: 600px)" srcset=".github/images/readme-kanji-narrow.png">
+  <img alt="Glyphs of SF Mono Square coloured by the font each comes from: SF Mono, Migu 1M, Source Han Sans and Plangothic, on a grid of cells" src=".github/images/readme-kanji.png">
+</picture>
 
 Extension B and later (more than 70,000 ideographs) do not fit in a font with the rest, as a font
 holds 65,535 glyphs at most.  They are made from Plangothic into 2 fonts of their own, "SF Mono
@@ -124,24 +128,42 @@ When the push to `master` did not start the build check (for example, `[skip ci]
 
 Neovim, with the file explorer of [snacks.nvim](https://github.com/folke/snacks.nvim) and [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim):
 
-![Neovim editing a Lua file with Japanese comments, with a file tree and a status line with icons](.github/images/gallery-nvim.png)
+<picture>
+  <source media="(max-width: 600px)" srcset=".github/images/gallery-nvim-narrow.png">
+  <img alt="Neovim editing a Lua file with Japanese comments, with a file tree and a status line with icons" src=".github/images/gallery-nvim.png">
+</picture>
 
 [eza](https://github.com/eza-community/eza) with `--icons`:
 
-![eza listing a tree of files with icons, some of them named in Japanese](.github/images/gallery-eza.png)
+<picture>
+  <source media="(max-width: 600px)" srcset=".github/images/gallery-eza-narrow.png">
+  <img alt="eza listing a tree of files with icons, some of them named in Japanese" src=".github/images/gallery-eza.png">
+</picture>
 
 A table of SQLite with `-box`:
 
-![sqlite3 drawing a table with Japanese headers and values in box-drawing characters](.github/images/gallery-sqlite.png)
+<picture>
+  <source media="(max-width: 600px)" srcset=".github/images/gallery-sqlite-narrow.png">
+  <img alt="sqlite3 drawing a table with Japanese headers and values in box-drawing characters" src=".github/images/gallery-sqlite.png">
+</picture>
 
 [tig](https://github.com/jonas/tig):
 
-![tig showing a history of commits with Japanese messages and a graph of branches](.github/images/gallery-tig.png)
+<picture>
+  <source media="(max-width: 600px)" srcset=".github/images/gallery-tig-narrow.png">
+  <img alt="tig showing a history of commits with Japanese messages and a graph of branches" src=".github/images/gallery-tig.png">
+</picture>
 
 The Japanese help of Vim from [vimdoc-ja](https://github.com/vim-jp/vimdoc-ja):
 
-![The Japanese help of eval() in Neovim](.github/images/gallery-help.png)
+<picture>
+  <source media="(max-width: 600px)" srcset=".github/images/gallery-help-narrow.png">
+  <img alt="The Japanese help of eval() in Neovim" src=".github/images/gallery-help.png">
+</picture>
 
 [btop](https://github.com/aristocratos/btop):
 
-![btop drawing graphs of CPU and memory with braille patterns](.github/images/gallery-btop.png)
+<picture>
+  <source media="(max-width: 600px)" srcset=".github/images/gallery-btop-narrow.png">
+  <img alt="btop drawing graphs of CPU and memory with braille patterns" src=".github/images/gallery-btop.png">
+</picture>
