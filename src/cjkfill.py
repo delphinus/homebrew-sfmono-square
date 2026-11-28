@@ -11,7 +11,10 @@ lacks in the BMP are taken from Source Han Sans, scaled to the size of Migu
 The extensions B and later are too many (more than 70,000) to put into a font
 with Migu 1M and SF Mono, as a font holds 65,535 glyphs at most. They are made
 from Plangothic into fonts of their own with the same metrics as SF Mono
-Square, to be mapped to them by the terminal (symbol_map in kitty).
+Square, to be mapped to them by the terminal (symbol_map in kitty). The 305 of
+them in JIS X 0213, such as U+20B9F and U+29E3D, keep the glyphs of Migu 1M
+there, as SF Mono Square has them too: symbol_map takes a codepoint to the font
+it names even when the font of the terminal has it.
 """
 from __future__ import annotations
 
@@ -91,6 +94,7 @@ def ext(part: str, version: str) -> int:
     """
     font = _subset(_open(PLANGOTHIC[part]), lambda c: _in(c, EXT_RANGES))
     _transform(font)
+    _keep_migu1m(font, part)
     familyname = f"{EXT_FAMILYNAME} {part}"
     compact = familyname.replace(" ", "")
     font.fontname = f"{compact}-Regular"
@@ -176,16 +180,35 @@ def _subset(source: fontforge.font, wanted) -> fontforge.font:
     return font
 
 
-def _transform(font: fontforge.font) -> None:
-    """Scales the glyphs as migu1m.modify() does Migu 1M."""
-    s = ADJUST_SCALE
-    adjust = psMat.compose(
-        psMat.scale(s),
-        psMat.translate(ADJUST_TO[0] - s * ADJUST_FROM[0], ADJUST_TO[1] - s * ADJUST_FROM[1]),
-    )
+def _keep_migu1m(font: fontforge.font, part: str) -> None:
+    """Puts the glyphs of Migu 1M in place of those of Plangothic it has."""
+    migu = _subset(_open(MIGU1M_FILES[0]), lambda c: _in(c, EXT_RANGES))
+    _transform(migu, adjust=False)
+    kept = 0
+    for glyph in migu.glyphs():
+        if glyph.unicode in font:
+            font[glyph.unicode].foreground = glyph.foreground
+            kept += 1
+    migu.close()
+    print(f"SFMonoSquareExt-{part}: kept {kept} glyphs of Migu 1M")
+
+
+def _transform(font: fontforge.font, adjust: bool = True) -> None:
+    """
+    Scales the glyphs as migu1m.modify() does Migu 1M. Those of Source Han
+    Sans and Plangothic are first adjusted to the size and the position of the
+    kanji of Migu 1M.
+    """
     font.selection.all()
     font.unlinkReferences()
-    font.transform(adjust)
+    if adjust:
+        s = ADJUST_SCALE
+        font.transform(
+            psMat.compose(
+                psMat.scale(s),
+                psMat.translate(ADJUST_TO[0] - s * ADJUST_FROM[0], ADJUST_TO[1] - s * ADJUST_FROM[1]),
+            )
+        )
     font.ascent = round(float(migu1m.ASCENT) / migu1m.EM * font.em)
     font.descent = round(float(migu1m.DESCENT) / migu1m.EM * font.em)
     font.em = migu1m.EM
