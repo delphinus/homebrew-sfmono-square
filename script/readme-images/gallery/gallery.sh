@@ -55,8 +55,9 @@ shot "$work/raw/btop.png" "$work/demo" 110 24 40 -- btop -c "$work/btop.conf"
 # as the text of README.  The content is cut down to fit.
 mkdir -p "$work/raw-narrow"
 sed -e 's/^shown_boxes = .*/shown_boxes = "mem"/' "$work/btop.conf" >"$work/btop-narrow.conf"
-# A short file name and nothing but the mode in the status line of lualine.
-lualine=':lua local c = require("lualine").get_config(); c.sections.lualine_b = { "filename" }; c.sections.lualine_c = {}; c.sections.lualine_x = {}; c.sections.lualine_y = {}; require("lualine").setup(c)\r'
+# A short file name and nothing but the mode in the status line of lualine, and no tab line, which
+# has nothing to show in a narrow window.
+lualine=':lua local c = require("lualine").get_config(); c.sections.lualine_b = { "filename" }; c.sections.lualine_c = {}; c.sections.lualine_x = {}; c.sections.lualine_y = {}; c.tabline = {}; require("lualine").setup(c); vim.o.showtabline = 0\r'
 
 shot "$work/raw-narrow/eza.png" "$work/demo" 42 16 3 -- bash -c \
   'prompt "eza --icons --tree"; eza --icons --tree --color=always; sleep 60'
