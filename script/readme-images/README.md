@@ -37,8 +37,8 @@ magick readme-weights.png -strip -colors 128 PNG8:readme-weights.png
 The gallery is not drawn.  `gallery/gallery.sh` runs each program in a kitty of its own
 (`gallery/kitty.conf`, SF Mono Square in the colours of tokyonight storm), captures the window,
 cuts the blank rows at its bottom and gives it rounded corners and a shadow
-(`gallery/compose.py`).  The narrow images of the gallery are the same windows without the shadow
-and its margins (`compose.py --flat`), to be shown as large as they can.
+(`gallery/compose.py`).  The narrow images of the gallery are taken in windows of 42 columns, with
+the content cut down to fit, and shown without the shadow and its margins (`compose.py --flat`).
 
 ```sh
 script/readme-images/gallery/gallery.sh

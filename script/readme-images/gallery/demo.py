@@ -51,6 +51,31 @@ end
 return M
 """
 
+# For the narrow screenshot of Neovim, with no line longer than 34 cells.  Its name is in
+# ASCII, as the file name at the top right of the author's Neovim drops a wide letter.
+NARROW_LUA = """\
+-- 表示幅
+local M = {}
+
+--- 全角は 2、半角は 1 と数える。
+---@param s string
+---@return integer
+function M.width(s)
+  return vim.api.nvim_strwidth(s)
+end
+
+--- 右を空白で埋めて幅を揃える。
+---@param s string
+---@param w integer
+function M.pad(s, w)
+  local n = w - M.width(s)
+  return s .. (" "):rep(n)
+end
+
+-- M.pad("漢字", 6) == "漢字  "
+return M
+"""
+
 FILES = {
     "lua/demo/init.lua": INIT_LUA,
     "lua/demo/表.lua": "local M = {}\nreturn M\n",
@@ -189,9 +214,12 @@ def make_history(path: str) -> None:
 
 def main() -> None:
     work = sys.argv[1]
-    for name in ("demo", "history"):
+    for name in ("demo", "history", "narrow"):
         shutil.rmtree(os.path.join(work, name), ignore_errors=True)
     make_demo(os.path.join(work, "demo"))
+    os.makedirs(os.path.join(work, "narrow"), exist_ok=True)
+    with open(os.path.join(work, "narrow", "width.lua"), "w") as f:
+        f.write(NARROW_LUA)
     make_history(os.path.join(work, "history"))
     print(work)
 

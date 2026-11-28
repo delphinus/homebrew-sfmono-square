@@ -51,8 +51,33 @@ shot "$work/raw/nvim.png" "$work/demo" 110 30 11 \
 # btop draws its graphs from what it has measured, so give it time.
 shot "$work/raw/btop.png" "$work/demo" 110 24 40 -- btop -c "$work/btop.conf"
 
+# The narrow versions, for a phone: windows of 42 columns, so that their text is about as large
+# as the text of README.  The content is cut down to fit.
+mkdir -p "$work/raw-narrow"
+sed -e 's/^shown_boxes = .*/shown_boxes = "mem"/' "$work/btop.conf" >"$work/btop-narrow.conf"
+# A short file name and nothing but the mode in the status line of lualine.
+lualine=':lua local c = require("lualine").get_config(); c.sections.lualine_b = { "filename" }; c.sections.lualine_c = {}; c.sections.lualine_x = {}; c.sections.lualine_y = {}; require("lualine").setup(c)\r'
+
+shot "$work/raw-narrow/eza.png" "$work/demo" 42 16 3 -- bash -c \
+  'prompt "eza --icons --tree"; eza --icons --tree --color=always; sleep 60'
+shot "$work/raw-narrow/sqlite.png" "$work/demo" 42 12 3 -- bash -c \
+  "prompt 'sqlite3 -box fonts.db'; printf '  \"select ウェイト, 見本 from fonts\"\n'; sqlite3 -box :memory: '.read $here/table.sql' 'select ウェイト, 見本 from fonts'; sleep 60"
+# tig without the columns of the ID and the date; ^L clears the message of the last command.
+shot "$work/raw-narrow/tig.png" "$work/history" 42 21 6 \
+  ':toggle date\r@2' ':toggle id\r@3' '\x0c@4' -- tig
+# The help is laid out in 78 columns, so a section of the user manual, with few tags in it, is
+# formatted again into 40 for the screenshot (the file is not written).
+shot "$work/raw-narrow/help.png" "$work/demo" 42 24 9 "$lualine@4" \
+  ':setlocal modifiable noreadonly colorcolumn= textwidth=40 formatoptions+=mM | silent normal! gggqG\r@5' \
+  ':setlocal nomodified scrolloff=0 | call search("\\*01\\.1\\*") | normal! zt\r@6.5' ':\x1b@7' \
+  -- nvim -c 'help usr_01.txt' -c only -c 'lua vim.treesitter.stop()' -c 'setlocal conceallevel=2'
+shot "$work/raw-narrow/nvim.png" "$work/narrow" 42 24 9 "$lualine@5" \
+  ':set nolist | lua vim.lsp.inlay_hint.enable(false)\r@6' ':call cursor(4, 5)\r@7' \
+  -- nvim -c 'lua vim.diagnostic.enable(false)' width.lua
+shot "$work/raw-narrow/btop.png" "$work/demo" 42 18 40 -- btop -c "$work/btop-narrow.conf"
+
 for name in eza sqlite tig help nvim btop; do
   "${py[@]}" "$here/compose.py" "$work/raw/$name.png" "$repo/.github/images/gallery-$name.png"
-  "${py[@]}" "$here/compose.py" "$work/raw/$name.png" "$repo/.github/images/gallery-$name-narrow.png" --flat
+  "${py[@]}" "$here/compose.py" "$work/raw-narrow/$name.png" "$repo/.github/images/gallery-$name-narrow.png" --flat
 done
 echo "$work"
