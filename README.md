@@ -1,10 +1,10 @@
-# SFMono Square - patched font: SFMono + Migu 1M + Nerd Fonts
+# SF Mono Square - patched font: SF Mono + Migu 1M + Nerd Fonts
 
-![SFMono Square: a terminal with Japanese, Latin letters and Nerd Fonts icons on a grid of cells, in which a Japanese letter takes two cells](.github/images/readme-hero.png)
+![SF Mono Square: a terminal with Japanese, Latin letters and Nerd Fonts icons on a grid of cells, in which a Japanese letter takes two cells](.github/images/readme-hero.png)
 
 ## What's this?
 
-**SF Mono** is a font from Apple, that is clear, easy to read, and suitable for programming.  **SFMono Square** is based on **SF Mono**, and added glyphs for Japanese & patched for [Nerd Fonts][].
+**SF Mono** is a font from Apple, that is clear, easy to read, and suitable for programming.  **SF Mono Square** is based on **SF Mono**, and added glyphs for Japanese & patched for [Nerd Fonts][].
 
 _Now, SF Mono Square v3 has completely the same codepoints as Nerd Fonts v3's ones._
 
@@ -27,7 +27,7 @@ Regular, Bold and their italics make the family "SF Mono Square" just as before.
 join it in the typographic family (name IDs 16 & 17); apps that do not read them list such a weight
 as a family of its own, such as "SF Mono Square Light".
 
-![SFMono Square in Light, Regular, Medium, Semibold, Bold and Heavy, upright and italic](.github/images/readme-weights.png)
+![SF Mono Square in Light, Regular, Medium, Semibold, Bold and Heavy, upright and italic](.github/images/readme-weights.png)
 
 ### Kanji beyond JIS X 0213
 
