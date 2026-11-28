@@ -169,6 +169,41 @@ def wide():
 
 
 def narrow():
+    def row(weight, style, italic):
+        return L(
+            (T + " ", BLUE),
+            (f"{weight:<8}", FG, None, style),
+            (" " + T + " ", BLUE),
+            ("漢字かな Aa ", FG, None, style),
+            ("Aa", FG, None, italic),
+            (" " + T, BLUE),
+        )
+
+    tab = [
+        L(("┌──────────┬────────────────┐", BLUE)),
+        L(
+            (T + " ", BLUE),
+            ("Weight  ", YELLOW, None, "B"),
+            (" " + T + " ", BLUE),
+            ("見本          ", YELLOW, None, "B"),
+            (" " + T, BLUE),
+        ),
+        L(("├──────────┼────────────────┤", BLUE)),
+        row("Light", "Light", "LightItalic"),
+        row("Regular", "Regular", "RegularItalic"),
+        row("Bold", "Bold", "BoldItalic"),
+        row("Heavy", "Heavy", "HeavyItalic"),
+        L(("└──────────┴────────────────┘", BLUE)),
+    ]
+    status = L(
+        (" NORMAL ", DARK, BLUE, "B"),
+        ("\ue0b0", BLUE, BAR2, "R"),
+        (" \ue620 設定.lua ", FG, BAR2, "R"),
+        ("\ue0b0", BAR2, WIN, "R"),
+        ("FILL", FG, WIN, "R"),
+        ("\ue0b2", BLUE, WIN, "R"),
+        (" 6:9 ", DARK, BLUE, "B"),
+    )
     lines = (
         prompt()
         + [
@@ -180,10 +215,10 @@ def narrow():
             ),
             L(),
         ]
-        + table()
-        + [L(), statusline(True)]
+        + tab
+        + [L(), status]
     )
-    return dict(W=1080, SIZE=48, COLS=40, LINES=lines, GRID=((6, 14), (0, 38)))
+    return dict(W=1080, SIZE=60, COLS=32, LINES=lines, GRID=((6, 14), (0, 29)))
 
 
 def draw(layout, out, is_narrow):
@@ -210,14 +245,15 @@ def draw(layout, out, is_narrow):
     wx0 = (W - TW - 2 * PAD) // 2
     title = ui(80, "Semibold")
     if is_narrow:
-        # The subtitle and the caption go on lines of their own.
+        # The subtitle and the caption go on lines of their own, as large as the text of README.
         heads = [
-            ("SF Mono Square", title, FG, 44),
-            ("SF Mono + Migu 1M + Nerd Fonts", ui(44), DIM, 150),
-            ("A Japanese letter takes exactly", ui(42), FG, 226),
-            ("two cells, so every column lines up.", ui(42), FG, 282),
+            ("SF Mono Square", ui(84, "Semibold"), FG, 36),
+            ("SF Mono + Migu 1M + Nerd Fonts", ui(50), DIM, 144),
+            ("A Japanese letter takes", ui(52), FG, 226),
+            ("exactly two cells, so every", ui(52), FG, 290),
+            ("column lines up.", ui(52), FG, 354),
         ]
-        wy0 = 380
+        wy0 = 456
     else:
         heads = [
             ("SF Mono Square", title, FG, 44),
@@ -240,7 +276,7 @@ def draw(layout, out, is_narrow):
     H = (
         wy1
         + 48
-        + (len(feats) // per_row) * (150 if is_narrow else 128)
+        + (len(feats) // per_row) * (176 if is_narrow else 128)
         + (40 if is_narrow else 24)
     )
     img = Image.new("RGB", (W, H), PAGE)
@@ -314,12 +350,12 @@ def draw(layout, out, is_narrow):
     fw = (wx1 - wx0) // per_row
     for i, (a, b, c) in enumerate(feats):
         x = wx0 + (i % per_row) * fw
-        y = wy1 + 48 + (i // per_row) * (150 if is_narrow else 128)
-        d.text((x, y), a, font=ui(56 if is_narrow else 48, "Semibold"), fill=c)
+        y = wy1 + 48 + (i // per_row) * (176 if is_narrow else 128)
+        d.text((x, y), a, font=ui(60 if is_narrow else 48, "Semibold"), fill=c)
         d.text(
-            (x, y + (74 if is_narrow else 64)),
+            (x, y + (80 if is_narrow else 64)),
             b,
-            font=ui(38 if is_narrow else 32),
+            font=ui(46 if is_narrow else 32),
             fill=DIM,
         )
     print(W, H, "terminal", TW, "x", TH, [width(l) for l in LINES])

@@ -1,4 +1,8 @@
-"""README image: glyphs of SF Mono Square coloured by the font they come from."""
+"""README image: glyphs of SF Mono Square coloured by the font they come from.
+
+python kanji.py OUT            # for a wide screen
+python kanji.py OUT --narrow   # for a phone, shorter rows
+"""
 
 import subprocess, sys
 from fontTools.ttLib import TTFont
@@ -13,6 +17,7 @@ EXT = {"P1": f"{FONTS}/SFMonoSquareExt-P1.ttf", "P2": f"{FONTS}/SFMonoSquareExt-
 # The fonts SF Mono Square is built from, which the formula installs too, tell where a glyph comes from.
 SFMONO, MIGU = f"{FONTS}/src/SF-Mono-Regular.otf", f"{FONTS}/src/migu-1m-regular.ttf"
 OUT = sys.argv[1]
+NARROW = "--narrow" in sys.argv[2:]
 
 W = 1600
 BG, LINE, CELLC = (13, 17, 23), (48, 54, 61), (30, 36, 44)
@@ -36,8 +41,29 @@ ROWS = [
     "四角号碼 1010 一 丄 丅 㐀 㒵 䶵 龘 鿐 鿕 鿖",
     "Ext B-J: 𠀀 𠂉 𡚸 𪜀 𫝀 𫠠 𬺰 𮯰 𰀀 𱍐 𲎰 𳀀",
 ]
-SIZE = 64
-CELL, LH, GAP = SIZE // 2, SIZE, 36  # a cell is half an em wide and an em high
+if NARROW:
+    W = 1080
+    ROWS = [
+        'let s = "漢字とかな";',
+        "// SF Mono + Migu 1M",
+        "四角号碼 1010 一 丄 丅 㐀",
+        "㒵 䶵 龘 鿐 鿕 鿖",
+        "Ext B-J: 𠀀 𠂉 𡚸 𪜀",
+        "𫝀 𫠠 𬺰 𮯰 𰀀 𱍐 𲎰 𳀀",
+    ]
+    # The descriptions of the legend, broken into lines.
+    WRAPPED = [
+        ["Latin letters, digits and symbols"],
+        ["kana and the kanji of JIS X 0213"],
+        ["18,243 other kanji, radicals", "and strokes in the BMP"],
+        ["74,991 of Extension B to J,", "in SF Mono Square Ext P1/P2"],
+    ]
+SIZE = 60 if NARROW else 64
+CELL, LH, GAP = (
+    SIZE // 2,
+    SIZE,
+    30 if NARROW else 36,
+)  # a cell is half an em wide and an em high
 
 cmap = lambda p: set(TTFont(p, lazy=True).getBestCmap())
 sfmono, migu, square = cmap(SFMONO), cmap(MIGU), cmap(SQUARE)
@@ -49,19 +75,34 @@ def source(c):
 
 
 ui = lambda s: ImageFont.truetype(SQUARE, s)
-M, top = 56, 176
-lt = top + 44 + len(ROWS) * (LH + GAP) + 20
-H = lt + len(SOURCES) * 58 + 28 + 56
+if NARROW:
+    M, top = 36, 360
+    heads = [
+        ("SF Mono Square", 76, FG, 36),
+        ("kanji beyond JIS X 0213", 50, FG, 132),
+        ("Each glyph is coloured by the font", 44, DIM, 212),
+        ("it comes from · one size and baseline", 44, DIM, 266),
+    ]
+    lt = top + 40 + len(ROWS) * (LH + GAP) + 24
+    H = lt + sum(64 + 54 * len(w) + 26 for w in WRAPPED) + 40
+else:
+    M, top = 56, 176
+    lt = top + 44 + len(ROWS) * (LH + GAP) + 20
+    H = lt + len(SOURCES) * 58 + 28 + 56
 img = Image.new("RGB", (W, H), BG)
 d = ImageDraw.Draw(img)
-d.text((M, 40), "SF Mono Square — kanji beyond JIS X 0213", font=ui(52), fill=FG)
-d.text(
-    (M, 112),
-    "Each glyph is coloured by the font it comes from · all share one size and baseline",
-    font=ui(28),
-    fill=DIM,
-)
-left, right, bottom = M, W - M, H - 56
+if NARROW:
+    for text, size, colour, y in heads:
+        d.text((M, y), text, font=ui(size), fill=colour)
+else:
+    d.text((M, 40), "SF Mono Square — kanji beyond JIS X 0213", font=ui(52), fill=FG)
+    d.text(
+        (M, 112),
+        "Each glyph is coloured by the font it comes from · all share one size and baseline",
+        font=ui(28),
+        fill=DIM,
+    )
+left, right, bottom = M, W - M, H - (40 if NARROW else 56)
 d.rounded_rectangle((left, top, right, bottom), radius=12, outline=LINE, width=2)
 d.line((left + 12, top, right - 12, top), fill=GREEN, width=4)
 
@@ -95,10 +136,26 @@ for row in ROWS:
     y += LH + GAP
 
 y = lt
-for name, color, desc in SOURCES:
-    d.rectangle((x0, y + 6, x0 + 26, y + 32), fill=color)
-    d.text((x0 + 44, y), name, font=ui(32), fill=color)
-    d.text((x0 + 44 + 300, y + 2), desc, font=ui(28), fill=DIM)
-    print("legend right", x0 + 344 + d.textlength(desc, font=ui(28)))
-    y += 58
+if NARROW:
+    for (name, color, _), lines in zip(SOURCES, WRAPPED):
+        d.rectangle((x0, y + 10, x0 + 36, y + 46), fill=color)
+        d.text((x0 + 56, y), name, font=ui(52), fill=color)
+        y += 64
+        for line in lines:
+            d.text((x0 + 56, y), line, font=ui(44), fill=DIM)
+            print(
+                "legend right",
+                x0 + 56 + d.textlength(line, font=ui(44)),
+                "box right",
+                right,
+            )
+            y += 54
+        y += 26
+else:
+    for name, color, desc in SOURCES:
+        d.rectangle((x0, y + 6, x0 + 26, y + 32), fill=color)
+        d.text((x0 + 44, y), name, font=ui(32), fill=color)
+        d.text((x0 + 44 + 300, y + 2), desc, font=ui(28), fill=DIM)
+        print("legend right", x0 + 344 + d.textlength(desc, font=ui(28)))
+        y += 58
 img.save(OUT)

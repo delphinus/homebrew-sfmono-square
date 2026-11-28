@@ -53,5 +53,6 @@ shot "$work/raw/btop.png" "$work/demo" 110 24 40 -- btop -c "$work/btop.conf"
 
 for name in eza sqlite tig help nvim btop; do
   "${py[@]}" "$here/compose.py" "$work/raw/$name.png" "$repo/.github/images/gallery-$name.png"
+  "${py[@]}" "$here/compose.py" "$work/raw/$name.png" "$repo/.github/images/gallery-$name-narrow.png" --flat
 done
 echo "$work"

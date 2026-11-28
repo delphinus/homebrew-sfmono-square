@@ -1,12 +1,19 @@
-"""compose.py IN OUT: cut the blank rows at the bottom of a window shot taken without shadow, round its corners and give it a shadow."""
+"""Cut the blank rows at the bottom of a window shot taken without shadow, round its corners and give it a shadow.
+
+python compose.py IN OUT           # with the shadow, as macOS draws it
+python compose.py IN OUT --flat    # without the shadow and its margins, for a phone
+"""
 
 import sys
 from collections import Counter
 from PIL import Image, ImageDraw, ImageFilter
 
 src, out = sys.argv[1:3]
+FLAT = "--flat" in sys.argv[3:]
 R, SS = 26, 4  # the corner radius of the window, and the supersampling of the mask
-ML, MR, MT, MB = 112, 112, 77, 147  # the margins macOS gave the shadow
+ML, MR, MT, MB = (
+    (0, 0, 0, 0) if FLAT else (112, 112, 77, 147)
+)  # the margins macOS gave the shadow
 raw = Image.open(src).convert("RGBA")
 W, H = raw.size
 BG = Counter(p for p in raw.get_flattened_data() if p[3] == 255).most_common(1)[0][0][
@@ -39,7 +46,7 @@ mask = mask.resize((W, H), Image.LANCZOS)
 cw, ch = W + ML + MR, H + MT + MB
 canvas = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
 # a wide soft shadow below the window, and a tight one all round it
-for blur, dy, alpha in ((38, 26, 0.50), (1.5, 0, 0.45)):
+for blur, dy, alpha in () if FLAT else ((38, 26, 0.50), (1.5, 0, 0.45)):
     sh = Image.new("L", (cw, ch), 0)
     sh.paste(mask, (ML, MT + dy))
     sh = sh.filter(ImageFilter.GaussianBlur(blur)).point(lambda v: int(v * alpha))
