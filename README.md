@@ -1,6 +1,9 @@
 # SF Mono Square - patched font: SF Mono + Migu 1M + Nerd Fonts
 
-![SF Mono Square: a terminal with Japanese, Latin letters and Nerd Fonts icons on a grid of cells, in which a Japanese letter takes two cells](.github/images/readme-hero.png)
+<picture>
+  <source media="(max-width: 600px)" srcset=".github/images/readme-hero-narrow.png">
+  <img alt="SF Mono Square: a terminal with Japanese, Latin letters and Nerd Fonts icons on a grid of cells, in which a Japanese letter takes two cells" src=".github/images/readme-hero.png">
+</picture>
 
 ## What's this?
 

@@ -11,15 +11,19 @@ These draw the images from the fonts in `$(brew --prefix sfmono-square)/share/fo
 ```sh
 cd script/readme-images
 uv run --with pillow --with fonttools python3 hero.py ../../.github/images/readme-hero.png
+uv run --with pillow --with fonttools python3 hero.py ../../.github/images/readme-hero-narrow.png --narrow
 uv run --with pillow python3 weights.py ../../.github/images/readme-weights.png
 uv run --with pillow --with fonttools python3 kanji.py ../../.github/images/readme-kanji.png
 ```
+
+README shows `readme-hero-narrow.png` instead of `readme-hero.png` on a narrow screen such as
+a phone, with `<picture>`.
 
 `kanji.py` tells where a glyph comes from by the fonts SF Mono Square is built from, which the
 formula installs into `share/fonts/src`.
 
 The PNGs in the repository are reduced to 128 colours after they are drawn, except
-`readme-hero.png`:
+`readme-hero.png` and `readme-hero-narrow.png`:
 
 ```sh
 magick readme-weights.png -strip -colors 128 PNG8:readme-weights.png
